@@ -1,0 +1,35 @@
+const express = require('express');
+const healthCare = require('../controller/HealthCareController');
+const router = express.Router();
+
+
+
+router.route('/').post(healthCare.addData);
+router.route('/').put(healthCare.updateData);
+router.route('/mohinScrap').post(healthCare.mohinScrap);
+
+//getting states
+router.route('/stateData').post(healthCare.getCategoryData);
+router.route('/stateData/:name').get(healthCare.getCategoryData);
+router.route('/state/:name').post(healthCare.getHealthCareStateData);
+router.route('/getCategoryName').get(healthCare.getCategoryName);
+router.route('/zipCode/:name/:zipCode?').get(healthCare.getHealthCareZipCodesData);
+
+router.route('/dltemptycities').get(healthCare.deleteEmptyCities);
+
+
+//found data using mongo db id and category
+
+router.get('/getCategoryDataUsingMongoId/:mongoDbID/:category', healthCare.getDataUsingMongoDbId);
+
+
+//get data which is nearest to user
+router.post('/getDataNearestToUser', healthCare.getDataNearestToUser);
+
+//filter data on the basis of multiple Categories
+
+router.post('/filterDataUsingMultipleCategories', healthCare.filterMultipleCategories);
+
+
+
+module.exports = router;

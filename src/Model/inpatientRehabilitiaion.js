@@ -1,0 +1,56 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const addressSchema = new Schema({
+    name: {
+        type: String,
+    },
+    fullAddress: {
+        type: String
+    },
+
+    zipCode: {
+        type: String,
+    },
+    city: {
+        type: String,
+    },
+    state: {
+        type: String,
+    },
+    phoneNumber: {
+        type: String,
+    },
+    latitude: {
+        type: String,
+    },
+    longitude: {
+        type: String,
+    },
+    treatment_non_traumatic_brain_condition: {
+        type: Number,
+    },
+    treatment_hip_or_femur_fracture: {
+        type: Number,
+    },
+    treatment_hip_knee_amputation_bone_join_condition: {
+        type: Number
+    },
+    treatment_traumatic_spinal_cord_disease: {
+        type: Number,
+    },
+    treatment_non_traumatic_spinal_cord_disease: {
+        type: Number
+    },
+    treatment_stroke: {
+        type: Number
+    },
+    treatment_miscellaneous_conditions: {
+        type: Number
+    },
+});
+
+const inpatientRehabilitiationData = mongoose.model('inpatientRehabilitiation', addressSchema);
+
+
+module.exports = inpatientRehabilitiationData;
