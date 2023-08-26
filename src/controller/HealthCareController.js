@@ -82,7 +82,7 @@ const healthCareController = {
           fullAddress: address,
           zipCode: zip_code,
           city,
-          state: "Tennessee",
+          state: "Wyoming",
           phoneNumber: contact,
           latitude,
           longitude,
@@ -112,6 +112,7 @@ const healthCareController = {
       console.log(err)
     }
   },
+
   filterMultipleCategories: async (req, res, next) => {
     const { state, city, zipCode, name } = req.body;
 
