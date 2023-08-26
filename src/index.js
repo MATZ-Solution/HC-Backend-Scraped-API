@@ -30,6 +30,8 @@ app.use(errorMiddleware);
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
+
+
 // Start the server and listen for incoming requests
 app.listen(3000, () => {
   console.log(`Backend server is running on ${3000}!`,);
