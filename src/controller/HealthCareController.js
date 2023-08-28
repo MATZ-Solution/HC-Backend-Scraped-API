@@ -144,7 +144,7 @@ const healthCareController = {
         else if (categoryName === "Home Health") {
           result = await homeHealthData.find(query).select().lean();
         }
-        
+
         return result;
       };
 
@@ -191,9 +191,9 @@ const healthCareController = {
           result = await hoSpiceData.find().select("state city zipCode").lean();
         } else if (name === "Inpatient Rehabilitiation") {
           result = await inpatientRehabilitiation.find().select("state city zipCode").lean();
-        } else if (name === "Group Practice Data") {
+        } else if (name === "Group Practice") {
           result = await groupPracticeData.find().select("state city zipCode").lean();
-        } else if (name === "Home Health Data") {
+        } else if (name === "Home Health") {
           result = await homeHealthData.find().select("state city zipCode").lean();
         } else {
           res.status(200).json("wrong parameter");
@@ -503,7 +503,7 @@ const healthCareController = {
           hoSpiceData.find({ city }).lean(),
           homeHealthData.find({ city }).lean(),
           inpatientRehabilitiation.find({ city }).lean(),
-          groupPracticeData.find({city}).lean()
+          groupPracticeData.find({ city }).lean()
         ]);
 
         res.status(200).json(allData.flat())
@@ -518,7 +518,7 @@ const healthCareController = {
           hoSpiceData.find({ city }).lean(),
           homeHealthData.find({ city }).lean(),
           inpatientRehabilitiation.find({ city }).lean(),
-          groupPracticeData.find({city}).lean()
+          groupPracticeData.find({ city }).lean()
         ]);
 
         res.status(200).json(allData.flat());
