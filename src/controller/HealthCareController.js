@@ -14,7 +14,7 @@ const cache = new NodeCache();
 
 
 const healthCareController = {
-  
+
   addData: async (req, res, next) => {
     try {
       const data = req.body;
@@ -104,62 +104,103 @@ const healthCareController = {
     const { state, city, zipCode, name } = req.body;
 
     try {
-      const scrapeCategory = async (categoryName) => {
-        let query = {};
 
-        if (state) {
-          query.state = state;
+      if (typeof name === "object") {
+
+
+        const scrapeCategory = async (categoryName) => {
+          let query = {};
+
+          if (state) {
+            query.state = state;
+          }
+
+          if (city) {
+            query.city = city;
+          }
+
+          if (zipCode) {
+            query.zipCode = zipCode;
+          }
+
+          let result = [];
+          if (categoryName === "Hospital") {
+            result = await hospital.find(query).select().lean();
+          } else if (categoryName === "Dialysis Facility") {
+            result = await dialysisFacilityData.find(query).select().lean();
+          }
+          else if (categoryName === "Nursing Home") {
+            result = await nursingHome.find(query).select().lean();
+          }
+          else if (categoryName === "Long Term Cares") {
+            result = await longTermCares.find(query).select().lean();
+          }
+          else if (categoryName === "Ho Spice") {
+            result = await hoSpiceData.find(query).select().lean();
+          }
+          else if (categoryName === "Inpatient Rehabilitiation") {
+            result = await inpatientRehabilitiation.find(query).select().lean();
+          }
+          else if (categoryName === "Group Practice") {
+            result = await groupPracticeData.find(query).select().lean();
+          }
+          else if (categoryName === "Home Health") {
+            result = await homeHealthData.find(query).select().lean();
+          }
+
+          return result;
+        };
+
+        const scrapeAllCategories = async (categories) => {
+          const promises = categories.map(categoryName => scrapeCategory(categoryName));
+          const results = await Promise.all(promises);
+          return results;
+        };
+
+        try {
+          const scrapedData = await scrapeAllCategories(name);
+
+          res.status(200).json(scrapedData.flat());
+        } catch (err) {
+          next(err);
         }
 
-        if (city) {
-          query.city = city;
+      } else if (typeof name === "string") {
+
+        const cachedData = cache.get(name);
+        if (cachedData) {
+          res.status(200).json(cachedData);
+          return;
         }
 
-        if (zipCode) {
-          query.zipCode = zipCode;
+        // If data is not in cache, run query the database
+        if (name === "Hospital") {
+          result = await hospital.find().lean();
+        } else if (name === "Long Term Cares") {
+          result = await longTermCares.find().lean();
+        } else if (name === "Nursing Home") {
+          result = await nursingHome.find().lean();
+        } else if (name === "Dialysis Facility") {
+          result = await dialysisFacilityData.find().lean();
+        } else if (name === "Ho Spice") {
+          result = await hoSpiceData.find().lean();
+        } else if (name === "Inpatient Rehabilitiation") {
+          result = await inpatientRehabilitiation.find().lean();
+        } else if (name === "Group Practice") {
+          result = await groupPracticeData.find().lean();
+        } else if (name === "Home Health") {
+          result = await homeHealthData.find().lean();
+        } else {
+          res.status(200).json("wrong parameter");
+          return;
         }
 
-        let result = [];
-        if (categoryName === "Hospital") {
-          result = await hospital.find(query).select().lean();
-        } else if (categoryName === "Dialysis Facility") {
-          result = await dialysisFacilityData.find(query).select().lean();
-        }
-        else if (categoryName === "Nursing Home") {
-          result = await nursingHome.find(query).select().lean();
-        }
-        else if (categoryName === "Long Term Cares") {
-          result = await longTermCares.find(query).select().lean();
-        }
-        else if (categoryName === "Ho Spice") {
-          result = await hoSpiceData.find(query).select().lean();
-        }
-        else if (categoryName === "Inpatient Rehabilitiation") {
-          result = await inpatientRehabilitiation.find(query).select().lean();
-        }
-        else if (categoryName === "Group Practice") {
-          result = await groupPracticeData.find(query).select().lean();
-        }
-        else if (categoryName === "Home Health") {
-          result = await homeHealthData.find(query).select().lean();
-        }
+        cache.set(name, result, 365 * 24 * 60 * 60);
 
-        return result;
-      };
+        res.status(200).json(result.flat());
 
-      const scrapeAllCategories = async (categories) => {
-        const promises = categories.map(categoryName => scrapeCategory(categoryName));
-        const results = await Promise.all(promises);
-        return results;
-      };
-
-      try {
-        const scrapedData = await scrapeAllCategories(name);
-
-        res.status(200).json(scrapedData.flat());
-      } catch (err) {
-        next(err);
       }
+
     } catch (error) {
       next(error);
     }
