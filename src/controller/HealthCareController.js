@@ -99,7 +99,6 @@ const healthCareController = {
       console.log(err)
     }
   },
-
   filterMultipleCategories: async (req, res, next) => {
     const { state, city, zipCode, name } = req.body;
 
@@ -525,8 +524,6 @@ const healthCareController = {
       next(err);
     }
   },
-
-
   //get data which is  Nearest to User
   getDataNearestToUser: async (req, res, next) => {
 
