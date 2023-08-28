@@ -18,6 +18,13 @@ const addressSchema = new Schema({
     state: {
         type: String,
     },
+    contactedCustomer: {
+        type: Number,
+        default:0
+    },
+    mainCategory: {
+        type: String,
+    },
     phoneNumber: {
         type: String,
     },

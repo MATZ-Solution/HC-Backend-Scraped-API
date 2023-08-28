@@ -1,14 +1,15 @@
 const ErrorHandler = require("../utils/ErrorHandler");
-const HealthCare = require("../Model/healthCareData");
 const hospital = require("../Model/hospital");
 const longTermCares = require("../Model/longtermCares");
 const nursingHome = require("../Model/nursingHome");
 const dialysisFacilityData = require("../Model/dialysisFacility");
 const inpatientRehabilitiation = require("../Model/inpatientRehabilitiaion")
 const hoSpiceData = require("../Model/hoSpice");
+const groupPracticeData = require("../Model/groupPractice")
+const homeHealthData = require("../Model/homeHealth");
 
 const NodeCache = require("node-cache");
-const homeHealthData = require("../Model/homeHealth");
+
 const cache = new NodeCache();
 
 
@@ -62,7 +63,7 @@ const healthCareController = {
   },
   updateData: async (req, res, next) => {
     try {
-      const updateCategory = await HealthCare.updateMany({ category: "Nursing Homes" }, { category: "Memory Care" });
+      const updateCategory = await homeHealthData.updateMany({ mainCategory: "home Health" });
       res.status(200).json(updateCategory);
     } catch (error) {
       next(error);
@@ -75,27 +76,12 @@ const healthCareController = {
       const newData = [];
 
       for (let i = 0; i < data.length; i++) {
-        const { treatment_non_traumatic_spinal_cord_disease, treatment_miscellaneous_conditions, treatment_stroke, treatment_traumatic_spinal_cord_disease, treatment_nervous_system_disorder, treatment_hip_knee_amputation_bone_join_condition, treatment_hip_or_femur_fracture, treatment_non_traumatic_brain_condition, treatment_traumatic_brain_condition, service_home_health_aide, service_medical_social_service, service_speech_therapy, service_occupational_therapy, service_physical_therapy, service_nursing_care, condition_miscellaneous_pc, condition_respiratory_pc, condition_heart_circulatory_pc, condition_stroke_pc, name, family_caregiver_survey_rating, avg_daily_census, condition_cancer_pc, condition_dementia_pc, quality_rating, hemodialysis_stations_count, number_of_certified_beds, management, address, zip_code, city, contact, latitude, longitude, overall_rating, patient_survey_rating, number_of_beds } = data[i];
+        const { name, state, specialities } = data[i];
 
-        const newHealthCare = new inpatientRehabilitiation({
+        const newHealthCare = new groupPracticeData({
           name,
-          fullAddress: address,
-          zipCode: zip_code,
-          city,
-          state: "Wyoming",
-          phoneNumber: contact,
-          latitude,
-          longitude,
-          treatment_traumatic_brain_condition,
-          treatment_non_traumatic_brain_condition,
-          treatment_hip_or_femur_fracture,
-          treatment_hip_knee_amputation_bone_join_condition,
-          treatment_nervous_system_disorder,
-          treatment_non_traumatic_spinal_cord_disease,
-          treatment_traumatic_spinal_cord_disease,
-          service_home_health_aide,
-          treatment_stroke,
-          treatment_miscellaneous_conditions
+          state: "Missouri",
+          specialities,
         });
 
         await newHealthCare.save();
@@ -132,20 +118,33 @@ const healthCareController = {
           query.zipCode = zipCode;
         }
 
+        console.log(query)
+
         let result = [];
-        if (categoryName === "memoryCare") {
-          result = await HealthCare.find(query).select().lean();
-        } else if (categoryName === "hospitals") {
+        if (categoryName === "Hospital") {
           result = await hospital.find(query).select().lean();
-        } else if (categoryName === "dialysisfacilities") {
+        } else if (categoryName === "Dialysis Facility") {
           result = await dialysisFacilityData.find(query).select().lean();
         }
-        else if (categoryName === "nursingHome") {
+        else if (categoryName === "Nursing Home") {
           result = await nursingHome.find(query).select().lean();
         }
-        else if (categoryName === "longTermCares") {
+        else if (categoryName === "Long Term Cares") {
           result = await longTermCares.find(query).select().lean();
         }
+        else if (categoryName === "Ho Spice") {
+          result = await hoSpiceData.find(query).select().lean();
+        }
+        else if (categoryName === "Inpatient Rehabilitiation") {
+          result = await inpatientRehabilitiation.find(query).select().lean();
+        }
+        else if (categoryName === "Group Practice") {
+          result = await groupPracticeData.find(query).select().lean();
+        }
+        else if (categoryName === "Home Health") {
+          result = await homeHealthData.find(query).select().lean();
+        }
+        
         return result;
       };
 
@@ -180,17 +179,22 @@ const healthCareController = {
         }
 
         // If data is not in cache, run query the database
-        if (name === "memoryCare") {
-          // result = await HealthCare.aggregate(pipeline).sort({ state: 1, city: 1 }).exec();
-          result = await HealthCare.find().select("state city zipCode").lean();
-        } else if (name === "hospital") {
+        if (name === "Hospital") {
           result = await hospital.find().select("state city zipCode ").lean();
-        } else if (name === "longTermCares") {
+        } else if (name === "Long Term Cares") {
           result = await longTermCares.find().select("state city zipCode").lean();
-        } else if (name === "nursingHome") {
+        } else if (name === "Nursing Home") {
           result = await nursingHome.find().select("state city zipCode").lean();
         } else if (name === "Dialysis Facility") {
           result = await dialysisFacilityData.find().select("state city zipCode").lean();
+        } else if (name === "Ho Spice") {
+          result = await hoSpiceData.find().select("state city zipCode").lean();
+        } else if (name === "Inpatient Rehabilitiation") {
+          result = await inpatientRehabilitiation.find().select("state city zipCode").lean();
+        } else if (name === "Group Practice Data") {
+          result = await groupPracticeData.find().select("state city zipCode").lean();
+        } else if (name === "Home Health Data") {
+          result = await homeHealthData.find().select("state city zipCode").lean();
         } else {
           res.status(200).json("wrong parameter");
           return;
@@ -202,16 +206,22 @@ const healthCareController = {
         try {
           const scrapeCategory = async (categoryName) => {
             let result = [];
-            if (categoryName === "memoryCare") {
-              result = await HealthCare.find().select("state city zipCode").lean();
-            } else if (categoryName === "nursingHome") {
+            if (categoryName === "Nursing Home") {
               result = await nursingHome.find().select("state city zipCode").lean();
-            } else if (categoryName === "longTermCares") {
+            } else if (categoryName === "Long Term Cares") {
               result = await longTermCares.find().select("state city zipCode").lean();
             } else if (categoryName === "Dialysis Facility") {
               result = await dialysisFacilityData.find().select("state city zipCode").lean();
-            } else if (categoryName === "hospital") {
+            } else if (categoryName === "Hospital") {
               result = await hospital.find().select("state city zipCode").lean();
+            } else if (categoryName === "Ho Spice") {
+              result = await hoSpiceData.find().select("state city zipCode").lean();
+            } else if (categoryName === "Inpatient Rehabilitiation") {
+              result = await inpatientRehabilitiation.find().select("state city zipCode").lean();
+            } else if (categoryName === "Group Practice") {
+              result = await groupPracticeData.find().select("state city zipCode").lean();
+            } else if (categoryName === "Home Health") {
+              result = await homeHealthData.find().select("state city zipCode").lean();
             }
 
             // Format the data for the list format
@@ -264,18 +274,7 @@ const healthCareController = {
       if (zipCode) {
         query.zipCode = zipCode;
       }
-      if (name === "memoryCare") {
-        let result;
-
-        if (state || city || zipCode) {
-          result = await HealthCare.find(query).lean();
-          res.status(200).json(result);
-        } else {
-          result = "wrong parameter";
-          res.status(200).json({ memoryCare: result });
-        }
-
-      } else if (name === "hospital") {
+      if (name === "Long Term Cares") {
         let result;
         if (state || city || zipCode) {
           result = await hospital.find(query).lean();
@@ -321,7 +320,9 @@ const healthCareController = {
   getCategoryName: async (req, res, next) => {
     try {
 
-      const categoryName = ["memoryCare", "hospital", "longTermCares", "nursingHome", "Dialysis Facility", "Hospice"];
+      const categoryName = ["Hospital", "Long Term Cares", "Nursing Home", "Dialysis Facility", "Ho Spice", "Inpatient Rehabilitiation"
+        , "Group Practice", "Home Health"
+      ];
 
       res.status(200).json(categoryName)
 
@@ -414,6 +415,77 @@ const healthCareController = {
       next(err)
     }
   },
+  incCounterBaseOnTheCustomerContact: async (req, res, next) => {
+    try {
+      const { mongoDbID, category } = req.params;
+
+      console.log(mongoDbID, category)
+
+      switch (category) {
+        case "hospital":
+          await hospital.updateOne(
+            { _id: mongoDbID },
+            { $inc: { contactedCustomer: 1 } }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "longTermCares":
+          await longTermCares.updateOne(
+            { _id: mongoDbID },
+            { $inc: { contactedCustomer: 1 } }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "nursingHome":
+          await nursingHome.updateOne(
+            { _id: mongoDbID },
+            { $inc: { contactedCustomer: 1 } }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "dialysisFacilityData":
+          await dialysisFacilityData.updateOne(
+            { _id: mongoDbID },
+            { $inc: { contactedCustomer: 1 } }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "inpatientRehabilitiation":
+          await inpatientRehabilitiation.updateOne(
+            { _id: mongoDbID },
+            { $inc: { contactedCustomer: 1 } }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "hoSpiceData":
+          await hoSpiceData.updateOne(
+            { _id: mongoDbID },
+            { $inc: { contactedCustomer: 1 } }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "groupPracticeData":
+          await groupPracticeData.updateOne(
+            { _id: mongoDbID },
+            { $inc: { contactedCustomer: 1 } }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "home Health":
+          await homeHealthData.updateOne(
+            { _id: mongoDbID },
+            { $inc: { contactedCustomer: 1 } }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        default:
+          res.status(400).json({ success: false, message: "Invalid category" });
+      }
+    } catch (err) {
+      next(err);
+    }
+  },
+
 
   //get data which is  Nearest to User
   getDataNearestToUser: async (req, res, next) => {
@@ -424,11 +496,14 @@ const healthCareController = {
       if (city) {
 
         const allData = await Promise.all([
-          HealthCare.find({ city }).lean(),
           hospital.find({ city }).lean(),
           longTermCares.find({ city }).lean(),
           nursingHome.find({ city }).lean(),
-          dialysisFacilityData.find({ city }).lean()
+          dialysisFacilityData.find({ city }).lean(),
+          hoSpiceData.find({ city }).lean(),
+          homeHealthData.find({ city }).lean(),
+          inpatientRehabilitiation.find({ city }).lean(),
+          groupPracticeData.find({city}).lean()
         ]);
 
         res.status(200).json(allData.flat())
@@ -439,7 +514,11 @@ const healthCareController = {
           hospital.find({ city: "Andalusia" }).lean(),
           longTermCares.find({ city: "Andalusia" }).lean(),
           nursingHome.find({ city: "Andalusia" }).lean(),
-          dialysisFacilityData.find({ city: "Andalusia" }).lean()
+          dialysisFacilityData.find({ city: "Andalusia" }).lean(),
+          hoSpiceData.find({ city }).lean(),
+          homeHealthData.find({ city }).lean(),
+          inpatientRehabilitiation.find({ city }).lean(),
+          groupPracticeData.find({city}).lean()
         ]);
 
         res.status(200).json(allData.flat());

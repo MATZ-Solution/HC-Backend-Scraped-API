@@ -8,11 +8,17 @@ const addressSchema = new Schema({
     fullAddress: {
         type: String
     },
-
+    contactedCustomer: {
+        type: Number,
+        default: 0
+    },
     zipCode: {
         type: String,
     },
     city: {
+        type: String,
+    },
+    mainCategory: {
         type: String,
     },
     state: {

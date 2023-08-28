@@ -14,6 +14,12 @@ const addressSchema = new Schema({
   category: {
     type: String,
   },
+  mainCategory: {
+    type: String,
+  }, contactedCustomer: {
+    type: Number,
+    default: 0
+  },
   city: {
     type: String,
   },

@@ -30,6 +30,10 @@ router.post('/getDataNearestToUser', healthCare.getDataNearestToUser);
 
 router.post('/filterDataUsingMultipleCategories', healthCare.filterMultipleCategories);
 
+router.get('/incCounterBaseOnTheCustomerContact/:mongoDbID/:category', healthCare.incCounterBaseOnTheCustomerContact);
+
+
+
 
 
 module.exports = router;

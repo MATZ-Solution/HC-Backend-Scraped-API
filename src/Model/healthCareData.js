@@ -11,6 +11,9 @@ const addressSchema = new Schema({
   description: {
     type: String,
   },
+  mainCategory: {
+    type: String,
+  },
   category: {
     type: String,
   },

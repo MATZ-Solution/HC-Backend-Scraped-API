@@ -14,6 +14,9 @@ const addressSchema = new Schema({
   category: {
     type: String,
   },
+  mainCategory: {
+    type: String,
+  },
   city: {
     type: String,
   },
@@ -31,6 +34,10 @@ const addressSchema = new Schema({
   },
   closed: {
     type: String,
+  },
+  contactedCustomer: {
+    type: Number,
+    default: 0
   },
   //mohsin scraping
   latitude: {
