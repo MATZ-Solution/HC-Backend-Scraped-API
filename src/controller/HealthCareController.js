@@ -14,6 +14,7 @@ const cache = new NodeCache();
 
 
 const healthCareController = {
+  
   addData: async (req, res, next) => {
     try {
       const data = req.body;
@@ -117,8 +118,6 @@ const healthCareController = {
         if (zipCode) {
           query.zipCode = zipCode;
         }
-
-        console.log(query)
 
         let result = [];
         if (categoryName === "Hospital") {
