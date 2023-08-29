@@ -148,6 +148,36 @@ const healthCareController = {
             result = await homeHealthData.find(query).select().lean();
           }
 
+
+
+          // calculate average rating
+
+
+          result.forEach((hospital) => {
+            if (hospital.reviews && hospital.reviews.length > 0) {
+
+              let totalStars = 0;
+              let totalReviews = 0;
+
+              hospital.reviews.forEach((review) => {
+                if (review.startRating) {
+                  totalStars += review.startRating;
+                  totalReviews++;
+                }
+              });
+
+              
+              if (totalReviews > 0) {
+                hospital.averageRating = totalStars / totalReviews;
+              } else {
+                hospital.averageRating = 0;
+              }
+            } else {
+              hospital.averageRating = 0;
+            }
+          });
+
+
           return result;
         };
 
