@@ -7,6 +7,7 @@ const inpatientRehabilitiation = require("../Model/inpatientRehabilitiaion")
 const hoSpiceData = require("../Model/hoSpice");
 const groupPracticeData = require("../Model/groupPractice")
 const homeHealthData = require("../Model/homeHealth");
+const Otp = require("../Model/Otp")
 
 const NodeCache = require("node-cache");
 
@@ -524,6 +525,158 @@ const healthCareController = {
       next(err);
     }
   },
+  addReview: async (req, res, next) => {
+    try {
+      const { mongoDbID, category, name, email, reviews } = req.body;
+
+      switch (category) {
+        case "hospital":
+          await hospital.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { reviews: { name, email, reviews } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "longTermCares":
+          await longTermCares.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { reviews: { name, email, reviews } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "nursingHome":
+          await nursingHome.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { reviews: { name, email, reviews } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "dialysisFacilityData":
+          await dialysisFacilityData.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { reviews: { name, email, reviews } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "inpatientRehabilitiation":
+          await inpatientRehabilitiation.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { reviews: { name, email, reviews } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "hoSpiceData":
+          await hoSpiceData.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { reviews: { name, email, reviews } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "groupPracticeData":
+          await groupPracticeData.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { reviews: { name, email, reviews } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "home Health":
+          await homeHealthData.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { reviews: { name, email, reviews } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        default:
+          res.status(400).json({ success: false, message: "Invalid category" });
+      }
+    } catch (err) {
+      next(err);
+    }
+  },
+  addComplain: async (req, res, next) => {
+    try {
+      const { mongoDbID, category, name, email, complain } = req.body;
+
+      switch (category) {
+        case "hospital":
+          await hospital.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { complain: { name, email, complain } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "longTermCares":
+          await longTermCares.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { complain: { name, email, complain } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "nursingHome":
+          await nursingHome.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { complain: { name, email, complain } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "dialysisFacilityData":
+          await dialysisFacilityData.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { complain: { name, email, complain } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "inpatientRehabilitiation":
+          await inpatientRehabilitiation.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { complain: { name, email, complain } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "hoSpiceData":
+          await hoSpiceData.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { complain: { name, email, complain } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "groupPracticeData":
+          await groupPracticeData.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { complain: { name, email, complain } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        case "home Health":
+          await homeHealthData.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { complain: { name, email, complain } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: "Updated" });
+          break;
+        default:
+          res.status(400).json({ success: false, message: "Invalid category" });
+      }
+    } catch (err) {
+      next(err);
+    }
+  },
   //get data which is  Nearest to User
   getDataNearestToUser: async (req, res, next) => {
 
@@ -571,6 +724,21 @@ const healthCareController = {
   deleteEmptyCities: async (req, res, next) => {
     await dialysisFacilityData.deleteMany({ state: "Alaska" })
     res.status(200).json("deleted")
+  },
+
+  verifyOtp: async (req, res, next) => {
+    const { email, code } = req.body;
+    try {
+      let data = await Otp.findOne({ email: email, code: code });
+      if (data) {
+        res.status(200).json({ msg: "Email Verified" });
+      } else {
+        throw new ErrorHandler("Invalid OTP", 400);
+      }
+    } catch (error) {
+      next(error)
+    }
+
   }
 
 

@@ -57,6 +57,20 @@ const addressSchema = new Schema({
     service_home_health_aide: {
         type: Boolean
     },
+    reviews: [
+      {
+        name: { type: String },
+        email: { type: String },
+        reviews: { type: String }
+      }
+    ],
+    complain: [
+      {
+        name: { type: String },
+        email: { type: String },
+        complain: { type: String }
+      }
+    ]
 
 });
 

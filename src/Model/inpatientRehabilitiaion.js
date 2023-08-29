@@ -20,7 +20,7 @@ const addressSchema = new Schema({
     },
     contactedCustomer: {
         type: Number,
-        default:0
+        default: 0
     },
     mainCategory: {
         type: String,
@@ -55,6 +55,20 @@ const addressSchema = new Schema({
     treatment_miscellaneous_conditions: {
         type: Number
     },
+    reviews: [
+        {
+            name: { type: String },
+            email: { type: String },
+            reviews: { type: String }
+        }
+    ],
+    complain: [
+        {
+            name: { type: String },
+            email: { type: String },
+            complain: { type: String }
+        }
+    ]
 });
 
 const inpatientRehabilitiationData = mongoose.model('inpatientRehabilitiation', addressSchema);

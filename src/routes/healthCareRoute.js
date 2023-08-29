@@ -33,6 +33,15 @@ router.post('/filterDataUsingMultipleCategories', healthCare.filterMultipleCateg
 router.get('/incCounterBaseOnTheCustomerContact/:mongoDbID/:category', healthCare.incCounterBaseOnTheCustomerContact);
 
 
+//add review
+router.post('/addReview', healthCare.addReview);
+
+//add complain
+router.post('/addComplain', healthCare.addComplain);
+
+
+//verifyOtp
+router.post('/verifyOtp', healthCare.verifyOtp);
 
 
 

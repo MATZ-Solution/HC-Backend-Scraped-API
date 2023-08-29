@@ -63,7 +63,21 @@ const addressSchema = new Schema({
     Fri: { type: String },
     Sat: { type: String },
     Sun: { type: String }
-  }
+  },
+  reviews: [
+    {
+      name: { type: String },
+      email: { type: String },
+      reviews: { type: String }
+    }
+  ],
+  complain: [
+    {
+      name: { type: String },
+      email: { type: String },
+      complain: { type: String }
+    }
+  ]
 });
 
 const hospitals = mongoose.model('hospitals', addressSchema);

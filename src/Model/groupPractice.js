@@ -17,7 +17,21 @@ const addressSchema = new Schema({
     contactedCustomer: {
         type: Number,
         default:0
-    }
+    },
+    reviews: [
+      {
+        name: { type: String },
+        email: { type: String },
+        reviews: { type: String }
+      }
+    ],
+    complain: [
+      {
+        name: { type: String },
+        email: { type: String },
+        complain: { type: String }
+      }
+    ]
 });
 
 const GroupPracticeData = mongoose.model('GroupPractice', addressSchema);

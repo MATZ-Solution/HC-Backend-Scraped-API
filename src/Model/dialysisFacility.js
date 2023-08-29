@@ -42,6 +42,20 @@ const addressSchema = new Schema({
     hemodialysis_stations_count: {
         type: Number
     },
+    reviews: [
+      {
+        name: { type: String },
+        email: { type: String },
+        reviews: { type: String }
+      }
+    ],
+    complain: [
+      {
+        name: { type: String },
+        email: { type: String },
+        complain: { type: String }
+      }
+    ]
 
 });
 
