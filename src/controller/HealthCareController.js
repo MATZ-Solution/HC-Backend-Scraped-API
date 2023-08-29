@@ -81,7 +81,7 @@ const healthCareController = {
 
         const newHealthCare = new groupPracticeData({
           name,
-          state: "North Dakota",
+          state: "Oklahoma",
           specialities,
         });
 

@@ -7,6 +7,7 @@ const cors = require("cors");
 //routes
 const databaseConnection = require("./utils/db");
 const healthCareRoute = require("./routes/healthCareRoute");
+const sendEmailRoute = require("./routes/sendEmailRoutes");
 
 const errorMiddleware = require("./middleware/error");
 
@@ -24,6 +25,9 @@ app.use(express.json()); // Parse incoming JSON data
 databaseConnection.connect();
 
 app.use("/api/healthCareRoute", healthCareRoute);
+app.use("/api/sendEmail", sendEmailRoute);
+
+
 
 app.use(errorMiddleware);
 
