@@ -2,36 +2,39 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const addressSchema = new Schema({
-    name: {
-        type: String,
-    },
-    state: {
-        type: String
-    },
-    specialities: {
-        type: Array,
-    },
-    mainCategory: {
-        type: String,
-    },
-    contactedCustomer: {
-        type: Number,
-        default:0
-    },
-    reviews: [
-      {
-        name: { type: String },
-        email: { type: String },
-        reviews: { type: String }
-      }
-    ],
-    complain: [
-      {
-        name: { type: String },
-        email: { type: String },
-        complain: { type: String }
-      }
-    ]
+  name: {
+    type: String,
+  },
+  state: {
+    type: String
+  },
+  specialities: {
+    type: Array,
+  },
+  mainCategory: {
+    type: String,
+  },
+  contactedCustomer: {
+    type: Number,
+    default: 0
+  },
+  reviews: [
+    {
+      name: { type: String },
+      email: { type: String },
+      reviews: { type: String },
+      startRating: { type: Number }
+
+    }
+  ],
+  complain: [
+    {
+      name: { type: String },
+      email: { type: String },
+      complain: { type: String },
+      startRating: { type: Number }
+    }
+  ]
 });
 
 const GroupPracticeData = mongoose.model('GroupPractice', addressSchema);

@@ -13,7 +13,7 @@ const addressSchema = new Schema({
     },
     contactedCustomer: {
         type: Number,
-        default:0
+        default: 0
     },
     zipCode: {
         type: String,
@@ -58,18 +58,22 @@ const addressSchema = new Schema({
         type: Boolean
     },
     reviews: [
-      {
-        name: { type: String },
-        email: { type: String },
-        reviews: { type: String }
-      }
+        {
+            name: { type: String },
+            email: { type: String },
+            reviews: { type: String },
+            startRating: { type: Number }
+
+        }
     ],
     complain: [
-      {
-        name: { type: String },
-        email: { type: String },
-        complain: { type: String }
-      }
+        {
+            name: { type: String },
+            email: { type: String },
+            complain: { type: String },
+            startRating: { type: Number }
+
+        }
     ]
 
 });

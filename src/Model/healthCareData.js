@@ -19,7 +19,7 @@ const addressSchema = new Schema({
   },
   city: {
     type: String,
-    index:true
+    index: true
   },
   phoneNumber: {
     type: String,
@@ -29,7 +29,7 @@ const addressSchema = new Schema({
   },
   zipCode: {
     type: String,
-    index:true
+    index: true
   },
   state: {
     type: String,
@@ -67,14 +67,17 @@ const addressSchema = new Schema({
     {
       name: { type: String },
       email: { type: String },
-      reviews: { type: String }
+      reviews: { type: String },
+      startRating: { type: Number }
+
     }
   ],
   complain: [
     {
       name: { type: String },
       email: { type: String },
-      complain: { type: String }
+      complain: { type: String },
+      startRating: { type: Number }
     }
   ]
 });

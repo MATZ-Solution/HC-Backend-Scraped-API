@@ -57,20 +57,24 @@ const addressSchema = new Schema({
     condition_miscellaneous_pc: {
         type: Number
     },
-  reviews: [
-    {
-      name: { type: String },
-      email: { type: String },
-      reviews: { type: String }
-    }
-  ],
-  complain: [
-    {
-      name: { type: String },
-      email: { type: String },
-      complain: { type: String }
-    }
-  ]
+    reviews: [
+        {
+            name: { type: String },
+            email: { type: String },
+            reviews: { type: String },
+            startRating: { type: Number }
+
+        }
+    ],
+    complain: [
+        {
+            name: { type: String },
+            email: { type: String },
+            complain: { type: String },
+            startRating: { type: Number }
+
+        }
+    ]
 });
 
 const hoSpiceData = mongoose.model('hoSpice', addressSchema);

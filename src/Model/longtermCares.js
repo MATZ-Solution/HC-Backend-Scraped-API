@@ -67,14 +67,16 @@ const addressSchema = new Schema({
     {
       name: { type: String },
       email: { type: String },
-      reviews: { type: String }
+      reviews: { type: String },
+      starRating: { type: Number }
     }
   ],
   complain: [
     {
       name: { type: String },
       email: { type: String },
-      complain: { type: String }
+      complain: { type: String },
+      startRating: { type: Number }
     }
   ]
 });
