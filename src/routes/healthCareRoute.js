@@ -34,10 +34,10 @@ router.get('/incCounterBaseOnTheCustomerContact/:mongoDbID/:category', healthCar
 
 
 //add review
-router.post('/addReview', healthCare.addReview);
+router.put('/addReview', healthCare.addReview);
 
 //add complain
-router.post('/addComplain', healthCare.addComplain);
+router.put('/addComplain', healthCare.addComplain);
 
 
 //verifyOtp
