@@ -603,13 +603,13 @@ const healthCareController = {
   },
   addComplain: async (req, res, next) => {
     try {
-      const { mongoDbID, category, name, email, reviews } = req.body;
+      const { mongoDbID, category, name, email, complain } = req.body;
 
       switch (category) {
         case "hospital":
           await hospital.findOneAndUpdate(
             { _id: mongoDbID },
-            { $push: { reviews: { name, email, reviews } } },
+            { $push: { complain: { name, email, complain } } },
             { new: true }
           );
           res.status(200).json({ success: true, message: "Updated" });
@@ -617,7 +617,7 @@ const healthCareController = {
         case "longTermCares":
           await longTermCares.findOneAndUpdate(
             { _id: mongoDbID },
-            { $push: { reviews: { name, email, reviews } } },
+            { $push: { complain: { name, email, complain } } },
             { new: true }
           );
           res.status(200).json({ success: true, message: "Updated" });
@@ -625,7 +625,7 @@ const healthCareController = {
         case "nursingHome":
           await nursingHome.findOneAndUpdate(
             { _id: mongoDbID },
-            { $push: { reviews: { name, email, reviews } } },
+            { $push: { complain: { name, email, complain } } },
             { new: true }
           );
           res.status(200).json({ success: true, message: "Updated" });
@@ -633,7 +633,7 @@ const healthCareController = {
         case "dialysisFacilityData":
           await dialysisFacilityData.findOneAndUpdate(
             { _id: mongoDbID },
-            { $push: { reviews: { name, email, reviews } } },
+            { $push: { complain: { name, email, complain } } },
             { new: true }
           );
           res.status(200).json({ success: true, message: "Updated" });
@@ -641,7 +641,7 @@ const healthCareController = {
         case "inpatientRehabilitiation":
           await inpatientRehabilitiation.findOneAndUpdate(
             { _id: mongoDbID },
-            { $push: { reviews: { name, email, reviews } } },
+            { $push: { complain: { name, email, complain } } },
             { new: true }
           );
           res.status(200).json({ success: true, message: "Updated" });
@@ -649,7 +649,7 @@ const healthCareController = {
         case "hoSpiceData":
           await hoSpiceData.findOneAndUpdate(
             { _id: mongoDbID },
-            { $push: { reviews: { name, email, reviews } } },
+            { $push: { complain: { name, email, complain } } },
             { new: true }
           );
           res.status(200).json({ success: true, message: "Updated" });
@@ -657,7 +657,7 @@ const healthCareController = {
         case "groupPracticeData":
           await groupPracticeData.findOneAndUpdate(
             { _id: mongoDbID },
-            { $push: { reviews: { name, email, reviews } } },
+            { $push: { complain: { name, email, complain } } },
             { new: true }
           );
           res.status(200).json({ success: true, message: "Updated" });
@@ -665,7 +665,7 @@ const healthCareController = {
         case "home Health":
           await homeHealthData.findOneAndUpdate(
             { _id: mongoDbID },
-            { $push: { reviews: { name, email, reviews } } },
+            { $push: { complain: { name, email, complain } } },
             { new: true }
           );
           res.status(200).json({ success: true, message: "Updated" });
