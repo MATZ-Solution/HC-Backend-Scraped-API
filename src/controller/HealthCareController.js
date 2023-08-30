@@ -166,7 +166,7 @@ const healthCareController = {
                 }
               });
 
-              
+
               if (totalReviews > 0) {
                 hospital.averageRating = totalStars / totalReviews;
               } else {
@@ -633,13 +633,13 @@ const healthCareController = {
   },
   addComplain: async (req, res, next) => {
     try {
-      const { mongoDbID, category, name, email, complain, startRating } = req.body;
+      const { mongoDbID, category, name, email, complain } = req.body;
 
       switch (category) {
         case "hospital":
           await hospital.findOneAndUpdate(
             { _id: mongoDbID },
-            { $push: { complain: { name, email, complain, startRating } } },
+            { $push: { complain: { name, email, complain } } },
             { new: true }
           );
           res.status(200).json({ success: true, message: "Updated" });
@@ -647,7 +647,7 @@ const healthCareController = {
         case "longTermCares":
           await longTermCares.findOneAndUpdate(
             { _id: mongoDbID },
-            { $push: { complain: { name, email, complain, startRating } } },
+            { $push: { complain: { name, email, complain } } },
             { new: true }
           );
           res.status(200).json({ success: true, message: "Updated" });
@@ -655,7 +655,7 @@ const healthCareController = {
         case "nursingHome":
           await nursingHome.findOneAndUpdate(
             { _id: mongoDbID },
-            { $push: { complain: { name, email, complain, startRating } } },
+            { $push: { complain: { name, email, complain } } },
             { new: true }
           );
           res.status(200).json({ success: true, message: "Updated" });
@@ -663,7 +663,7 @@ const healthCareController = {
         case "dialysisFacilityData":
           await dialysisFacilityData.findOneAndUpdate(
             { _id: mongoDbID },
-            { $push: { complain: { name, email, complain, startRating } } },
+            { $push: { complain: { name, email, complain } } },
             { new: true }
           );
           res.status(200).json({ success: true, message: "Updated" });
@@ -671,7 +671,7 @@ const healthCareController = {
         case "inpatientRehabilitiation":
           await inpatientRehabilitiation.findOneAndUpdate(
             { _id: mongoDbID },
-            { $push: { complain: { name, email, complain, startRating } } },
+            { $push: { complain: { name, email, complain } } },
             { new: true }
           );
           res.status(200).json({ success: true, message: "Updated" });
@@ -679,7 +679,7 @@ const healthCareController = {
         case "hoSpiceData":
           await hoSpiceData.findOneAndUpdate(
             { _id: mongoDbID },
-            { $push: { complain: { name, email, complain, startRating } } },
+            { $push: { complain: { name, email, complain } } },
             { new: true }
           );
           res.status(200).json({ success: true, message: "Updated" });
@@ -687,7 +687,7 @@ const healthCareController = {
         case "groupPracticeData":
           await groupPracticeData.findOneAndUpdate(
             { _id: mongoDbID },
-            { $push: { complain: { name, email, complain, startRating } } },
+            { $push: { complain: { name, email, complain } } },
             { new: true }
           );
           res.status(200).json({ success: true, message: "Updated" });
@@ -695,7 +695,7 @@ const healthCareController = {
         case "home Health":
           await homeHealthData.findOneAndUpdate(
             { _id: mongoDbID },
-            { $push: { complain: { name, email, complain, startRating } } },
+            { $push: { complain: { name, email, complain } } },
             { new: true }
           );
           res.status(200).json({ success: true, message: "Updated" });
@@ -726,11 +726,36 @@ const healthCareController = {
           groupPracticeData.find({ city }).lean()
         ]);
 
+        let filterData = allData.flat()
+
+        filterData.forEach((hospital) => {
+          if (hospital.reviews && hospital.reviews.length > 0) {
+
+            let totalStars = 0;
+            let totalReviews = 0;
+
+            hospital.reviews.forEach((review) => {
+              if (review.startRating) {
+                totalStars += review.startRating;
+                totalReviews++;
+              }
+            });
+
+
+            if (totalReviews > 0) {
+              hospital.averageRating = totalStars / totalReviews;
+            } else {
+              hospital.averageRating = 0;
+            }
+          } else {
+            hospital.averageRating = 0;
+          }
+        });
+
         res.status(200).json(allData.flat())
       } else {
 
         const allData = await Promise.all([
-          HealthCare.find({ city: "Andalusia" }).lean(),
           hospital.find({ city: "Andalusia" }).lean(),
           longTermCares.find({ city: "Andalusia" }).lean(),
           nursingHome.find({ city: "Andalusia" }).lean(),
@@ -740,6 +765,33 @@ const healthCareController = {
           inpatientRehabilitiation.find({ city }).lean(),
           groupPracticeData.find({ city }).lean()
         ]);
+
+        let filterData = allData.flat();
+
+        filterData.forEach((hospital) => {
+          if (hospital.reviews && hospital.reviews.length > 0) {
+
+            let totalStars = 0;
+            let totalReviews = 0;
+
+            hospital.reviews.forEach((review) => {
+              if (review.startRating) {
+                totalStars += review.startRating;
+                totalReviews++;
+              }
+            });
+
+
+            if (totalReviews > 0) {
+              hospital.averageRating = totalStars / totalReviews;
+            } else {
+              hospital.averageRating = 0;
+            }
+          } else {
+            hospital.averageRating = 0;
+          }
+        });
+
 
         res.status(200).json(allData.flat());
       }
