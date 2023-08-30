@@ -9,6 +9,7 @@ const groupPracticeData = require("../Model/groupPractice")
 const homeHealthData = require("../Model/homeHealth");
 const Otp = require("../Model/Otp")
 const axios = require('axios');
+const Doctor = require('../Model/physicians')
 
 
 const NodeCache = require("node-cache");
@@ -80,12 +81,28 @@ const healthCareController = {
       const newData = [];
 
       for (let i = 0; i < data.length; i++) {
-        const { name, state, specialities } = data[i];
-
-        const newHealthCare = new groupPracticeData({
+        const {
           name,
-          state: "Wyoming",
+          sex,
+          locations,
+          education_and_training,
+          board_certifications,
           specialities,
+          group_affiliations,
+          affiliations,
+          provides_telehealth_services } = data[i];
+
+        const newHealthCare = new Doctor({
+          name,
+          state: "Alaska",
+          sex,
+          locations,
+          education_and_training,
+          board_certifications,
+          specialities,
+          group_affiliations,
+          affiliations,
+          provides_telehealth_services
         });
 
         await newHealthCare.save();
@@ -637,7 +654,7 @@ const healthCareController = {
     try {
       const { mongoDbID, category, name, email, complain, phoneNumber } = req.body;
 
-      const apiUrl = `http://localhost:5000/api/corporate/addComplainId`;
+      const apiUrl = `https://api.healthcare.matzsolutions.com/api/corporate/addComplainId`;
 
       const requestData = {
         mongoDbID,
@@ -833,7 +850,7 @@ const healthCareController = {
     }
 
   },
-  getCorporatesUsingMongoId : async (req, res, next) => {
+  getCorporatesUsingMongoId: async (req, res, next) => {
     try {
       const { mongoDbID, category } = req.body;
 

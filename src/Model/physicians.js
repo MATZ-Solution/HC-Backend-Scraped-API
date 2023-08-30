@@ -24,6 +24,6 @@ const doctorSchema = new mongoose.Schema({
     provides_telehealth_services: Boolean
 });
 
-const Doctor = mongoose.model('Doctor', doctorSchema);
+const Doctor = mongoose.model('Professionals', doctorSchema);
 
 module.exports = Doctor;
