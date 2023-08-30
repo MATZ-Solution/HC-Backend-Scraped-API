@@ -43,6 +43,9 @@ router.put('/addComplain', healthCare.addComplain);
 //verifyOtp
 router.post('/verifyOtp', healthCare.verifyOtp);
 
+//get corporate using mongo db id
+router.post('/getCorporatesUsingMongoId', healthCare.getCorporatesUsingMongoId);
+
 
 
 module.exports = router;

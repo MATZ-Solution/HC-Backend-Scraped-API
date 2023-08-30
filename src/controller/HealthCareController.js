@@ -8,6 +8,8 @@ const hoSpiceData = require("../Model/hoSpice");
 const groupPracticeData = require("../Model/groupPractice")
 const homeHealthData = require("../Model/homeHealth");
 const Otp = require("../Model/Otp")
+const axios = require('axios');
+
 
 const NodeCache = require("node-cache");
 
@@ -82,7 +84,7 @@ const healthCareController = {
 
         const newHealthCare = new groupPracticeData({
           name,
-          state: "Oklahoma",
+          state: "Wyoming",
           specialities,
         });
 
@@ -633,7 +635,17 @@ const healthCareController = {
   },
   addComplain: async (req, res, next) => {
     try {
-      const { mongoDbID, category, name, email, complain } = req.body;
+      const { mongoDbID, category, name, email, complain, phoneNumber } = req.body;
+
+      const apiUrl = `http://localhost:5000/api/corporate/addComplainId`;
+
+      const requestData = {
+        mongoDbID,
+        phoneNumber,
+        category
+      };
+
+      const response = await axios.post(apiUrl, requestData);
 
       switch (category) {
         case "hospital":
@@ -802,7 +814,6 @@ const healthCareController = {
   },
 
   //for deletion of cities
-
   deleteEmptyCities: async (req, res, next) => {
     await dialysisFacilityData.deleteMany({ state: "Alaska" })
     res.status(200).json("deleted")
@@ -821,14 +832,39 @@ const healthCareController = {
       next(error)
     }
 
+  },
+  getCorporatesUsingMongoId : async (req, res, next) => {
+    try {
+      const { mongoDbID, category } = req.body;
+
+      switch (category) {
+        case "hospital":
+          const hospitalData = await hospital.findOne({ _id: mongoDbID });
+          if (hospitalData) {
+            res.status(200).json(hospitalData.complain);
+          } else {
+            res.status(404).json({ message: "Not Found" });
+          }
+          break;
+
+        case "inpatientRehabilitiation":
+          const rehabData = await inpatientRehabilitiation.findOne({ _id: mongoDbID });
+          if (rehabData) {
+            res.status(200).json(rehabData.complain);
+          } else {
+            res.status(404).json({ message: "Not Found" });
+          }
+          break;
+
+        default:
+          res.status(400).json({ message: "Invalid category" });
+          break;
+      }
+
+    } catch (error) {
+      next(error);
+    }
   }
-
-
-
-
-
-
-
 };
 
 
