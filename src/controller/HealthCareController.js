@@ -654,7 +654,7 @@ const healthCareController = {
     try {
       const { mongoDbID, category, name, email, complain, phoneNumber } = req.body;
 
-      const apiUrl = `https://api.healthcare.matzsolutions.com/api/corporate/addComplainId`;
+      const apiUrl = `http://api.healthcare.matzsolutions.com/api/corporate/addComplainId`;
 
       const requestData = {
         mongoDbID,
@@ -850,6 +850,8 @@ const healthCareController = {
     }
 
   },
+
+  //for get all Corporates
   getCorporatesUsingMongoId: async (req, res, next) => {
     try {
       const { mongoDbID, category } = req.body;
