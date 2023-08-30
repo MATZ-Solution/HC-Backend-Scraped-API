@@ -17,19 +17,23 @@ const EmailSender = async (req, res, next) => {
             text: `Your OTP is: ${otp}`,
         };
 
-        await sendEmail({ ...emailOptions, res });
+        const emailSent = await sendEmail(emailOptions);
 
-        // Save OTP in the database
-        const newOtp = new Otp({
-            email: to,
-            code: otp,
-        });
-        await newOtp.save();
+        if (emailSent) {
+            // Save OTP in the database
+            const newOtp = new Otp({
+                email: to,
+                code: otp,
+            });
+            await newOtp.save();
 
-        res.status(200).json({
-            success: true,
-            message: 'Email sent with OTP',
-        });
+            res.status(200).json({
+                success: true,
+                message: 'Email sent with OTP',
+            });
+        } else {
+            throw new Error('Failed to send email');
+        }
 
     } catch (err) {
         next(err);

@@ -7,8 +7,8 @@ const createTransporter = async () => {
     "755309505753-i1bthdnl4gbvpc0eipcivnotg4gn5thf.apps.googleusercontent.com",
     "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",
     "https://developers.google.com/oauthplayground"
-    );
-    
+  );
+
 
   oauth2Client.setCredentials({
     refresh_token: "1//0403hO-ql4fj8CgYIARAAGAQSNwF-L9Ir3fKKHGwrdkIFRLAnK2AOYFJDFkycGbggjQbpIhDDGIlLzjXs_udHY6x4CpzhZC8Ttik",
@@ -49,30 +49,20 @@ const sendEmail = async ({ to, subject, text, html, res }) => {
       text,
     };
 
-    // Send the email
-    emailTransporter.sendMail(emailOptions, (err, info) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).json({
-          success: false,
-          errors: [`Something went wrong, please try again later`],
-        });
-      } else {
-        console.log("Email sent:", info.response);
-        return res.status(200).json({
-          success: true,
-          message: "Email sent successfully",
-        });
-      }
+    return new Promise((resolve, reject) => {
+      emailTransporter.sendMail(emailOptions, (err, info) => {
+        if (err) {
+          console.log(err);
+          reject(err); // Notify caller about the failure
+        } else {
+          console.log("Email sent:", info.response);
+          resolve(true); // Notify caller about successful email sending
+        }
+      });
     });
   } catch (err) {
     console.log(err);
-    return res
-      ? res.status(500).json({
-          success: false,
-          errors: [`Something went wrong, please try again later`],
-        })
-      : false;
+    return false; // Return false to indicate failure
   }
 };
 
