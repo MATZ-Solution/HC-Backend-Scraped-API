@@ -94,7 +94,7 @@ const healthCareController = {
 
         const newHealthCare = new Doctor({
           name,
-          state: "Alaska",
+          state: "Georgia",
           sex,
           locations,
           education_and_training,
@@ -875,6 +875,57 @@ const healthCareController = {
           }
           break;
 
+        case "nursingHome":
+          const nursingHomeData = await nursingHome.findOne({ _id: mongoDbID });
+          if (rehabData) {
+            res.status(200).json(nursingHomeData.complain);
+          } else {
+            res.status(404).json({ message: "Not Found" });
+          }
+          break;
+
+        case "longTermCares":
+          const longTermCaresData = await longTermCares.findOne({ _id: mongoDbID });
+          if (longTermCaresData) {
+            res.status(200).json(longTermCaresData.complain);
+          } else {
+            res.status(404).json({ message: "Not Found" });
+          }
+          break;
+
+        case "hoSpiceData":
+          const hoSpice = await hoSpiceData.findOne({ _id: mongoDbID });
+          if (rehabData) {
+            res.status(200).json(hoSpice.complain);
+          } else {
+            res.status(404).json({ message: "Not Found" });
+          }
+          break;
+
+        case "home Health":
+          const homeHealth = await homeHealthData.findOne({ _id: mongoDbID });
+          if (rehabData) {
+            res.status(200).json(homeHealth.complain);
+          } else {
+            res.status(404).json({ message: "Not Found" });
+          }
+          break;
+        case "groupPracticeData":
+          const groupPractice = await groupPracticeData.findOne({ _id: mongoDbID });
+          if (rehabData) {
+            res.status(200).json(groupPractice.complain);
+          } else {
+            res.status(404).json({ message: "Not Found" });
+          }
+          break;
+        case "dialysisFacilityData":
+          const dialysisFacility = await dialysisFacilityData.findOne({ _id: mongoDbID });
+          if (rehabData) {
+            res.status(200).json(dialysisFacility.complain);
+          } else {
+            res.status(404).json({ message: "Not Found" });
+          }
+          break;
         default:
           res.status(400).json({ message: "Invalid category" });
           break;
