@@ -94,7 +94,7 @@ const healthCareController = {
 
         const newHealthCare = new Doctor({
           name,
-          state: "Georgia",
+          state: "Wyoming",
           sex,
           locations,
           education_and_training,
