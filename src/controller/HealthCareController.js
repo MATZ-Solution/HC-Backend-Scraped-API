@@ -850,7 +850,7 @@ const healthCareController = {
     }
 
   },
-
+  
   //for get all Corporates
   getCorporatesUsingMongoId: async (req, res, next) => {
     try {
