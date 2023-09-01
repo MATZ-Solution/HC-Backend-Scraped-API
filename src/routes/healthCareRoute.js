@@ -20,7 +20,7 @@ router.route('/dltemptycities').get(healthCare.deleteEmptyCities);
 
 //found data using mongo db id and category
 
-router.get('/getCategoryDataUsingMongoId/:mongoDbID/:category', healthCare.getDataUsingMongoDbId);
+router.get('/getCategoryDataUsingMongoId', healthCare.getDataUsingMongoDbId);
 
 
 //get data which is nearest to user
