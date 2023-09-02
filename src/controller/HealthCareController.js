@@ -475,20 +475,34 @@ const healthCareController = {
   },
   getDataUsingMongoDbId: async (req, res, next) => {
     try {
-      const { mongoDbID, category } = req.params;
+      const { mongoDbID, category } = req.body;
 
       let data = null;
 
       switch (category) {
-        case "memoryCare":
-          data = await HealthCare.findOne({ _id: mongoDbID });
-          break;
         case "hospital":
-          data = await Hospital.findOne({ _id: mongoDbID });
+          data = await hospital.findOne({ _id: mongoDbID });
           break;
         case "longTermCares":
+          data = await longTermCares.findOne({ _id: mongoDbID });
+          break;
         case "nursingHome": // Both use the same model
-          data = await LongTermCare.findOne({ _id: mongoDbID });
+          data = await nursingHome.findOne({ _id: mongoDbID });
+          break;
+        case "dialysisFacilityData": // Both use the same model
+          data = await dialysisFacilityData.findOne({ _id: mongoDbID });
+          break;
+        case "inpatientRehabilitiation": // Both use the same model
+          data = await inpatientRehabilitiation.findOne({ _id: mongoDbID });
+          break;
+        case "hoSpiceData": // Both use the same model
+          data = await hoSpiceData.findOne({ _id: mongoDbID });
+          break;
+        case "groupPracticeData": // Both use the same model
+          data = await groupPracticeData.findOne({ _id: mongoDbID });
+          break;
+        case "hoSpiceData": // Both use the same model
+          data = await homeHealthData.findOne({ _id: mongoDbID });
           break;
         default:
           return res.status(400).json("Invalid category");
@@ -850,7 +864,7 @@ const healthCareController = {
     }
 
   },
-  
+
   //for get all Corporates
   getCorporatesUsingMongoId: async (req, res, next) => {
     try {
