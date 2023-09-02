@@ -17,6 +17,8 @@ router.route('/zipCode/:name/:zipCode?').get(healthCare.getHealthCareZipCodesDat
 
 router.route('/dltemptycities').get(healthCare.deleteEmptyCities);
 
+//getProfessionalSpecialty
+// router.route('/getProfessionalSpeciality').get(healthCare.getSpecialitiesExcel);
 
 //found data using mongo db id and category
 //using normal api
@@ -33,8 +35,12 @@ router.post('/filterDataUsingMultipleCategories', healthCare.filterMultipleCateg
 router.get('/incCounterBaseOnTheCustomerContact/:mongoDbID/:category', healthCare.incCounterBaseOnTheCustomerContact);
 
 
+//approve review
+router.put('/approveReview', healthCare.approveReview);
+
 //add review
-router.put('/addReview', healthCare.addReview);
+
+// router.post('/addReview', healthCare.addReview);
 
 //add complain
 router.put('/addComplain', healthCare.addComplain);

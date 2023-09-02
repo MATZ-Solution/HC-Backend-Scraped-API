@@ -12,12 +12,27 @@ const axios = require('axios');
 const Doctor = require('../Model/physicians')
 
 
+
 const NodeCache = require("node-cache");
 
 const cache = new NodeCache();
 
 
 const healthCareController = {
+
+
+  // getSpecialitiesExcel: async (req, res, next) => {
+  //   try {
+  //     const data = await getProfessionalData();
+  //     const excelBuffer = await createExcelFile(data);
+
+  //     res.setHeader('Content-Disposition', 'attachment; filename=specialities.xlsx');
+  //     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  //     res.status(200).send(excelBuffer);
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // },
 
   addData: async (req, res, next) => {
     try {
@@ -66,6 +81,7 @@ const healthCareController = {
       next(err);
     }
   },
+
   updateData: async (req, res, next) => {
     try {
       const updateCategory = await homeHealthData.updateMany({ mainCategory: "home Health" });
@@ -588,7 +604,7 @@ const healthCareController = {
       next(err);
     }
   },
-  addReview: async (req, res, next) => {
+  approveReview: async (req, res, next) => {
     try {
       const { mongoDbID, category, name, email, reviews, startRating } = req.body;
 
@@ -951,6 +967,43 @@ const healthCareController = {
   }
 };
 
+// const createExcelFile = async (data) => {
+//   const workbook = new ExcelJS.Workbook();
+//   const worksheet = workbook.addWorksheet('Specialities');
+
+//   worksheet.columns = [
+//       { header: 'Specialities', key: 'specialities' }
+//   ];
+
+//   data.forEach((item) => {
+//       worksheet.addRow({ specialities: item });
+//   });
+
+//   const filePath = 'specialities.xlsx';
+
+//   // Write the Excel file to the server
+//   await workbook.xlsx.writeFile(filePath);
+
+//   return filePath;
+// };
+
+
+// const getProfessionalData = async () => {
+//   try {
+//       const getProfessional = await professional.find().select("specialities -_id");
+
+//       const data = getProfessional.map(specialty => {
+//           return specialty.specialities[0]; // Extract the first element from the array
+//       });
+
+//       const uniqueData = [...new Set(data)];
+
+
+//       return uniqueData;
+//   } catch (error) {
+//       throw error;
+//   }
+// };
 
 
 

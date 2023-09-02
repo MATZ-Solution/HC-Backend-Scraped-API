@@ -31,7 +31,7 @@ app.use("/api/sendEmail", sendEmailRoute);
 
 app.use(errorMiddleware);
 
-app.get("/", (req, res) => {
+app.get("/scraped", (req, res) => {
   res.send("Hello World");
 });
 
