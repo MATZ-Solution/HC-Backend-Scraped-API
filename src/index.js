@@ -37,7 +37,7 @@ app.use("/api/professionalRoute", professionalRoute);
 app.use(errorMiddleware);
 
 app.get("/", (req, res) => {
-  res.send("Scraped");
+  res.send("Professional Scrapped");
 });
 
 
