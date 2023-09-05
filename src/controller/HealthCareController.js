@@ -3,24 +3,19 @@ const hospital = require("../Model/hospital");
 const longTermCares = require("../Model/longtermCares");
 const nursingHome = require("../Model/nursingHome");
 const dialysisFacilityData = require("../Model/dialysisFacility");
-const inpatientRehabilitiation = require("../Model/inpatientRehabilitiaion")
+const inpatientRehabilitiation = require("../Model/inpatientRehabilitiaion");
 const hoSpiceData = require("../Model/hoSpice");
-const groupPracticeData = require("../Model/groupPractice")
+const groupPracticeData = require("../Model/groupPractice");
 const homeHealthData = require("../Model/homeHealth");
-const Otp = require("../Model/Otp")
-const axios = require('axios');
-const Doctor = require('../Model/physicians')
-
-
+const Otp = require("../Model/Otp");
+const axios = require("axios");
+const Doctor = require("../Model/physicians");
 
 const NodeCache = require("node-cache");
 
 const cache = new NodeCache();
 
-
 const healthCareController = {
-
-
   // getSpecialitiesExcel: async (req, res, next) => {
   //   try {
   //     const data = await getProfessionalData();
@@ -41,7 +36,16 @@ const healthCareController = {
       const newData = [];
 
       for (let i = 0; i < data.length; i++) {
-        const { name, profile, description, category, phoneNumber, address, closed, openingHours } = data[i];
+        const {
+          name,
+          profile,
+          description,
+          category,
+          phoneNumber,
+          address,
+          closed,
+          openingHours,
+        } = data[i];
 
         const addressData = address.split(",");
         const fullAddress = addressData[0] ? addressData[0].trim() : "";
@@ -50,7 +54,7 @@ const healthCareController = {
 
         const cityZip = addressData[1] ? addressData[1].trim() : "";
 
-        console.log(description[0])
+        console.log(description[0]);
 
         const [state, zipCode] = cityZip.split(" ");
 
@@ -84,7 +88,9 @@ const healthCareController = {
 
   updateData: async (req, res, next) => {
     try {
-      const updateCategory = await homeHealthData.updateMany({ mainCategory: "home Health" });
+      const updateCategory = await homeHealthData.updateMany({
+        mainCategory: "home Health",
+      });
       res.status(200).json(updateCategory);
     } catch (error) {
       next(error);
@@ -99,26 +105,26 @@ const healthCareController = {
       for (let i = 0; i < data.length; i++) {
         const {
           name,
-          sex,
-          locations,
-          education_and_training,
-          board_certifications,
-          specialities,
-          group_affiliations,
-          affiliations,
-          provides_telehealth_services } = data[i];
+          address,
+          zip_code,
+          city,
+          state,
+          contact,
+          latitude,
+          longitude,
+          number_of_beds,
+        } = data[i];
 
-        const newHealthCare = new Doctor({
+        const newHealthCare = new longTermCares({
           name,
-          state: "Wyoming",
-          sex,
-          locations,
-          education_and_training,
-          board_certifications,
-          specialities,
-          group_affiliations,
-          affiliations,
-          provides_telehealth_services
+          fullAddress: address,
+          zipCode: zip_code,
+          city,
+          state: "California",
+          phoneNumber: contact,
+          latitude,
+          longitude,
+          number_of_beds,
         });
 
         await newHealthCare.save();
@@ -130,19 +136,15 @@ const healthCareController = {
         message: "Data added successfully",
         data: newData,
       });
-    }
-    catch (err) {
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
   },
   filterMultipleCategories: async (req, res, next) => {
     const { state, city, zipCode, name } = req.body;
 
     try {
-
       if (typeof name === "object") {
-
-
         const scrapeCategory = async (categoryName) => {
           let query = {};
 
@@ -163,34 +165,24 @@ const healthCareController = {
             result = await hospital.find(query).select().lean();
           } else if (categoryName === "Dialysis Facility") {
             result = await dialysisFacilityData.find(query).select().lean();
-          }
-          else if (categoryName === "Nursing Home") {
+          } else if (categoryName === "Nursing Home") {
             result = await nursingHome.find(query).select().lean();
-          }
-          else if (categoryName === "Long Term Cares") {
+          } else if (categoryName === "Long Term Cares") {
             result = await longTermCares.find(query).select().lean();
-          }
-          else if (categoryName === "Ho Spice") {
+          } else if (categoryName === "Ho Spice") {
             result = await hoSpiceData.find(query).select().lean();
-          }
-          else if (categoryName === "Inpatient Rehabilitiation") {
+          } else if (categoryName === "Inpatient Rehabilitiation") {
             result = await inpatientRehabilitiation.find(query).select().lean();
-          }
-          else if (categoryName === "Group Practice") {
+          } else if (categoryName === "Group Practice") {
             result = await groupPracticeData.find(query).select().lean();
-          }
-          else if (categoryName === "Home Health") {
+          } else if (categoryName === "Home Health") {
             result = await homeHealthData.find(query).select().lean();
           }
 
-
-
           // calculate average rating
-
 
           result.forEach((hospital) => {
             if (hospital.reviews && hospital.reviews.length > 0) {
-
               let totalStars = 0;
               let totalReviews = 0;
 
@@ -200,7 +192,6 @@ const healthCareController = {
                   totalReviews++;
                 }
               });
-
 
               if (totalReviews > 0) {
                 hospital.averageRating = totalStars / totalReviews;
@@ -212,12 +203,13 @@ const healthCareController = {
             }
           });
 
-
           return result;
         };
 
         const scrapeAllCategories = async (categories) => {
-          const promises = categories.map(categoryName => scrapeCategory(categoryName));
+          const promises = categories.map((categoryName) =>
+            scrapeCategory(categoryName)
+          );
           const results = await Promise.all(promises);
           return results;
         };
@@ -229,9 +221,7 @@ const healthCareController = {
         } catch (err) {
           next(err);
         }
-
       } else if (typeof name === "string") {
-
         const cachedData = cache.get(name);
         if (cachedData) {
           res.status(200).json(cachedData);
@@ -263,9 +253,7 @@ const healthCareController = {
         cache.set(name, result, 365 * 24 * 60 * 60);
 
         res.status(200).json(result.flat());
-
       }
-
     } catch (error) {
       next(error);
     }
@@ -276,7 +264,6 @@ const healthCareController = {
       let result;
 
       if (typeof name === "string") {
-
         const cachedData = cache.get(name);
         if (cachedData) {
           res.status(200).json(cachedData);
@@ -287,59 +274,99 @@ const healthCareController = {
         if (name === "Hospital") {
           result = await hospital.find().select("state city zipCode ").lean();
         } else if (name === "Long Term Cares") {
-          result = await longTermCares.find().select("state city zipCode").lean();
+          result = await longTermCares
+            .find()
+            .select("state city zipCode")
+            .lean();
         } else if (name === "Nursing Home") {
           result = await nursingHome.find().select("state city zipCode").lean();
         } else if (name === "Dialysis Facility") {
-          result = await dialysisFacilityData.find().select("state city zipCode").lean();
+          result = await dialysisFacilityData
+            .find()
+            .select("state city zipCode")
+            .lean();
         } else if (name === "Ho Spice") {
           result = await hoSpiceData.find().select("state city zipCode").lean();
         } else if (name === "Inpatient Rehabilitiation") {
-          result = await inpatientRehabilitiation.find().select("state city zipCode").lean();
+          result = await inpatientRehabilitiation
+            .find()
+            .select("state city zipCode")
+            .lean();
         } else if (name === "Group Practice") {
-          result = await groupPracticeData.find().select("state city zipCode").lean();
+          result = await groupPracticeData
+            .find()
+            .select("state city zipCode")
+            .lean();
         } else if (name === "Home Health") {
-          result = await homeHealthData.find().select("state city zipCode").lean();
+          result = await homeHealthData
+            .find()
+            .select("state city zipCode")
+            .lean();
         } else {
           res.status(200).json("wrong parameter");
           return;
         }
 
         cache.set(name, result, 365 * 24 * 60 * 60);
-
       } else if (typeof name === "object") {
         try {
           const scrapeCategory = async (categoryName) => {
             let result = [];
             if (categoryName === "Nursing Home") {
-              result = await nursingHome.find().select("state city zipCode").lean();
+              result = await nursingHome
+                .find()
+                .select("state city zipCode")
+                .lean();
             } else if (categoryName === "Long Term Cares") {
-              result = await longTermCares.find().select("state city zipCode").lean();
+              result = await longTermCares
+                .find()
+                .select("state city zipCode")
+                .lean();
             } else if (categoryName === "Dialysis Facility") {
-              result = await dialysisFacilityData.find().select("state city zipCode").lean();
+              result = await dialysisFacilityData
+                .find()
+                .select("state city zipCode")
+                .lean();
             } else if (categoryName === "Hospital") {
-              result = await hospital.find().select("state city zipCode").lean();
+              result = await hospital
+                .find()
+                .select("state city zipCode")
+                .lean();
             } else if (categoryName === "Ho Spice") {
-              result = await hoSpiceData.find().select("state city zipCode").lean();
+              result = await hoSpiceData
+                .find()
+                .select("state city zipCode")
+                .lean();
             } else if (categoryName === "Inpatient Rehabilitiation") {
-              result = await inpatientRehabilitiation.find().select("state city zipCode").lean();
+              result = await inpatientRehabilitiation
+                .find()
+                .select("state city zipCode")
+                .lean();
             } else if (categoryName === "Group Practice") {
-              result = await groupPracticeData.find().select("state city zipCode").lean();
+              result = await groupPracticeData
+                .find()
+                .select("state city zipCode")
+                .lean();
             } else if (categoryName === "Home Health") {
-              result = await homeHealthData.find().select("state city zipCode").lean();
+              result = await homeHealthData
+                .find()
+                .select("state city zipCode")
+                .lean();
             }
 
             // Format the data for the list format
-            return result.map(entry => ({
+            return result.map((entry) => ({
               _id: entry._id,
               state: entry.state,
               city: entry.city,
-              zipCode: entry.zipCode
+              zipCode: entry.zipCode,
             }));
           };
 
           const scrapeAllCategories = async (categories) => {
-            const promises = categories.map(categoryName => scrapeCategory(categoryName));
+            const promises = categories.map((categoryName) =>
+              scrapeCategory(categoryName)
+            );
             const results = await Promise.all(promises);
             return results;
           };
@@ -362,7 +389,6 @@ const healthCareController = {
   },
   getHealthCareStateData: async (req, res, next) => {
     try {
-
       const { name } = req.params;
       let { state, city, zipCode } = req.body;
 
@@ -424,13 +450,18 @@ const healthCareController = {
   },
   getCategoryName: async (req, res, next) => {
     try {
-
-      const categoryName = ["Hospital", "Long Term Cares", "Nursing Home", "Dialysis Facility", "Ho Spice", "Inpatient Rehabilitiation"
-        , "Group Practice", "Home Health"
+      const categoryName = [
+        "Hospital",
+        "Long Term Cares",
+        "Nursing Home",
+        "Dialysis Facility",
+        "Ho Spice",
+        "Inpatient Rehabilitiation",
+        "Group Practice",
+        "Home Health",
       ];
 
-      res.status(200).json(categoryName)
-
+      res.status(200).json(categoryName);
     } catch (err) {
       next(err);
     }
@@ -441,49 +472,37 @@ const healthCareController = {
       if (name === "memoryCare") {
         let result;
         if (zipCode) {
-          result = await HealthCare.aggregate([
-            { $match: { zipCode } }
-          ]);
+          result = await HealthCare.aggregate([{ $match: { zipCode } }]);
         } else {
-          result = "wrong parameter"
+          result = "wrong parameter";
         }
         res.status(200).json(result);
-
       } else if (name === "hospital") {
         let result;
         if (zipCode) {
-          result = await hospital.aggregate([
-            { $match: { zipCode } }
-          ]);
+          result = await hospital.aggregate([{ $match: { zipCode } }]);
         } else {
-          result = "wrong parameter"
+          result = "wrong parameter";
         }
         res.status(200).json(result);
       } else if (name === "longTermCares") {
-
         let result;
         if (zipCode) {
-          result = await longTermCares.aggregate([
-            { $match: { zipCode } }
-          ]);
+          result = await longTermCares.aggregate([{ $match: { zipCode } }]);
         } else {
-          result = "wrong parameter"
+          result = "wrong parameter";
         }
         res.status(200).json(result);
       } else if (name === "nursingHome") {
         let result;
         if (zipCode) {
-          result = await nursingHome.aggregate([
-            { $match: { zipCode } }
-          ]);
+          result = await nursingHome.aggregate([{ $match: { zipCode } }]);
         } else {
-          result = "wrong parameter"
+          result = "wrong parameter";
         }
         res.status(200).json(result);
       } else {
-
         res.status(200).json("wrong params");
-
       }
     } catch (err) {
       next(err);
@@ -517,7 +536,7 @@ const healthCareController = {
         case "groupPracticeData": // Both use the same model
           data = await groupPracticeData.findOne({ _id: mongoDbID });
           break;
-        case "hoSpiceData": // Both use the same model
+        case "homeHealthData": // Both use the same model
           data = await homeHealthData.findOne({ _id: mongoDbID });
           break;
         default:
@@ -529,16 +548,15 @@ const healthCareController = {
       } else {
         res.status(404).json("No Data Found");
       }
-
     } catch (err) {
-      next(err)
+      next(err);
     }
   },
   incCounterBaseOnTheCustomerContact: async (req, res, next) => {
     try {
       const { mongoDbID, category } = req.params;
 
-      console.log(mongoDbID, category)
+      console.log(mongoDbID, category);
 
       switch (category) {
         case "hospital":
@@ -606,7 +624,8 @@ const healthCareController = {
   },
   approveReview: async (req, res, next) => {
     try {
-      const { mongoDbID, category, name, email, reviews, startRating } = req.body;
+      const { mongoDbID, category, name, email, reviews, startRating } =
+        req.body;
 
       switch (category) {
         case "hospital":
@@ -682,14 +701,15 @@ const healthCareController = {
   },
   addComplain: async (req, res, next) => {
     try {
-      const { mongoDbID, category, name, email, complain, phoneNumber } = req.body;
+      const { mongoDbID, category, name, email, complain, phoneNumber } =
+        req.body;
 
       const apiUrl = `http://api.healthcare.matzsolutions.com/api/corporate/addComplainId`;
 
       const requestData = {
         mongoDbID,
         phoneNumber,
-        category
+        category,
       };
 
       const response = await axios.post(apiUrl, requestData);
@@ -768,12 +788,10 @@ const healthCareController = {
   },
   //get data which is  Nearest to User
   getDataNearestToUser: async (req, res, next) => {
-
     const { city } = req.body;
 
     try {
       if (city) {
-
         const allData = await Promise.all([
           hospital.find({ city }).lean(),
           longTermCares.find({ city }).lean(),
@@ -782,14 +800,13 @@ const healthCareController = {
           hoSpiceData.find({ city }).lean(),
           homeHealthData.find({ city }).lean(),
           inpatientRehabilitiation.find({ city }).lean(),
-          groupPracticeData.find({ city }).lean()
+          groupPracticeData.find({ city }).lean(),
         ]);
 
-        let filterData = allData.flat()
+        let filterData = allData.flat();
 
         filterData.forEach((hospital) => {
           if (hospital.reviews && hospital.reviews.length > 0) {
-
             let totalStars = 0;
             let totalReviews = 0;
 
@@ -799,7 +816,6 @@ const healthCareController = {
                 totalReviews++;
               }
             });
-
 
             if (totalReviews > 0) {
               hospital.averageRating = totalStars / totalReviews;
@@ -811,9 +827,8 @@ const healthCareController = {
           }
         });
 
-        res.status(200).json(allData.flat())
+        res.status(200).json(allData.flat());
       } else {
-
         const allData = await Promise.all([
           hospital.find({ city: "Andalusia" }).lean(),
           longTermCares.find({ city: "Andalusia" }).lean(),
@@ -822,14 +837,13 @@ const healthCareController = {
           hoSpiceData.find({ city }).lean(),
           homeHealthData.find({ city }).lean(),
           inpatientRehabilitiation.find({ city }).lean(),
-          groupPracticeData.find({ city }).lean()
+          groupPracticeData.find({ city }).lean(),
         ]);
 
         let filterData = allData.flat();
 
         filterData.forEach((hospital) => {
           if (hospital.reviews && hospital.reviews.length > 0) {
-
             let totalStars = 0;
             let totalReviews = 0;
 
@@ -839,7 +853,6 @@ const healthCareController = {
                 totalReviews++;
               }
             });
-
 
             if (totalReviews > 0) {
               hospital.averageRating = totalStars / totalReviews;
@@ -851,19 +864,17 @@ const healthCareController = {
           }
         });
 
-
         res.status(200).json(allData.flat());
       }
     } catch (err) {
-      next(err)
+      next(err);
     }
-
   },
 
   //for deletion of cities
   deleteEmptyCities: async (req, res, next) => {
-    await dialysisFacilityData.deleteMany({ state: "Alaska" })
-    res.status(200).json("deleted")
+    await longTermCares.deleteMany({ state: "Colorado" });
+    res.status(200).json("deleted");
   },
 
   verifyOtp: async (req, res, next) => {
@@ -876,9 +887,8 @@ const healthCareController = {
         throw new ErrorHandler("Invalid OTP", 400);
       }
     } catch (error) {
-      next(error)
+      next(error);
     }
-
   },
 
   //for get all Corporates
@@ -897,7 +907,9 @@ const healthCareController = {
           break;
 
         case "inpatientRehabilitiation":
-          const rehabData = await inpatientRehabilitiation.findOne({ _id: mongoDbID });
+          const rehabData = await inpatientRehabilitiation.findOne({
+            _id: mongoDbID,
+          });
           if (rehabData) {
             res.status(200).json(rehabData.complain);
           } else {
@@ -915,7 +927,9 @@ const healthCareController = {
           break;
 
         case "longTermCares":
-          const longTermCaresData = await longTermCares.findOne({ _id: mongoDbID });
+          const longTermCaresData = await longTermCares.findOne({
+            _id: mongoDbID,
+          });
           if (longTermCaresData) {
             res.status(200).json(longTermCaresData.complain);
           } else {
@@ -941,7 +955,9 @@ const healthCareController = {
           }
           break;
         case "groupPracticeData":
-          const groupPractice = await groupPracticeData.findOne({ _id: mongoDbID });
+          const groupPractice = await groupPracticeData.findOne({
+            _id: mongoDbID,
+          });
           if (rehabData) {
             res.status(200).json(groupPractice.complain);
           } else {
@@ -949,7 +965,9 @@ const healthCareController = {
           }
           break;
         case "dialysisFacilityData":
-          const dialysisFacility = await dialysisFacilityData.findOne({ _id: mongoDbID });
+          const dialysisFacility = await dialysisFacilityData.findOne({
+            _id: mongoDbID,
+          });
           if (rehabData) {
             res.status(200).json(dialysisFacility.complain);
           } else {
@@ -960,11 +978,10 @@ const healthCareController = {
           res.status(400).json({ message: "Invalid category" });
           break;
       }
-
     } catch (error) {
       next(error);
     }
-  }
+  },
 };
 
 // const createExcelFile = async (data) => {
@@ -987,7 +1004,6 @@ const healthCareController = {
 //   return filePath;
 // };
 
-
 // const getProfessionalData = async () => {
 //   try {
 //       const getProfessional = await professional.find().select("specialities -_id");
@@ -998,13 +1014,10 @@ const healthCareController = {
 
 //       const uniqueData = [...new Set(data)];
 
-
 //       return uniqueData;
 //   } catch (error) {
 //       throw error;
 //   }
 // };
-
-
 
 module.exports = healthCareController;

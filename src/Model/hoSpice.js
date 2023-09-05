@@ -20,6 +20,7 @@ const addressSchema = new Schema({
     },
     mainCategory: {
         type: String,
+        default:"hoSpiceData"
     },
     state: {
         type: String,
