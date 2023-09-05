@@ -8,6 +8,7 @@ const cors = require("cors");
 const databaseConnection = require("./utils/db");
 const healthCareRoute = require("./routes/healthCareRoute");
 const sendEmailRoute = require("./routes/sendEmailRoutes");
+const professionalRoute = require("./routes/professionalRoute");
 
 const errorMiddleware = require("./middleware/error");
 
@@ -27,12 +28,16 @@ databaseConnection.connect();
 app.use("/api/healthCareRoute", healthCareRoute);
 app.use("/api/sendEmail", sendEmailRoute);
 
+//===============Professional Route====================
+app.use("/api/professionalRoute", professionalRoute);
+//=====================================================
+
 
 
 app.use(errorMiddleware);
 
-app.get("/scraped", (req, res) => {
-  res.send("Hello World");
+app.get("/", (req, res) => {
+  res.send("Scraped");
 });
 
 

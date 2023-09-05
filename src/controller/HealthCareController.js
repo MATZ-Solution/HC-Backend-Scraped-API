@@ -9,7 +9,7 @@ const groupPracticeData = require("../Model/groupPractice")
 const homeHealthData = require("../Model/homeHealth");
 const Otp = require("../Model/Otp")
 const axios = require('axios');
-const Doctor = require('../Model/physicians')
+const Doctor = require('../Model/professional')
 
 
 

@@ -1,5 +1,6 @@
 const express = require('express');
 const healthCare = require('../controller/HealthCareController');
+
 const router = express.Router();
 
 
@@ -29,7 +30,7 @@ router.post('/getCategoryDataUsingMongoId', healthCare.getDataUsingMongoDbId);
 router.post('/getDataNearestToUser', healthCare.getDataNearestToUser);
 
 //filter data on the basis of multiple Categories
-
+//===================Filtering Data with Catoegories, ZIpcode code .......
 router.post('/filterDataUsingMultipleCategories', healthCare.filterMultipleCategories);
 
 router.get('/incCounterBaseOnTheCustomerContact/:mongoDbID/:category', healthCare.incCounterBaseOnTheCustomerContact);
