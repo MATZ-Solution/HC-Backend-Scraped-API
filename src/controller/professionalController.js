@@ -45,7 +45,7 @@ const professionalController = {
 
     getProfessionllocation: async (req, res, next) => {
         try {
-            const selectedCategories = req.body.categories; // An array of selected categories
+            const selectedCategories = req.body.name; // An array of selected categories
             const selectedCity = req.body.city; // Selected city
             const selectedState = req.body.state; // Selected state
             const selectedZipCode = req.body.zipCode;
@@ -71,7 +71,8 @@ const professionalController = {
                     return {
                         state: professional.state,
                         city: location.city,
-                        zip_code: location.zip_code
+                        zipCode: location.zip_code,
+                        _id: professional._id
                     };
                 });
             });
@@ -87,7 +88,7 @@ const professionalController = {
 
     getProfessionalsData: async (req, res, next) => {
         try {
-            const selectedCategories = req.body.categories; // An array of selected categories
+            const selectedCategories = req.body.name; // An array of selected categories
             const selectedCity = req.body.city;
             const selectedState = req.body.state;
             const selectedZipCode = req.body.zipCode;
@@ -112,6 +113,22 @@ const professionalController = {
     
             res.json(professionals);
         } catch (err) {
+            next(err);
+        }
+    },
+
+    getProfessionalsDataForCity: async (req, res, next) => {
+        try{
+            const selectedCity = req.body.city;
+            const query = {
+                'locations.city': selectedCity,
+            }
+
+            const professionalcities = await Professional.find(query);
+
+            res.json(professionalcities);
+        }
+        catch (err){
             next(err);
         }
     }

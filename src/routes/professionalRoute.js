@@ -5,6 +5,7 @@ const professionalController = require('../controller/professionalController');
 professionalrouter.route('/getProfessionalCategoryName').get(professionalController.getProfessionalSpeciality);
 professionalrouter.route('/getProfessionalLocation').post(professionalController.getProfessionllocation);
 professionalrouter.route('/getProfessionalsData').post(professionalController.getProfessionalsData);
+professionalrouter.route('/getProfessionalsbyCities').post(professionalController.getProfessionalsDataForCity)
 //====================================================
 
 module.exports = professionalrouter;

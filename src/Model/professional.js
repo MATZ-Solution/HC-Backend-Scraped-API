@@ -21,6 +21,23 @@ const professionalSchema = new mongoose.Schema({
   affiliations: {
     Hospital: [String]
   },
+  reviews: [
+    {
+      name: { type: String },
+      email: { type: String },
+      reviews: { type: String },
+      starRating: { type: Number },
+      date: { type: Date, default: Date.now }
+    }
+  ],
+  complain: [
+    {
+      name: { type: String },
+      email: { type: String },
+      complain: { type: String },
+      date: { type: Date, default: Date.now }
+    }
+  ],
   provides_telehealth_services: Boolean
 });
 
