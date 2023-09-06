@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const addressSchema = new Schema({
@@ -16,10 +16,11 @@ const addressSchema = new Schema({
   },
   mainCategory: {
     type: String,
+    default: "nursingHome",
   },
   contactedCustomer: {
     type: Number,
-    default: 0
+    default: 0,
   },
   city: {
     type: String,
@@ -28,7 +29,7 @@ const addressSchema = new Schema({
     type: String,
   },
   fullAddress: {
-    type: String
+    type: String,
   },
   zipCode: {
     type: String,
@@ -53,13 +54,16 @@ const addressSchema = new Schema({
     type: String,
   },
   number_of_certified_beds: {
-    type: String
+    type: String,
   },
   overall_rating: {
-    type: String
+    type: String,
   },
   management: {
-    type: String
+    type: String,
+  },
+  in_hospital: {
+    type:Boolean
   },
   openingHours: {
     Mon: { type: String },
@@ -68,7 +72,7 @@ const addressSchema = new Schema({
     Thu: { type: String },
     Fri: { type: String },
     Sat: { type: String },
-    Sun: { type: String }
+    Sun: { type: String },
   },
 
   reviews: [
@@ -77,19 +81,19 @@ const addressSchema = new Schema({
       email: { type: String },
       reviews: { type: String },
       startRating: { type: Number },
-      date: { type: Date, default: Date.now }
-    }
+      date: { type: Date, default: Date.now },
+    },
   ],
   complain: [
     {
       name: { type: String },
       email: { type: String },
       complain: { type: String },
-      date: { type: Date, default: Date.now }
-    }
-  ]
+      date: { type: Date, default: Date.now },
+    },
+  ],
 });
 
-const nursinghomes = mongoose.model('nursing homes', addressSchema);
+const nursinghomes = mongoose.model("nursing homes", addressSchema);
 
 module.exports = nursinghomes;
