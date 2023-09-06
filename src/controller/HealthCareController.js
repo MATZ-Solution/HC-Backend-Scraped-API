@@ -7,6 +7,7 @@ const inpatientRehabilitiation = require('../Model/inpatientRehabilitiaion');
 const hoSpiceData = require('../Model/hoSpice');
 const groupPracticeData = require('../Model/groupPractice');
 const homeHealthData = require('../Model/homeHealth');
+const Professional = require('../Model/professional');
 const Otp = require('../Model/Otp');
 const axios = require('axios');
 // const Doctor = require("../Model/professional");
@@ -531,6 +532,10 @@ const healthCareController = {
         case 'homeHealthData': // Both use the same model
           data = await homeHealthData.findOne({ _id: mongoDbID });
           break;
+        case 'professional': // Both use the same model
+          data = await Professional.findOne({ _id: mongoDbID });
+          break;
+
         default:
           return res.status(400).json('Invalid category');
       }
@@ -892,7 +897,7 @@ const healthCareController = {
         case 'hospital':
           const hospitalData = await hospital.findOne({ _id: mongoDbID });
           if (hospitalData) {
-            res.status(200).json(hospitalData.complain);
+            res.status(200).json(hospitalData);
           } else {
             res.status(404).json({ message: 'Not Found' });
           }
@@ -903,7 +908,7 @@ const healthCareController = {
             _id: mongoDbID,
           });
           if (rehabData) {
-            res.status(200).json(rehabData.complain);
+            res.status(200).json(rehabData);
           } else {
             res.status(404).json({ message: 'Not Found' });
           }
@@ -912,7 +917,7 @@ const healthCareController = {
         case 'nursingHome':
           const nursingHomeData = await nursingHome.findOne({ _id: mongoDbID });
           if (rehabData) {
-            res.status(200).json(nursingHomeData.complain);
+            res.status(200).json(nursingHomeData);
           } else {
             res.status(404).json({ message: 'Not Found' });
           }
@@ -923,7 +928,7 @@ const healthCareController = {
             _id: mongoDbID,
           });
           if (longTermCaresData) {
-            res.status(200).json(longTermCaresData.complain);
+            res.status(200).json(longTermCaresData);
           } else {
             res.status(404).json({ message: 'Not Found' });
           }
@@ -932,7 +937,7 @@ const healthCareController = {
         case 'hoSpiceData':
           const hoSpice = await hoSpiceData.findOne({ _id: mongoDbID });
           if (rehabData) {
-            res.status(200).json(hoSpice.complain);
+            res.status(200).json(hoSpice);
           } else {
             res.status(404).json({ message: 'Not Found' });
           }
@@ -941,7 +946,7 @@ const healthCareController = {
         case 'home Health':
           const homeHealth = await homeHealthData.findOne({ _id: mongoDbID });
           if (rehabData) {
-            res.status(200).json(homeHealth.complain);
+            res.status(200).json(homeHealth);
           } else {
             res.status(404).json({ message: 'Not Found' });
           }
@@ -951,7 +956,7 @@ const healthCareController = {
             _id: mongoDbID,
           });
           if (rehabData) {
-            res.status(200).json(groupPractice.complain);
+            res.status(200).json(groupPractice);
           } else {
             res.status(404).json({ message: 'Not Found' });
           }
@@ -961,7 +966,7 @@ const healthCareController = {
             _id: mongoDbID,
           });
           if (rehabData) {
-            res.status(200).json(dialysisFacility.complain);
+            res.status(200).json(dialysisFacility);
           } else {
             res.status(404).json({ message: 'Not Found' });
           }
@@ -975,6 +980,5 @@ const healthCareController = {
     }
   },
 };
-
 
 module.exports = healthCareController;
