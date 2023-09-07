@@ -99,25 +99,35 @@ const healthCareController = {
           contact,
           latitude,
           longitude,
-          overall_rating,
-          number_of_certified_beds,
-          management,
-          in_hospital,
+          treatment_non_traumatic_brain_condition,
+          treatment_traumatic_brain_condition,
+          treatment_hip_or_femur_fracture,
+          treatment_hip_knee_amputation_bone_join_condition,
+          treatment_nervous_system_disorder,
+          treatment_non_traumatic_spinal_cord_disease,
+          treatment_traumatic_spinal_cord_disease,
+          treatment_stroke,
+          treatment_miscellaneous_conditions,
         } = data[i];
 
-        const newHealthCare = new nursingHome({
+        const newHealthCare = new inpatientRehabilitiation({
           name,
           fullAddress: address,
           zipCode: zip_code,
           city,
-          state: 'Wyoming',
+          state: 'Alabama',
           phoneNumber: contact,
           latitude,
           longitude,
-          overall_rating,
-          number_of_certified_beds,
-          management,
-          in_hospital,
+          treatment_non_traumatic_brain_condition,
+          treatment_traumatic_brain_condition,
+          treatment_hip_or_femur_fracture,
+          treatment_hip_knee_amputation_bone_join_condition,
+          treatment_nervous_system_disorder,
+          treatment_non_traumatic_spinal_cord_disease,
+          treatment_stroke,
+          treatment_miscellaneous_conditions,
+          treatment_traumatic_spinal_cord_disease,
         });
 
         await newHealthCare.save();
@@ -991,20 +1001,21 @@ const healthCareController = {
             'locations._id': mongoDbID,
           });
           if (professionalData) {
-            const { locations, ...professionalWithoutLocations } =
-              professionalData.toObject();
+            // const { locations, ...professionalWithoutLocations } =
+            //   professionalData.toObject();
 
-            const matchingLocation = professionalData.locations.find(
-              (location) => location._id.toString() === mongoDbID
-            );
+            // const matchingLocation = professionalData.locations.find(
+            //   (location) => location._id.toString() === mongoDbID
+            // );
+            res.status(200).json(professionalData)
 
-            if (matchingLocation) {
-              res
-                .status(200)
-                .json({ matchingLocation, professionalWithoutLocations });
-            } else {
-              res.status(404).json({ message: 'Location Not Found' });
-            }
+            // if (matchingLocation) {
+            //   res
+            //     .status(200)
+            //     .json(professionalData);
+            // } else {
+            //   res.status(404).json({ message: 'Location Not Found' });
+            // }
           } else {
             res.status(404).json({ message: 'Professional Not Found' });
           }
