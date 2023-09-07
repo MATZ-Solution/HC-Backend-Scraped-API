@@ -13,6 +13,9 @@ const professionalSchema = new mongoose.Schema({
   name: String,
   sex: String,
   state: String,
+  mainCategory: {
+    type: String
+  },
   locations: [locationSchema],
   education_and_training: String,
   board_certifications: [String],

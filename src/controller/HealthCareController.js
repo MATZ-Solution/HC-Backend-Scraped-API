@@ -75,8 +75,8 @@ const healthCareController = {
   },
   updateData: async (req, res, next) => {
     try {
-      const updateCategory = await homeHealthData.updateMany({
-        mainCategory: 'home Health',
+      const updateCategory = await Professional.updateMany({
+        mainCategory: 'professional',
       });
       res.status(200).json(updateCategory);
     } catch (error) {
@@ -688,6 +688,14 @@ const healthCareController = {
           );
           res.status(200).json({ success: true, message: 'Updated' });
           break;
+        case 'professional':
+          await Professional.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { reviews: { name, email, reviews, startRating } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: 'Updated' });
+          break;
         default:
           res.status(400).json({ success: false, message: 'Invalid category' });
       }
@@ -769,6 +777,14 @@ const healthCareController = {
           break;
         case 'home Health':
           await homeHealthData.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { complain: { name, email, complain } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: 'Updated' });
+          break;
+        case 'professional':
+          await Professional.findOneAndUpdate(
             { _id: mongoDbID },
             { $push: { complain: { name, email, complain } } },
             { new: true }
