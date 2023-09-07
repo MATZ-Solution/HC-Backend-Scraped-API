@@ -535,7 +535,6 @@ const healthCareController = {
         case 'professional': // Both use the same model
           data = await Professional.findOne({ _id: mongoDbID });
           break;
-
         default:
           return res.status(400).json('Invalid category');
       }
@@ -916,7 +915,7 @@ const healthCareController = {
 
         case 'nursingHome':
           const nursingHomeData = await nursingHome.findOne({ _id: mongoDbID });
-          if (rehabData) {
+          if (nursingHomeData) {
             res.status(200).json(nursingHomeData);
           } else {
             res.status(404).json({ message: 'Not Found' });
@@ -936,7 +935,7 @@ const healthCareController = {
 
         case 'hoSpiceData':
           const hoSpice = await hoSpiceData.findOne({ _id: mongoDbID });
-          if (rehabData) {
+          if (hoSpice) {
             res.status(200).json(hoSpice);
           } else {
             res.status(404).json({ message: 'Not Found' });
@@ -945,7 +944,7 @@ const healthCareController = {
 
         case 'home Health':
           const homeHealth = await homeHealthData.findOne({ _id: mongoDbID });
-          if (rehabData) {
+          if (homeHealth) {
             res.status(200).json(homeHealth);
           } else {
             res.status(404).json({ message: 'Not Found' });
@@ -955,7 +954,7 @@ const healthCareController = {
           const groupPractice = await groupPracticeData.findOne({
             _id: mongoDbID,
           });
-          if (rehabData) {
+          if (groupPractice) {
             res.status(200).json(groupPractice);
           } else {
             res.status(404).json({ message: 'Not Found' });
@@ -965,10 +964,33 @@ const healthCareController = {
           const dialysisFacility = await dialysisFacilityData.findOne({
             _id: mongoDbID,
           });
-          if (rehabData) {
+          if (dialysisFacility) {
             res.status(200).json(dialysisFacility);
           } else {
             res.status(404).json({ message: 'Not Found' });
+          }
+          break;
+        case 'professional':
+          const professionalData = await Professional.findOne({
+            'locations._id': mongoDbID,
+          });
+          if (professionalData) {
+            const { locations, ...professionalWithoutLocations } =
+              professionalData.toObject();
+
+            const matchingLocation = professionalData.locations.find(
+              (location) => location._id.toString() === mongoDbID
+            );
+
+            if (matchingLocation) {
+              res
+                .status(200)
+                .json({ matchingLocation, professionalWithoutLocations });
+            } else {
+              res.status(404).json({ message: 'Location Not Found' });
+            }
+          } else {
+            res.status(404).json({ message: 'Professional Not Found' });
           }
           break;
         default:
