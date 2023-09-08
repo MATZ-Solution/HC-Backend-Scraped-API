@@ -115,7 +115,7 @@ const healthCareController = {
           fullAddress: address,
           zipCode: zip_code,
           city,
-          state: 'Alabama',
+          state: 'Wyoming',
           phoneNumber: contact,
           latitude,
           longitude,
@@ -718,7 +718,7 @@ const healthCareController = {
       next(err);
     }
   },
-  addComplain: async (req, res, next) => {
+  approveComplain: async (req, res, next) => {
     try {
       const { mongoDbID, category, name, email, complain, phoneNumber } =
         req.body;
