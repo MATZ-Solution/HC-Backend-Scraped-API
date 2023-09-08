@@ -1001,21 +1001,7 @@ const healthCareController = {
             'locations._id': mongoDbID,
           });
           if (professionalData) {
-            // const { locations, ...professionalWithoutLocations } =
-            //   professionalData.toObject();
-
-            // const matchingLocation = professionalData.locations.find(
-            //   (location) => location._id.toString() === mongoDbID
-            // );
             res.status(200).json(professionalData);
-
-            // if (matchingLocation) {
-            //   res
-            //     .status(200)
-            //     .json(professionalData);
-            // } else {
-            //   res.status(404).json({ message: 'Location Not Found' });
-            // }
           } else {
             res.status(404).json({ message: 'Professional Not Found' });
           }
