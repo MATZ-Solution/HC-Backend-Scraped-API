@@ -1007,7 +1007,7 @@ const healthCareController = {
             // const matchingLocation = professionalData.locations.find(
             //   (location) => location._id.toString() === mongoDbID
             // );
-            res.status(200).json(professionalData)
+            res.status(200).json(professionalData);
 
             // if (matchingLocation) {
             //   res
