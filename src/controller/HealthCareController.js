@@ -562,8 +562,6 @@ const healthCareController = {
     try {
       const { mongoDbID, category } = req.params;
 
-      console.log(mongoDbID, category);
-
       switch (category) {
         case 'hospital':
           await hospital.updateOne(
@@ -617,6 +615,13 @@ const healthCareController = {
         case 'home Health':
           await homeHealthData.updateOne(
             { _id: mongoDbID },
+            { $inc: { contactedCustomer: 1 } }
+          );
+          res.status(200).json({ success: true, message: 'Updated' });
+          break;
+        case 'professional':
+          await homeHealthData.updateOne(
+            { 'locations._id': mongoDbID },
             { $inc: { contactedCustomer: 1 } }
           );
           res.status(200).json({ success: true, message: 'Updated' });
