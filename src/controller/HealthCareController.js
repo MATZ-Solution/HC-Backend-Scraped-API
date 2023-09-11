@@ -1168,24 +1168,46 @@ const healthCareController = {
 
       // Construct an $or query to filter based on the bounding box
 
-      const promises = [
-        Professional.find({
-          'locations.latitude': {
-            $gte: bottomLeftLatitude,
-            $lte: topLeftLatitude,
-          },
-          'locations.longitude': {
-            $gte: topLeftLongitude,
-            $lte: topRightLongitude,
-          },
-        }),
-      ];
+      // const promises = [
+      //   Professional.find({
+      //     'locations.latitude': {
+      //       $gte: bottomLeftLatitude,
+      //       $lte: topLeftLatitude,
+      //     },
+      //     'locations.longitude': {
+      //       $gte: topLeftLongitude,
+      //       $lte: topRightLongitude,
+      //     },
+      //   }),
+      // ];
 
-      const records = await Promise.all(promises);
+      // const records = await Promise.all(promises);
 
-      const allRecords = [].concat(...records);
+      // const allRecords = [].concat(...records);
 
-      res.status(200).json(allRecords);
+      // res.status(200).json(allRecords);
+      const query = {
+        'locations.latitude': {
+          $gte: bottomLeftLatitude,
+          $lte: topLeftLatitude,
+        },
+        'locations.longitude': {
+          $gte: topLeftLongitude,
+          $lte: topRightLongitude,
+        },
+      };
+
+      // Find professionals matching the query and project only matching locations
+      const professionals = await Professional.find(query, {
+        'locations.$': 1,
+      });
+
+      // Extract the matching locations from the professionals
+      const matchingLocations = professionals.map(
+        (professional) => professional.locations[0]
+      );
+
+      res.status(200).json(matchingLocations);
     } catch (err) {
       next(err);
     }
