@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const addressSchema = new Schema({
@@ -42,9 +42,11 @@ const addressSchema = new Schema({
   //mohsin scraping
   latitude: {
     type: String,
+    index: true,
   },
   longitude: {
     type: String,
+    index: true,
   },
   overall_rating: {
     type: String,
@@ -83,6 +85,6 @@ const addressSchema = new Schema({
   ],
 });
 
-const longtermcares = mongoose.model("longtermcares", addressSchema);
+const longtermcares = mongoose.model('longtermcares', addressSchema);
 
 module.exports = longtermcares;

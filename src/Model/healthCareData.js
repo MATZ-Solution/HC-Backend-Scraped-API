@@ -41,9 +41,12 @@ const addressSchema = new Schema({
   //mohsin scraping
   latitude: {
     type: String,
+    index:true
   },
   longitude: {
     type: String,
+    index:true
+
   },
   overall_rating: {
     type: String,

@@ -5,8 +5,8 @@ const locationSchema = new mongoose.Schema({
   zip_code: String,
   city: String,
   contact: String,
-  latitude: Number,
-  longitude: Number
+  latitude: { type: Number, index: true }, 
+  longitude: { type: Number, index: true }, 
 });
 
 const professionalSchema = new mongoose.Schema({
@@ -14,7 +14,7 @@ const professionalSchema = new mongoose.Schema({
   sex: String,
   state: String,
   mainCategory: {
-    type: String
+    type: String,
   },
   locations: [locationSchema],
   education_and_training: String,
@@ -22,7 +22,7 @@ const professionalSchema = new mongoose.Schema({
   specialities: [String],
   group_affiliations: [String],
   affiliations: {
-    Hospital: [String]
+    Hospital: [String],
   },
   reviews: [
     {
@@ -30,18 +30,18 @@ const professionalSchema = new mongoose.Schema({
       email: { type: String },
       reviews: { type: String },
       starRating: { type: Number },
-      date: { type: Date, default: Date.now }
-    }
+      date: { type: Date, default: Date.now },
+    },
   ],
   complain: [
     {
       name: { type: String },
       email: { type: String },
       complain: { type: String },
-      date: { type: Date, default: Date.now }
-    }
+      date: { type: Date, default: Date.now },
+    },
   ],
-  provides_telehealth_services: Boolean
+  provides_telehealth_services: Boolean,
 });
 
 const Professional = mongoose.model('Professional', professionalSchema);

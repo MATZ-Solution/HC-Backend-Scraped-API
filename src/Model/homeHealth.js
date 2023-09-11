@@ -29,9 +29,11 @@ const addressSchema = new Schema({
     },
     latitude: {
         type: String,
+        index:true
     },
     longitude: {
         type: String,
+        index:true
     },
     quality_rating: {
         type: String,

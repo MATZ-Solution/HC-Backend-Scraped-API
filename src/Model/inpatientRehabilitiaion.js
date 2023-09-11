@@ -31,9 +31,11 @@ const addressSchema = new Schema({
   },
   latitude: {
     type: String,
+    index: true,
   },
   longitude: {
     type: String,
+    index: true,
   },
   treatment_non_traumatic_brain_condition: {
     type: Number,

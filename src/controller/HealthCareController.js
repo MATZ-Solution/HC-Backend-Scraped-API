@@ -637,7 +637,6 @@ const healthCareController = {
     try {
       const { mongoDbID, category, name, email, reviews, startRating } =
         req.body;
-
       switch (category) {
         case 'hospital':
           await hospital.findOneAndUpdate(
@@ -1017,6 +1016,178 @@ const healthCareController = {
       }
     } catch (error) {
       next(error);
+    }
+  },
+
+  //find records on the basis of latitude and longitude
+  findRecordOnTheBasisOfLatitudeAndLongitude: async (req, res, next) => {
+    try {
+      const {
+        topLeftLatitude,
+        topLeftLongitude,
+        topRightLatitude,
+        topRightLongitude,
+        bottomRightLatitude,
+        bottomRightLongitude,
+        bottomLeftLatitude,
+        bottomLeftLongitude,
+      } = req.body;
+
+      // Construct an $or query to filter based on the bounding box
+
+      const promises = [
+        hospital.find({
+          $or: [
+            {
+              latitude: { $gte: bottomLeftLatitude, $lte: topLeftLatitude },
+              longitude: { $gte: topLeftLongitude, $lte: topRightLongitude },
+            },
+            {
+              latitude: { $gte: bottomRightLatitude, $lte: topRightLatitude },
+              longitude: {
+                $gte: topRightLongitude,
+                $lte: bottomRightLongitude,
+              },
+            },
+          ],
+        }),
+        dialysisFacilityData.find({
+          $or: [
+            {
+              latitude: { $gte: bottomLeftLatitude, $lte: topLeftLatitude },
+              longitude: { $gte: topLeftLongitude, $lte: topRightLongitude },
+            },
+            {
+              latitude: { $gte: bottomRightLatitude, $lte: topRightLatitude },
+              longitude: {
+                $gte: topRightLongitude,
+                $lte: bottomRightLongitude,
+              },
+            },
+          ],
+        }),
+        homeHealthData.find({
+          $or: [
+            {
+              latitude: { $gte: bottomLeftLatitude, $lte: topLeftLatitude },
+              longitude: { $gte: topLeftLongitude, $lte: topRightLongitude },
+            },
+            {
+              latitude: { $gte: bottomRightLatitude, $lte: topRightLatitude },
+              longitude: {
+                $gte: topRightLongitude,
+                $lte: bottomRightLongitude,
+              },
+            },
+          ],
+        }),
+        hoSpiceData.find({
+          $or: [
+            {
+              latitude: { $gte: bottomLeftLatitude, $lte: topLeftLatitude },
+              longitude: { $gte: topLeftLongitude, $lte: topRightLongitude },
+            },
+            {
+              latitude: { $gte: bottomRightLatitude, $lte: topRightLatitude },
+              longitude: {
+                $gte: topRightLongitude,
+                $lte: bottomRightLongitude,
+              },
+            },
+          ],
+        }),
+        inpatientRehabilitiation.find({
+          $or: [
+            {
+              latitude: { $gte: bottomLeftLatitude, $lte: topLeftLatitude },
+              longitude: { $gte: topLeftLongitude, $lte: topRightLongitude },
+            },
+            {
+              latitude: { $gte: bottomRightLatitude, $lte: topRightLatitude },
+              longitude: {
+                $gte: topRightLongitude,
+                $lte: bottomRightLongitude,
+              },
+            },
+          ],
+        }),
+        longTermCares.find({
+          $or: [
+            {
+              latitude: { $gte: bottomLeftLatitude, $lte: topLeftLatitude },
+              longitude: { $gte: topLeftLongitude, $lte: topRightLongitude },
+            },
+            {
+              latitude: { $gte: bottomRightLatitude, $lte: topRightLatitude },
+              longitude: {
+                $gte: topRightLongitude,
+                $lte: bottomRightLongitude,
+              },
+            },
+          ],
+        }),
+        nursingHome.find({
+          $or: [
+            {
+              latitude: { $gte: bottomLeftLatitude, $lte: topLeftLatitude },
+              longitude: { $gte: topLeftLongitude, $lte: topRightLongitude },
+            },
+            {
+              latitude: { $gte: bottomRightLatitude, $lte: topRightLatitude },
+              longitude: {
+                $gte: topRightLongitude,
+                $lte: bottomRightLongitude,
+              },
+            },
+          ],
+        }),
+      ];
+
+      const records = await Promise.all(promises);
+
+      const allRecords = [].concat(...records);
+
+      res.status(200).json(allRecords);
+    } catch (err) {
+      next(err);
+    }
+  },
+  //find professional Records on the basis of lat and long
+  findProfessionalOnTheBasisOfLatitudeAndLongitude: async (req, res, next) => {
+    try {
+      const {
+        topLeftLatitude,
+        topLeftLongitude,
+        topRightLatitude,
+        topRightLongitude,
+        bottomRightLatitude,
+        bottomRightLongitude,
+        bottomLeftLatitude,
+        bottomLeftLongitude,
+      } = req.body;
+
+      // Construct an $or query to filter based on the bounding box
+
+      const promises = [
+        Professional.find({
+          'locations.latitude': {
+            $gte: bottomLeftLatitude,
+            $lte: topLeftLatitude,
+          },
+          'locations.longitude': {
+            $gte: topLeftLongitude,
+            $lte: topRightLongitude,
+          },
+        }),
+      ];
+
+      const records = await Promise.all(promises);
+
+      const allRecords = [].concat(...records);
+
+      res.status(200).json(allRecords);
+    } catch (err) {
+      next(err);
     }
   },
 };

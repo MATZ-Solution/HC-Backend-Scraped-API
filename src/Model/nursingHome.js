@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const addressSchema = new Schema({
@@ -16,7 +16,7 @@ const addressSchema = new Schema({
   },
   mainCategory: {
     type: String,
-    default: "nursingHome",
+    default: 'nursingHome',
   },
   contactedCustomer: {
     type: Number,
@@ -43,9 +43,11 @@ const addressSchema = new Schema({
   //mohsin scraping
   latitude: {
     type: String,
+    index: true,
   },
   longitude: {
     type: String,
+    index: true,
   },
   overall_rating: {
     type: String,
@@ -63,7 +65,7 @@ const addressSchema = new Schema({
     type: String,
   },
   in_hospital: {
-    type:Boolean
+    type: Boolean,
   },
   openingHours: {
     Mon: { type: String },
@@ -94,6 +96,6 @@ const addressSchema = new Schema({
   ],
 });
 
-const nursinghomes = mongoose.model("nursing homes", addressSchema);
+const nursinghomes = mongoose.model('nursing homes', addressSchema);
 
 module.exports = nursinghomes;

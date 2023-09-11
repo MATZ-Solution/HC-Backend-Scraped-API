@@ -51,4 +51,10 @@ router.post('/verifyOtp', healthCare.verifyOtp);
 //get corporate using mongo db id
 router.post('/getCorporatesUsingMongoId', healthCare.getCorporatesUsingMongoId);
 
+//findRecordsonthebasisoflatitudeandlongitude
+
+router.post('/getRecordsBaseOfLatandLon', healthCare.findRecordOnTheBasisOfLatitudeAndLongitude);
+
+router.post('/getProfessionalRecordsBaseOfLatandLon', healthCare.findProfessionalOnTheBasisOfLatitudeAndLongitude);
+
 module.exports = router;
