@@ -1039,14 +1039,43 @@ const healthCareController = {
         hospital.find({
           $or: [
             {
-              latitude: { $gte: bottomLeftLatitude, $lte: topLeftLatitude },
-              longitude: { $gte: topLeftLongitude, $lte: topRightLongitude },
+              latitude: {
+                $gte: Math.min(topLeftLatitude),
+                $lte: Math.min(topRightLatitude),
+              },
+              longitude: {
+                $gte: Math.min(topLeftLongitude),
+                $lte: Math.min(topRightLongitude),
+              },
             },
             {
-              latitude: { $gte: bottomRightLatitude, $lte: topRightLatitude },
+              latitude: {
+                $gte: Math.min(topRightLatitude),
+                $lte: Math.min(bottomRightLatitude),
+              },
               longitude: {
-                $gte: topRightLongitude,
-                $lte: bottomRightLongitude,
+                $gte: Math.min(topRightLongitude),
+                $lte: Math.min(bottomRightLongitude),
+              },
+            },
+            {
+              latitude: {
+                $gte: Math.min(topRightLatitude),
+                $lte: Math.min(bottomLeftLatitude),
+              },
+              longitude: {
+                $gte: Math.min(topRightLongitude),
+                $lte: Math.min(bottomLeftLongitude),
+              },
+            },
+            {
+              latitude: {
+                $gte: Math.min(bottomLeftLatitude),
+                $lte: Math.min(topLeftLatitude),
+              },
+              longitude: {
+                $gte: Math.min(bottomLeftLongitude),
+                $lte: Math.min(topLeftLongitude),
               },
             },
           ],
@@ -1054,14 +1083,43 @@ const healthCareController = {
         dialysisFacilityData.find({
           $or: [
             {
-              latitude: { $gte: bottomLeftLatitude, $lte: topLeftLatitude },
-              longitude: { $gte: topLeftLongitude, $lte: topRightLongitude },
+              latitude: {
+                $gte: Math.min(topLeftLatitude),
+                $lte: Math.min(topRightLatitude),
+              },
+              longitude: {
+                $gte: Math.min(topLeftLongitude),
+                $lte: Math.min(topRightLongitude),
+              },
             },
             {
-              latitude: { $gte: bottomRightLatitude, $lte: topRightLatitude },
+              latitude: {
+                $gte: Math.min(topRightLatitude),
+                $lte: Math.min(bottomRightLatitude),
+              },
               longitude: {
-                $gte: topRightLongitude,
-                $lte: bottomRightLongitude,
+                $gte: Math.min(topRightLongitude),
+                $lte: Math.min(bottomRightLongitude),
+              },
+            },
+            {
+              latitude: {
+                $gte: Math.min(topRightLatitude),
+                $lte: Math.min(bottomLeftLatitude),
+              },
+              longitude: {
+                $gte: Math.min(topRightLongitude),
+                $lte: Math.min(bottomLeftLongitude),
+              },
+            },
+            {
+              latitude: {
+                $gte: Math.min(bottomLeftLatitude),
+                $lte: Math.min(topLeftLatitude),
+              },
+              longitude: {
+                $gte: Math.min(bottomLeftLongitude),
+                $lte: Math.min(topLeftLongitude),
               },
             },
           ],
@@ -1069,14 +1127,43 @@ const healthCareController = {
         homeHealthData.find({
           $or: [
             {
-              latitude: { $gte: bottomLeftLatitude, $lte: topLeftLatitude },
-              longitude: { $gte: topLeftLongitude, $lte: topRightLongitude },
+              latitude: {
+                $gte: Math.min(topLeftLatitude),
+                $lte: Math.min(topRightLatitude),
+              },
+              longitude: {
+                $gte: Math.min(topLeftLongitude),
+                $lte: Math.min(topRightLongitude),
+              },
             },
             {
-              latitude: { $gte: bottomRightLatitude, $lte: topRightLatitude },
+              latitude: {
+                $gte: Math.min(topRightLatitude),
+                $lte: Math.min(bottomRightLatitude),
+              },
               longitude: {
-                $gte: topRightLongitude,
-                $lte: bottomRightLongitude,
+                $gte: Math.min(topRightLongitude),
+                $lte: Math.min(bottomRightLongitude),
+              },
+            },
+            {
+              latitude: {
+                $gte: Math.min(topRightLatitude),
+                $lte: Math.min(bottomLeftLatitude),
+              },
+              longitude: {
+                $gte: Math.min(topRightLongitude),
+                $lte: Math.min(bottomLeftLongitude),
+              },
+            },
+            {
+              latitude: {
+                $gte: Math.min(bottomLeftLatitude),
+                $lte: Math.min(topLeftLatitude),
+              },
+              longitude: {
+                $gte: Math.min(bottomLeftLongitude),
+                $lte: Math.min(topLeftLongitude),
               },
             },
           ],
@@ -1084,14 +1171,43 @@ const healthCareController = {
         hoSpiceData.find({
           $or: [
             {
-              latitude: { $gte: bottomLeftLatitude, $lte: topLeftLatitude },
-              longitude: { $gte: topLeftLongitude, $lte: topRightLongitude },
+              latitude: {
+                $gte: Math.min(topLeftLatitude),
+                $lte: Math.min(topRightLatitude),
+              },
+              longitude: {
+                $gte: Math.min(topLeftLongitude),
+                $lte: Math.min(topRightLongitude),
+              },
             },
             {
-              latitude: { $gte: bottomRightLatitude, $lte: topRightLatitude },
+              latitude: {
+                $gte: Math.min(topRightLatitude),
+                $lte: Math.min(bottomRightLatitude),
+              },
               longitude: {
-                $gte: topRightLongitude,
-                $lte: bottomRightLongitude,
+                $gte: Math.min(topRightLongitude),
+                $lte: Math.min(bottomRightLongitude),
+              },
+            },
+            {
+              latitude: {
+                $gte: Math.min(topRightLatitude),
+                $lte: Math.min(bottomLeftLatitude),
+              },
+              longitude: {
+                $gte: Math.min(topRightLongitude),
+                $lte: Math.min(bottomLeftLongitude),
+              },
+            },
+            {
+              latitude: {
+                $gte: Math.min(bottomLeftLatitude),
+                $lte: Math.min(topLeftLatitude),
+              },
+              longitude: {
+                $gte: Math.min(bottomLeftLongitude),
+                $lte: Math.min(topLeftLongitude),
               },
             },
           ],
@@ -1099,14 +1215,43 @@ const healthCareController = {
         inpatientRehabilitiation.find({
           $or: [
             {
-              latitude: { $gte: bottomLeftLatitude, $lte: topLeftLatitude },
-              longitude: { $gte: topLeftLongitude, $lte: topRightLongitude },
+              latitude: {
+                $gte: Math.min(topLeftLatitude),
+                $lte: Math.min(topRightLatitude),
+              },
+              longitude: {
+                $gte: Math.min(topLeftLongitude),
+                $lte: Math.min(topRightLongitude),
+              },
             },
             {
-              latitude: { $gte: bottomRightLatitude, $lte: topRightLatitude },
+              latitude: {
+                $gte: Math.min(topRightLatitude),
+                $lte: Math.min(bottomRightLatitude),
+              },
               longitude: {
-                $gte: topRightLongitude,
-                $lte: bottomRightLongitude,
+                $gte: Math.min(topRightLongitude),
+                $lte: Math.min(bottomRightLongitude),
+              },
+            },
+            {
+              latitude: {
+                $gte: Math.min(topRightLatitude),
+                $lte: Math.min(bottomLeftLatitude),
+              },
+              longitude: {
+                $gte: Math.min(topRightLongitude),
+                $lte: Math.min(bottomLeftLongitude),
+              },
+            },
+            {
+              latitude: {
+                $gte: Math.min(bottomLeftLatitude),
+                $lte: Math.min(topLeftLatitude),
+              },
+              longitude: {
+                $gte: Math.min(bottomLeftLongitude),
+                $lte: Math.min(topLeftLongitude),
               },
             },
           ],
@@ -1114,14 +1259,43 @@ const healthCareController = {
         longTermCares.find({
           $or: [
             {
-              latitude: { $gte: bottomLeftLatitude, $lte: topLeftLatitude },
-              longitude: { $gte: topLeftLongitude, $lte: topRightLongitude },
+              latitude: {
+                $gte: Math.min(topLeftLatitude),
+                $lte: Math.min(topRightLatitude),
+              },
+              longitude: {
+                $gte: Math.min(topLeftLongitude),
+                $lte: Math.min(topRightLongitude),
+              },
             },
             {
-              latitude: { $gte: bottomRightLatitude, $lte: topRightLatitude },
+              latitude: {
+                $gte: Math.min(topRightLatitude),
+                $lte: Math.min(bottomRightLatitude),
+              },
               longitude: {
-                $gte: topRightLongitude,
-                $lte: bottomRightLongitude,
+                $gte: Math.min(topRightLongitude),
+                $lte: Math.min(bottomRightLongitude),
+              },
+            },
+            {
+              latitude: {
+                $gte: Math.min(topRightLatitude),
+                $lte: Math.min(bottomLeftLatitude),
+              },
+              longitude: {
+                $gte: Math.min(topRightLongitude),
+                $lte: Math.min(bottomLeftLongitude),
+              },
+            },
+            {
+              latitude: {
+                $gte: Math.min(bottomLeftLatitude),
+                $lte: Math.min(topLeftLatitude),
+              },
+              longitude: {
+                $gte: Math.min(bottomLeftLongitude),
+                $lte: Math.min(topLeftLongitude),
               },
             },
           ],
@@ -1129,14 +1303,43 @@ const healthCareController = {
         nursingHome.find({
           $or: [
             {
-              latitude: { $gte: bottomLeftLatitude, $lte: topLeftLatitude },
-              longitude: { $gte: topLeftLongitude, $lte: topRightLongitude },
+              latitude: {
+                $gte: Math.min(topLeftLatitude),
+                $lte: Math.min(topRightLatitude),
+              },
+              longitude: {
+                $gte: Math.min(topLeftLongitude),
+                $lte: Math.min(topRightLongitude),
+              },
             },
             {
-              latitude: { $gte: bottomRightLatitude, $lte: topRightLatitude },
+              latitude: {
+                $gte: Math.min(topRightLatitude),
+                $lte: Math.min(bottomRightLatitude),
+              },
               longitude: {
-                $gte: topRightLongitude,
-                $lte: bottomRightLongitude,
+                $gte: Math.min(topRightLongitude),
+                $lte: Math.min(bottomRightLongitude),
+              },
+            },
+            {
+              latitude: {
+                $gte: Math.min(topRightLatitude),
+                $lte: Math.min(bottomLeftLatitude),
+              },
+              longitude: {
+                $gte: Math.min(topRightLongitude),
+                $lte: Math.min(bottomLeftLongitude),
+              },
+            },
+            {
+              latitude: {
+                $gte: Math.min(bottomLeftLatitude),
+                $lte: Math.min(topLeftLatitude),
+              },
+              longitude: {
+                $gte: Math.min(bottomLeftLongitude),
+                $lte: Math.min(topLeftLongitude),
               },
             },
           ],
