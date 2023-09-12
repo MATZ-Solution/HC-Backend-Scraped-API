@@ -1021,6 +1021,7 @@ const healthCareController = {
 
   //find records on the basis of latitude and longitude
   findRecordOnTheBasisOfLatitudeAndLongitude: async (req, res, next) => {
+
     try {
       const {
         topLeftLatitude,
@@ -1032,328 +1033,237 @@ const healthCareController = {
         bottomLeftLatitude,
         bottomLeftLongitude,
       } = req.body;
-
-      // Construct an $or query to filter based on the bounding box
-
-      const promises = [
-        hospital.find({
-          $or: [
-            {
-              latitude: {
-                $gte: Math.min(topLeftLatitude),
-                $lte: Math.min(topRightLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topLeftLongitude),
-                $lte: Math.min(topRightLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(topRightLatitude),
-                $lte: Math.min(bottomRightLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topRightLongitude),
-                $lte: Math.min(bottomRightLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(topRightLatitude),
-                $lte: Math.min(bottomLeftLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topRightLongitude),
-                $lte: Math.min(bottomLeftLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(bottomLeftLatitude),
-                $lte: Math.min(topLeftLatitude),
-              },
-              longitude: {
-                $gte: Math.min(bottomLeftLongitude),
-                $lte: Math.min(topLeftLongitude),
-              },
-            },
-          ],
-        }),
-        dialysisFacilityData.find({
-          $or: [
-            {
-              latitude: {
-                $gte: Math.min(topLeftLatitude),
-                $lte: Math.min(topRightLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topLeftLongitude),
-                $lte: Math.min(topRightLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(topRightLatitude),
-                $lte: Math.min(bottomRightLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topRightLongitude),
-                $lte: Math.min(bottomRightLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(topRightLatitude),
-                $lte: Math.min(bottomLeftLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topRightLongitude),
-                $lte: Math.min(bottomLeftLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(bottomLeftLatitude),
-                $lte: Math.min(topLeftLatitude),
-              },
-              longitude: {
-                $gte: Math.min(bottomLeftLongitude),
-                $lte: Math.min(topLeftLongitude),
-              },
-            },
-          ],
-        }),
-        homeHealthData.find({
-          $or: [
-            {
-              latitude: {
-                $gte: Math.min(topLeftLatitude),
-                $lte: Math.min(topRightLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topLeftLongitude),
-                $lte: Math.min(topRightLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(topRightLatitude),
-                $lte: Math.min(bottomRightLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topRightLongitude),
-                $lte: Math.min(bottomRightLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(topRightLatitude),
-                $lte: Math.min(bottomLeftLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topRightLongitude),
-                $lte: Math.min(bottomLeftLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(bottomLeftLatitude),
-                $lte: Math.min(topLeftLatitude),
-              },
-              longitude: {
-                $gte: Math.min(bottomLeftLongitude),
-                $lte: Math.min(topLeftLongitude),
-              },
-            },
-          ],
-        }),
-        hoSpiceData.find({
-          $or: [
-            {
-              latitude: {
-                $gte: Math.min(topLeftLatitude),
-                $lte: Math.min(topRightLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topLeftLongitude),
-                $lte: Math.min(topRightLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(topRightLatitude),
-                $lte: Math.min(bottomRightLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topRightLongitude),
-                $lte: Math.min(bottomRightLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(topRightLatitude),
-                $lte: Math.min(bottomLeftLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topRightLongitude),
-                $lte: Math.min(bottomLeftLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(bottomLeftLatitude),
-                $lte: Math.min(topLeftLatitude),
-              },
-              longitude: {
-                $gte: Math.min(bottomLeftLongitude),
-                $lte: Math.min(topLeftLongitude),
-              },
-            },
-          ],
-        }),
-        inpatientRehabilitiation.find({
-          $or: [
-            {
-              latitude: {
-                $gte: Math.min(topLeftLatitude),
-                $lte: Math.min(topRightLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topLeftLongitude),
-                $lte: Math.min(topRightLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(topRightLatitude),
-                $lte: Math.min(bottomRightLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topRightLongitude),
-                $lte: Math.min(bottomRightLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(topRightLatitude),
-                $lte: Math.min(bottomLeftLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topRightLongitude),
-                $lte: Math.min(bottomLeftLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(bottomLeftLatitude),
-                $lte: Math.min(topLeftLatitude),
-              },
-              longitude: {
-                $gte: Math.min(bottomLeftLongitude),
-                $lte: Math.min(topLeftLongitude),
-              },
-            },
-          ],
-        }),
-        longTermCares.find({
-          $or: [
-            {
-              latitude: {
-                $gte: Math.min(topLeftLatitude),
-                $lte: Math.min(topRightLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topLeftLongitude),
-                $lte: Math.min(topRightLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(topRightLatitude),
-                $lte: Math.min(bottomRightLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topRightLongitude),
-                $lte: Math.min(bottomRightLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(topRightLatitude),
-                $lte: Math.min(bottomLeftLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topRightLongitude),
-                $lte: Math.min(bottomLeftLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(bottomLeftLatitude),
-                $lte: Math.min(topLeftLatitude),
-              },
-              longitude: {
-                $gte: Math.min(bottomLeftLongitude),
-                $lte: Math.min(topLeftLongitude),
-              },
-            },
-          ],
-        }),
-        nursingHome.find({
-          $or: [
-            {
-              latitude: {
-                $gte: Math.min(topLeftLatitude),
-                $lte: Math.min(topRightLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topLeftLongitude),
-                $lte: Math.min(topRightLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(topRightLatitude),
-                $lte: Math.min(bottomRightLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topRightLongitude),
-                $lte: Math.min(bottomRightLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(topRightLatitude),
-                $lte: Math.min(bottomLeftLatitude),
-              },
-              longitude: {
-                $gte: Math.min(topRightLongitude),
-                $lte: Math.min(bottomLeftLongitude),
-              },
-            },
-            {
-              latitude: {
-                $gte: Math.min(bottomLeftLatitude),
-                $lte: Math.min(topLeftLatitude),
-              },
-              longitude: {
-                $gte: Math.min(bottomLeftLongitude),
-                $lte: Math.min(topLeftLongitude),
-              },
-            },
-          ],
-        }),
+  
+      const collections = [
+        hospital,
+        dialysisFacilityData,
+        homeHealthData,
+        hoSpiceData,
+        inpatientRehabilitiation,
+        longTermCares,
+        nursingHome,
       ];
-
+  
+      const promises = collections.map((collection) =>
+        queryRecords(collection, [topLeftLatitude, topLeftLongitude], [topRightLatitude, topRightLongitude], [bottomRightLatitude, bottomRightLongitude], [bottomLeftLatitude, bottomLeftLongitude])
+      );
+  
       const records = await Promise.all(promises);
-
+  
       const allRecords = [].concat(...records);
-
+  
       res.status(200).json(allRecords);
     } catch (err) {
       next(err);
     }
+
+    // try {
+    //   const {
+    //     topLeftLatitude,
+    //     topLeftLongitude,
+    //     topRightLatitude,
+    //     topRightLongitude,
+    //     bottomRightLatitude,
+    //     bottomRightLongitude,
+    //     bottomLeftLatitude,
+    //     bottomLeftLongitude,
+    //   } = req.body;
+
+    //   // Construct an $or query to filter based on the bounding box
+
+    //   let topLeftMaxLat = Math.min(topLeftLatitude);
+    //   let bottomLeftMaxLatitude = Math.min(bottomLeftLatitude);
+    //   let topLeftMaxLongitude = Math.min(topLeftLongitude);
+    //   let topRightMaxLongitude = Math.min(topRightLongitude);
+    //   let topRightMaxLatitude = Math.min(topRightLatitude);
+    //   let bottomRightMaxLatitude = Math.min(bottomRightLatitude);
+
+    //   console.log(topLeftMaxLat);
+    //   console.log(bottomLeftMaxLatitude);
+    //   console.log(topLeftMaxLongitude);
+    //   console.log(topRightMaxLongitude);
+    //   console.log(topRightMaxLatitude);
+    //   console.log(bottomRightMaxLatitude);
+
+    //   const promises = [
+    //     hospital.find({
+    //       $or: [
+    //         {
+    //           latitude: {
+    //             $gte: topLeftMaxLat,
+    //             $lte: bottomLeftMaxLatitude,
+    //           },
+    //           longitude: {
+    //             $gte: topLeftMaxLongitude,
+    //             $lte: topRightMaxLongitude,
+    //           },
+    //         },
+    //         {
+    //           latitude: {
+    //             $gte: topRightMaxLatitude,
+    //             $lte: bottomRightMaxLatitude,
+    //           },
+    //           longitude: {
+    //             $gte: topRightMaxLatitude,
+    //             $lte: topLeftMaxLongitude,
+    //           },
+    //         },
+    //       ],
+    //     }),
+    //     dialysisFacilityData.find({
+    //       $or: [
+    //         {
+    //           latitude: {
+    //             $gte: topLeftMaxLat,
+    //             $lte: bottomLeftMaxLatitude,
+    //           },
+    //           longitude: {
+    //             $gte: topLeftMaxLongitude,
+    //             $lte: topRightMaxLongitude,
+    //           },
+    //         },
+    //         {
+    //           latitude: {
+    //             $gte: topRightMaxLatitude,
+    //             $lte: bottomRightMaxLatitude,
+    //           },
+    //           longitude: {
+    //             $gte: topRightMaxLatitude,
+    //             $lte: topLeftMaxLongitude,
+    //           },
+    //         },
+    //       ],
+    //     }),
+    //     homeHealthData.find({
+    //       $or: [
+    //         {
+    //           latitude: {
+    //             $gte: topLeftMaxLat,
+    //             $lte: bottomLeftMaxLatitude,
+    //           },
+    //           longitude: {
+    //             $gte: topLeftMaxLongitude,
+    //             $lte: topRightMaxLongitude,
+    //           },
+    //         },
+    //         {
+    //           latitude: {
+    //             $gte: topRightMaxLatitude,
+    //             $lte: bottomRightMaxLatitude,
+    //           },
+    //           longitude: {
+    //             $gte: topRightMaxLatitude,
+    //             $lte: topLeftMaxLongitude,
+    //           },
+    //         },
+    //       ],
+    //     }),
+    //     hoSpiceData.find({
+    //       $or: [
+    //         {
+    //           latitude: {
+    //             $gte: topLeftMaxLat,
+    //             $lte: bottomLeftMaxLatitude,
+    //           },
+    //           longitude: {
+    //             $gte: topLeftMaxLongitude,
+    //             $lte: topRightMaxLongitude,
+    //           },
+    //         },
+    //         {
+    //           latitude: {
+    //             $gte: topRightMaxLatitude,
+    //             $lte: bottomRightMaxLatitude,
+    //           },
+    //           longitude: {
+    //             $gte: topRightMaxLatitude,
+    //             $lte: topLeftMaxLongitude,
+    //           },
+    //         },
+    //       ],
+    //     }),
+    //     inpatientRehabilitiation.find({
+    //       $or: [
+    //         {
+    //           latitude: {
+    //             $gte: topLeftMaxLat,
+    //             $lte: bottomLeftMaxLatitude,
+    //           },
+    //           longitude: {
+    //             $gte: topLeftMaxLongitude,
+    //             $lte: topRightMaxLongitude,
+    //           },
+    //         },
+    //         {
+    //           latitude: {
+    //             $gte: topRightMaxLatitude,
+    //             $lte: bottomRightMaxLatitude,
+    //           },
+    //           longitude: {
+    //             $gte: topRightMaxLatitude,
+    //             $lte: topLeftMaxLongitude,
+    //           },
+    //         },
+    //       ],
+    //     }),
+    //     longTermCares.find({
+    //       $or: [
+    //         {
+    //           latitude: {
+    //             $gte: topLeftMaxLat,
+    //             $lte: bottomLeftMaxLatitude,
+    //           },
+    //           longitude: {
+    //             $gte: topLeftMaxLongitude,
+    //             $lte: topRightMaxLongitude,
+    //           },
+    //         },
+    //         {
+    //           latitude: {
+    //             $gte: topRightMaxLatitude,
+    //             $lte: bottomRightMaxLatitude,
+    //           },
+    //           longitude: {
+    //             $gte: topRightMaxLatitude,
+    //             $lte: topLeftMaxLongitude,
+    //           },
+    //         },
+    //       ],
+    //     }),
+    //     nursingHome.find({
+    //       $or: [
+    //         {
+    //           latitude: {
+    //             $gte: topLeftMaxLat,
+    //             $lte: bottomLeftMaxLatitude,
+    //           },
+    //           longitude: {
+    //             $gte: topLeftMaxLongitude,
+    //             $lte: topRightMaxLongitude,
+    //           },
+    //         },
+    //         {
+    //           latitude: {
+    //             $gte: topRightMaxLatitude,
+    //             $lte: bottomRightMaxLatitude,
+    //           },
+    //           longitude: {
+    //             $gte: topRightMaxLatitude,
+    //             $lte: topLeftMaxLongitude,
+    //           },
+    //         },
+    //       ],
+    //     }),
+    //   ];
+
+    //   const records = await Promise.all(promises);
+
+    //   const allRecords = [].concat(...records);
+
+    //   res.status(200).json(allRecords);
+    // } catch (err) {
+    //   next(err);
+    // }
   },
   //find professional Records on the basis of lat and long
   findProfessionalOnTheBasisOfLatitudeAndLongitude: async (req, res, next) => {
@@ -1415,6 +1325,28 @@ const healthCareController = {
       next(err);
     }
   },
+};
+
+const queryRecords = async (collection, topLeft, topRight, bottomRight, bottomLeft) => {
+  try {
+    const records = await collection.find({
+      $or: [
+        {
+          latitude: {
+            $gte: Math.min(topLeft[0], bottomLeft[0]),
+            $lte: Math.max(topRight[0], bottomRight[0]),
+          },
+          longitude: {
+            $gte: Math.min(topLeft[1], topRight[1]),
+            $lte: Math.max(bottomLeft[1], bottomRight[1]),
+          },
+        },
+      ],
+    });
+    return records;
+  } catch (error) {
+    throw error; // You can handle errors differently if needed
+  }
 };
 
 module.exports = healthCareController;
