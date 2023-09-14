@@ -55,6 +55,6 @@ router.post('/getCorporatesUsingMongoId', healthCare.getCorporatesUsingMongoId);
 
 router.get('/getAllRecordsCategory', healthCare.getAllRecordsCategory);
 
-router.post('/getProfessionalRecordsBaseOfLatandLon', healthCare.findProfessionalOnTheBasisOfLatitudeAndLongitude);
+router.get('/getProfessionalCategory', healthCare.getProfessionalCategory);
 
 module.exports = router;

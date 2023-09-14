@@ -1039,62 +1039,25 @@ const healthCareController = {
       next(err);
     }
   },
-  //find professional Records on the basis of lat and long
-  findProfessionalOnTheBasisOfLatitudeAndLongitude: async (req, res, next) => {
+  //find all  professional Records and apply caching
+  getProfessionalCategory: async (req, res, next) => {
     try {
-      const {
-        topLeftLatitude,
-        topLeftLongitude,
-        topRightLatitude,
-        topRightLongitude,
-        bottomRightLatitude,
-        bottomRightLongitude,
-        bottomLeftLatitude,
-        bottomLeftLongitude,
-      } = req.body;
+      // const cachedData = cache.get('professionalCategory');
 
-      // Construct an $or query to filter based on the bounding box
+      // if (cachedData) {
+      //   console.log('cached');
+      //   return res.status(200).json(cachedData);
+      // }
 
-      // const promises = [
-      //   Professional.find({
-      //     'locations.latitude': {
-      //       $gte: bottomLeftLatitude,
-      //       $lte: topLeftLatitude,
-      //     },
-      //     'locations.longitude': {
-      //       $gte: topLeftLongitude,
-      //       $lte: topRightLongitude,
-      //     },
-      //   }),
-      // ];
+      const professionals = await Professional.find();
 
-      // const records = await Promise.all(promises);
+      // cache.set(
+      //   'professionalCategory',
+      //   professionals,
+      //   365 * 24 * 60 * 60 * 1000
+      // );
 
-      // const allRecords = [].concat(...records);
-
-      // res.status(200).json(allRecords);
-      const query = {
-        'locations.latitude': {
-          $gte: bottomLeftLatitude,
-          $lte: topLeftLatitude,
-        },
-        'locations.longitude': {
-          $gte: topLeftLongitude,
-          $lte: topRightLongitude,
-        },
-      };
-
-      // Find professionals matching the query and project only matching locations
-      const professionals = await Professional.find(query, {
-        'locations.$': 1,
-      });
-
-      // Extract the matching locations from the professionals
-      const matchingLocations = professionals.map(
-        (professional) => professional.locations[0]
-      );
-
-      res.status(200).json(matchingLocations);
+      return res.status(200).json(professionals);
     } catch (err) {
       next(err);
     }
