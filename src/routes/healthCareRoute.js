@@ -53,7 +53,7 @@ router.post('/getCorporatesUsingMongoId', healthCare.getCorporatesUsingMongoId);
 
 //findRecordsonthebasisoflatitudeandlongitude
 
-router.post('/getRecordsBaseOfLatandLon', healthCare.findRecordOnTheBasisOfLatitudeAndLongitude);
+router.get('/getAllRecordsCategory', healthCare.getAllRecordsCategory);
 
 router.post('/getProfessionalRecordsBaseOfLatandLon', healthCare.findProfessionalOnTheBasisOfLatitudeAndLongitude);
 
