@@ -57,4 +57,10 @@ router.get('/getAllRecordsCategory', healthCare.getAllRecordsCategory);
 
 router.get('/getProfessionalCategory', healthCare.getProfessionalCategory);
 
+//count all categories Records
+router.get('/countAllCatRecords', healthCare.countAllCatRecords);
+
+//get Record Using Category
+router.get('/getRecordsUsingCat/:cat', healthCare.getRecordsUsingCat);
+
 module.exports = router;

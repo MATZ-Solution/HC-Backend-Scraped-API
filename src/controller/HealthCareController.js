@@ -1062,6 +1062,123 @@ const healthCareController = {
       next(err);
     }
   },
+
+  //count of all categories
+  countAllCatRecords: async (req, res, next) => {
+    try {
+      const countPromises = [
+        hospital.countDocuments().lean(),
+        dialysisFacilityData.countDocuments().lean(),
+        homeHealthData.countDocuments().lean(),
+        hoSpiceData.countDocuments().lean(),
+        inpatientRehabilitiation.countDocuments().lean(),
+        longTermCares.countDocuments().lean(),
+        nursingHome.countDocuments().lean(),
+        groupPracticeData.countDocuments().lean(), // Corrected function call
+        Professional.countDocuments().lean(),
+      ];
+
+      const cachedData = cache.get('countsOfAllCat');
+
+      if (cachedData) {
+        return res.status(200).json(cachedData);
+      }
+      const [
+        countHospital,
+        countDialysisFacility,
+        countHomeHealth,
+        countHoSpice,
+        countInpatientRehab,
+        countLongTermCares,
+        countNursingHome,
+        groupPracticeCount,
+        ProfessionalCount,
+      ] = await Promise.all(countPromises);
+
+      cache.set(
+        'countsOfAllCat',
+        {
+          countHospital,
+          countDialysisFacility,
+          countHomeHealth,
+          countHoSpice,
+          countInpatientRehab,
+          countLongTermCares,
+          countNursingHome,
+          groupPracticeCount,
+          ProfessionalCount,
+        },
+        365 * 24 * 60 * 60 * 1000
+      );
+
+      res.status(200).json({
+        countHospital,
+        countDialysisFacility,
+        countHomeHealth,
+        countHoSpice,
+        countInpatientRehab,
+        countLongTermCares,
+        countNursingHome,
+        groupPracticeCount,
+        ProfessionalCount,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  //get records on the basis of categories
+  getRecordsUsingCat: async (req, res, next) => {
+    try {
+      const { cat } = req.params;
+      const cachedData = cache.get(cat);
+
+      if (cachedData) {
+        return res.status(200).json(cachedData);
+      }
+
+      let data;
+
+      switch (cat) {
+        case 'dialysisFacilityData':
+          data = await dialysisFacilityData.find().lean();
+          break;
+        case 'hospital':
+          data = await hospital.find().lean();
+          break;
+        case 'longTermCares':
+          data = await longTermCares.find().lean();
+          break;
+        case 'nursingHome':
+          data = await nursingHome.find().lean();
+          break;
+        case 'inpatientRehabilitiation':
+          data = await inpatientRehabilitiation.find().lean();
+          break;
+        case 'hoSpiceData':
+          data = await hoSpiceData.find().lean();
+          break;
+        case 'groupPracticeData':
+          data = await groupPracticeData.find().lean();
+          break;
+        case 'homeHealthData':
+          data = await homeHealthData.find().lean();
+          break;
+        case 'Professional':
+          data = await Professional.find().lean();
+          break;
+        default:
+          data = 'Invalid Category';
+          break;
+      }
+
+      // Cache the data for future requests
+      cache.set(cat, data);
+
+      return res.status(200).json(data);
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 // Function to fetch data from the database
