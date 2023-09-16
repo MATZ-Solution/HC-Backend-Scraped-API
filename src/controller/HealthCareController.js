@@ -172,7 +172,7 @@ const healthCareController = {
             result = await nursingHome.find(query).select().lean();
           } else if (categoryName === 'Long Term Cares') {
             result = await longTermCares.find(query).select().lean();
-          } else if (categoryName === 'Ho Spice') {
+          } else if (categoryName === 'Hospice') {
             result = await hoSpiceData.find(query).select().lean();
           } else if (categoryName === 'Inpatient Rehabilitiation') {
             result = await inpatientRehabilitiation.find(query).select().lean();
@@ -240,7 +240,7 @@ const healthCareController = {
           result = await nursingHome.find().lean();
         } else if (name === 'Dialysis Facility') {
           result = await dialysisFacilityData.find().lean();
-        } else if (name === 'Ho Spice') {
+        } else if (name === 'Hospice') {
           result = await hoSpiceData.find().lean();
         } else if (name === 'Inpatient Rehabilitiation') {
           result = await inpatientRehabilitiation.find().lean();
@@ -1112,15 +1112,15 @@ const healthCareController = {
       );
 
       res.status(200).json({
-        countHospital,
-        countDialysisFacility,
-        countHomeHealth,
-        countHoSpice,
-        countInpatientRehab,
-        countLongTermCares,
-        countNursingHome,
-        groupPracticeCount,
-        ProfessionalCount,
+        hospital:countHospital,
+        dialysisFacilityData:countDialysisFacility,
+        "home Health":countHomeHealth,
+        hoSpiceData:countHoSpice,
+        inpatientRehabilitiation:countInpatientRehab,
+        longTermCares:countLongTermCares,
+        nursingHome:countNursingHome,
+        groupPracticeData:groupPracticeCount,
+        professional:ProfessionalCount,
       });
     } catch (error) {
       next(error);
