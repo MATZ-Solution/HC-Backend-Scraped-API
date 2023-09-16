@@ -1098,29 +1098,29 @@ const healthCareController = {
       cache.set(
         'countsOfAllCat',
         {
-          countHospital,
-          countDialysisFacility,
-          countHomeHealth,
-          countHoSpice,
-          countInpatientRehab,
-          countLongTermCares,
-          countNursingHome,
-          groupPracticeCount,
-          ProfessionalCount,
+          hospital: countHospital,
+          dialysisFacilityData: countDialysisFacility,
+          'home Health': countHomeHealth,
+          hoSpiceData: countHoSpice,
+          inpatientRehabilitiation: countInpatientRehab,
+          longTermCares: countLongTermCares,
+          nursingHome: countNursingHome,
+          groupPracticeData: groupPracticeCount,
+          professional: ProfessionalCount,
         },
         365 * 24 * 60 * 60 * 1000
       );
 
       res.status(200).json({
-        hospital:countHospital,
-        dialysisFacilityData:countDialysisFacility,
-        "home Health":countHomeHealth,
-        hoSpiceData:countHoSpice,
-        inpatientRehabilitiation:countInpatientRehab,
-        longTermCares:countLongTermCares,
-        nursingHome:countNursingHome,
-        groupPracticeData:groupPracticeCount,
-        professional:ProfessionalCount,
+        hospital: countHospital,
+        dialysisFacilityData: countDialysisFacility,
+        'home Health': countHomeHealth,
+        hoSpiceData: countHoSpice,
+        inpatientRehabilitiation: countInpatientRehab,
+        longTermCares: countLongTermCares,
+        nursingHome: countNursingHome,
+        groupPracticeData: groupPracticeCount,
+        professional: ProfessionalCount,
       });
     } catch (error) {
       next(error);
