@@ -1163,7 +1163,7 @@ const healthCareController = {
         case 'homeHealthData':
           data = await homeHealthData.find().lean();
           break;
-        case 'Professional':
+        case 'professional':
           data = await Professional.find().lean();
           break;
         default:
