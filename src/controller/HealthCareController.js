@@ -165,7 +165,12 @@ const healthCareController = {
 
           let result = [];
           if (categoryName === 'Hospital') {
-            result = await hospital.find(query).select().lean();
+            result = await hospital
+              .find(query)
+              .select(
+                '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress'
+              )
+              .lean();
           } else if (categoryName === 'Dialysis Facility') {
             result = await dialysisFacilityData.find(query).select().lean();
           } else if (categoryName === 'Nursing Home') {
@@ -233,7 +238,12 @@ const healthCareController = {
 
         // If data is not in cache, run query the database
         if (name === 'Hospital') {
-          result = await hospital.find().lean();
+          result = await hospital
+            .find()
+            .lean()
+            .select(
+              '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress'
+            );
         } else if (name === 'Long Term Cares') {
           result = await longTermCares.find().lean();
         } else if (name === 'Nursing Home') {

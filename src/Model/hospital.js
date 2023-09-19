@@ -11,6 +11,15 @@ const addressSchema = new Schema({
   description: {
     type: String,
   },
+  emergency_services: {
+    type: Boolean,
+  },
+  meets_criteria_for_promoting_interoperability_of_ehrs: {
+    type: String,
+  },
+  hospital_ownership: {
+    type: String,
+  },
   category: {
     type: String,
   },
@@ -49,12 +58,15 @@ const addressSchema = new Schema({
     index: true,
   },
   overall_rating: {
-    type: String,
+    type: Number,
   },
   patient_survey_rating: {
     type: String,
   },
   number_of_beds: {
+    type: String,
+  },
+  county_or_parish: {
     type: String,
   },
   openingHours: {
@@ -89,4 +101,3 @@ const addressSchema = new Schema({
 const hospitals = mongoose.model('hospitalnew', addressSchema, 'hospitalnew');
 
 module.exports = hospitals;
-
