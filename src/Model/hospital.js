@@ -85,6 +85,8 @@ const addressSchema = new Schema({
   ],
 });
 
-const hospitals = mongoose.model('hospitalnew', addressSchema);
+// const hospitals = mongoose.model('hospitalnew', addressSchema);
+const hospitals = mongoose.model('hospitalnew', addressSchema, 'hospitalnew');
 
 module.exports = hospitals;
+
