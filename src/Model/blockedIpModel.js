@@ -9,9 +9,9 @@ const addressSchema = new Schema({
     type: Boolean,
   },
   expireAt: {
-    type: Date, // This field will store the expiration date/time
-    default: Date.now, // Set the default value to the current date/time
-    index: { expires: '1h' }, // Set the TTL index for automatic removal
+    type: Date,
+    default: Date.now,
+    index: { expires: '3540' },
   },
 });
 
