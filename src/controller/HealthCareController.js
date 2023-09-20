@@ -909,7 +909,7 @@ const healthCareController = {
 
   //for deletion of cities
   deleteEmptyCities: async (req, res, next) => {
-    await longTermCares.deleteMany({ state: 'Colorado' });
+    await nursingHome.deleteMany({ state: 'IN' });
     res.status(200).json('deleted');
   },
 

@@ -96,6 +96,8 @@ const addressSchema = new Schema({
   ],
 });
 
-const nursinghomes = mongoose.model('nursing homes', addressSchema);
+// const hospitals = mongoose.model('hospitalnew', addressSchema, 'hospitalnew');
+
+const nursinghomes = mongoose.model('nursingHomenew', addressSchema,'nursingHomenew');
 
 module.exports = nursinghomes;
