@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
+
 
 //routes
 const databaseConnection = require('./utils/db');
@@ -21,6 +23,15 @@ app.use(express.json()); // Parse incoming JSON data
 
 // Connect to the MongoDB database
 databaseConnection.connect();
+
+const limiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  message: 'Too many requests from this IP, please try again later.',
+});
+
+// limiter middleware to your routes
+app.use('/api', limiter);
 
 app.use('/api/healthCareRoute', healthCareRoute);
 app.use('/api/sendEmail', sendEmailRoute);

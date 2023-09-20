@@ -1153,7 +1153,12 @@ const healthCareController = {
           data = await dialysisFacilityData.find().lean();
           break;
         case 'hospital':
-          data = await hospital.find().lean();
+          data = await hospital
+            .find()
+            .lean()
+            .select(
+              '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress'
+            );
           break;
         case 'longTermCares':
           data = await longTermCares.find().lean();
@@ -1194,7 +1199,12 @@ const healthCareController = {
 // Function to fetch data from the database
 const fetchDataFromDatabase = async () => {
   const promises = [
-    hospital.find({}).lean(),
+    hospital
+      .find({})
+      .lean()
+      .select(
+        '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress'
+      ),
     dialysisFacilityData.find({}).lean(),
     homeHealthData.find({}).lean(),
     hoSpiceData.find({}).lean(),
