@@ -2,8 +2,7 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 const cors = require('cors');
-const rateLimit = require('express-rate-limit');
-
+// const rateLimit = require('express-rate-limit');
 
 //routes
 const databaseConnection = require('./utils/db');
@@ -24,14 +23,32 @@ app.use(express.json()); // Parse incoming JSON data
 // Connect to the MongoDB database
 databaseConnection.connect();
 
-const limiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 10,
-  message: 'Too many requests from this IP, please try again later.',
-});
+// const limiter = rateLimit({
+//   windowMs: 60 * 1000,
+//   max: 10,
+//   message: 'Too many requests from this IP, please try again later.',
+// });
 
 // limiter middleware to your routes
-app.use('/api', limiter);
+// app.use('/api', limiter);
+
+// app.use('/api', (req, res, next) => {
+//   // Check if the request exceeded the rate limit
+//   if (req.rateLimit.remaining === 0) {
+//     // You can take actions here, such as logging the IP address or blocking the IP.
+//     console.log(`IP ${req.ip} has exceeded the rate limit.`);
+
+//     // Respond with a custom response, e.g., a 429 status code (Too Many Requests).
+//     return res
+//       .status(429)
+//       .json({ error: 'Rate limit exceeded. Please try again later.' });
+//   }
+
+//   console.log()
+
+//   // If not exceeded, continue with the next middleware
+//   next();
+// });
 
 app.use('/api/healthCareRoute', healthCareRoute);
 app.use('/api/sendEmail', sendEmailRoute);
