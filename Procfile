@@ -1,1 +1,2 @@
-web: node src/index.js
+web: node --max-old-space-size=4096 src/index.js
+
