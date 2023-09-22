@@ -207,8 +207,8 @@ const healthCareController = {
               .select()
               .lean()
               .select(
-                '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating mainCategory'
-              );
+                '-quality_reporting'
+              )
           } else if (categoryName === 'Hospice') {
             result = await hoSpiceData.find(query).select().lean();
           } else if (categoryName === 'Inpatient Rehabilitiation') {
@@ -281,8 +281,8 @@ const healthCareController = {
             .find()
             .lean()
             .select(
-              '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating mainCategory'
-            );
+              '-quality_reporting'
+            )
         } else if (name === 'Nursing Home') {
           result = await nursingHome
             .find()
@@ -902,7 +902,7 @@ const healthCareController = {
             .find({ city })
             .lean()
             .select(
-              '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating mainCategory'
+              '-quality_reporting'
             ),
           nursingHome
             .find({ city })
@@ -1057,8 +1057,8 @@ const healthCareController = {
             })
             .lean()
             .select(
-              '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating mainCategory'
-            );
+              '-quality_reporting'
+            )
           if (longTermCaresData) {
             res.status(200).json(longTermCaresData);
           } else {
@@ -1258,8 +1258,8 @@ const healthCareController = {
             .find()
             .lean()
             .select(
-              '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating mainCategory'
-            );
+              '-quality_reporting'
+            )
           break;
         case 'nursingHome':
           data = await nursingHome
@@ -1316,7 +1316,7 @@ const fetchDataFromDatabase = async () => {
       .find({})
       .lean()
       .select(
-        '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating mainCategory'
+        '-quality_reporting'
       ),
     nursingHome
       .find({})
