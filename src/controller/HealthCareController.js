@@ -1306,7 +1306,7 @@ const fetchDataFromDatabase = async () => {
       .find({})
       .lean()
       .select(
-        '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress'
+        '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
       ),
     dialysisFacilityData.find({}).lean(),
     homeHealthData.find({}).lean(),
@@ -1316,13 +1316,13 @@ const fetchDataFromDatabase = async () => {
       .find({})
       .lean()
       .select(
-        '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating'
+        '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating mainCategory'
       ),
     nursingHome
       .find({})
       .lean()
       .select(
-        '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id'
+        '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
       ),
   ];
   const records = await Promise.all(promises);
