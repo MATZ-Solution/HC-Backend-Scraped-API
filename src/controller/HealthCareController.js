@@ -206,9 +206,7 @@ const healthCareController = {
               .find(query)
               .select()
               .lean()
-              .select(
-                '-quality_reporting'
-              )
+              .select('-quality_reporting');
           } else if (categoryName === 'Hospice') {
             result = await hoSpiceData.find(query).select().lean();
           } else if (categoryName === 'Inpatient Rehabilitiation') {
@@ -280,9 +278,7 @@ const healthCareController = {
           result = await longTermCares
             .find()
             .lean()
-            .select(
-              '-quality_reporting'
-            )
+            .select('-quality_reporting');
         } else if (name === 'Nursing Home') {
           result = await nursingHome
             .find()
@@ -898,12 +894,7 @@ const healthCareController = {
             .select(
               '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
             ),
-          longTermCares
-            .find({ city })
-            .lean()
-            .select(
-              '-quality_reporting'
-            ),
+          longTermCares.find({ city }).lean().select('-quality_reporting'),
           nursingHome
             .find({ city })
             .lean()
@@ -1056,9 +1047,7 @@ const healthCareController = {
               _id: mongoDbID,
             })
             .lean()
-            .select(
-              '-quality_reporting'
-            )
+            .select('-quality_reporting');
           if (longTermCaresData) {
             res.status(200).json(longTermCaresData);
           } else {
@@ -1254,12 +1243,7 @@ const healthCareController = {
             );
           break;
         case 'longTermCares':
-          data = await longTermCares
-            .find()
-            .lean()
-            .select(
-              '-quality_reporting'
-            )
+          data = await longTermCares.find().lean().select('-quality_reporting');
           break;
         case 'nursingHome':
           data = await nursingHome
@@ -1312,12 +1296,7 @@ const fetchDataFromDatabase = async () => {
     homeHealthData.find({}).lean(),
     hoSpiceData.find({}).lean(),
     inpatientRehabilitiation.find({}).lean(),
-    longTermCares
-      .find({})
-      .lean()
-      .select(
-        '-quality_reporting'
-      ),
+    longTermCares.find({}).lean().select('-quality_reporting'),
     nursingHome
       .find({})
       .lean()
