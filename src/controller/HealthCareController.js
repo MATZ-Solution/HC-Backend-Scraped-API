@@ -188,7 +188,7 @@ const healthCareController = {
             result = await hospital
               .find(query)
               .select(
-                '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress'
+                '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
               )
               .lean();
           } else if (categoryName === 'Dialysis Facility') {
