@@ -794,7 +794,8 @@ const healthCareController = {
       const { mongoDbID, category, name, email, complain, phoneNumber } =
         req.body;
 
-      const apiUrl = `http://healthcarebackend-env.eba-pmas6jv8.ap-south-1.elasticbeanstalk.com/api/corporate/addComplainId`;
+      // const apiUrl = `http://healthcarebackend-env.eba-pmas6jv8.ap-south-1.elasticbeanstalk.com/api/corporate/addComplainId`;
+      const apiUrl = process.env.apiUrl;
 
       const requestData = {
         mongoDbID,
