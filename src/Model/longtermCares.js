@@ -2,6 +2,23 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const addressSchema = new Schema({
+  //new fields
+  county_or_parish: {
+    type: String,
+  },
+  hospital_ownership: {
+    type: String,
+  },
+  emergency_services: {
+    type: Boolean,
+  },
+  meets_criteria_for_promoting_interoperability_of_ehrs: {
+    type: Boolean,
+  },
+  overall_rating: {
+    type: Number,
+  },
+  //new fields end
   name: {
     type: String,
   },

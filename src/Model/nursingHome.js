@@ -2,6 +2,44 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const addressSchema = new Schema({
+  //new added field
+  cms_certification_number: {
+    type: String,
+  },
+  provider_ssa_county_code: {
+    type: Number,
+  },
+  county_or_parish: {
+    type: String,
+  },
+  ownership_type: {
+    type: String,
+  },
+  average_number_of_residents_per_day: {
+    type: Number,
+  },
+  average_number_of_residents_per_day_footnote: {
+    type: String,
+  },
+  provider_type: {
+    type: String,
+  },
+  provider_resides_in_hospital: {
+    type: Boolean,
+  },
+  legal_business_name: {
+    type: String,
+  },
+  date_first_approved_to_provide_medicare_and_medicaid_services: {
+    type: String,
+  },
+  affiliated_entity_name: {
+    type: String,
+  },
+  affiliated_entity_id: {
+    type: Number,
+  },
+  //new added field end
   name: {
     type: String,
   },
@@ -98,6 +136,10 @@ const addressSchema = new Schema({
 
 // const hospitals = mongoose.model('hospitalnew', addressSchema, 'hospitalnew');
 
-const nursinghomes = mongoose.model('nursingHomenew', addressSchema,'nursingHomenew');
+const nursinghomes = mongoose.model(
+  'nursingHomenew',
+  addressSchema,
+  'nursingHomenew'
+);
 
 module.exports = nursinghomes;

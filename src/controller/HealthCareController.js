@@ -75,10 +75,30 @@ const healthCareController = {
   },
   updateData: async (req, res, next) => {
     try {
-      const updateCategory = await Professional.updateMany({
-        mainCategory: 'professional',
-      });
-      res.status(200).json(updateCategory);
+      console.log('run');
+      const updateCategories = await hospital
+        .find({ state: 'Wyoming' })
+        .lean()
+        .select('zipCode latitude longitude');
+      console.log(updateCategories.length);
+
+      // Loop through the documents and update the "zipCode" field
+      for (const category of updateCategories) {
+        console.log('category.zipCode', category._id);
+        category.zipCode = category.zipCode.toString();
+        category.latitude = category.latitude.toString();
+        category.longitude = category.longitude.toString();
+        await hospital.findByIdAndUpdate(category._id, {
+          $set: {
+            zipCode: category.zipCode,
+            latitude: category.latitude,
+            longitude: category.longitude,
+            mainCategory: 'hospital',
+          },
+        });
+      }
+
+      res.status(200).json(updateCategories);
     } catch (error) {
       next(error);
     }
@@ -174,9 +194,21 @@ const healthCareController = {
           } else if (categoryName === 'Dialysis Facility') {
             result = await dialysisFacilityData.find(query).select().lean();
           } else if (categoryName === 'Nursing Home') {
-            result = await nursingHome.find(query).select().lean();
+            result = await nursingHome
+              .find(query)
+              .select()
+              .lean()
+              .select(
+                '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
+              );
           } else if (categoryName === 'Long Term Cares') {
-            result = await longTermCares.find(query).select().lean();
+            result = await longTermCares
+              .find(query)
+              .select()
+              .lean()
+              .select(
+                '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating mainCategory'
+              );
           } else if (categoryName === 'Hospice') {
             result = await hoSpiceData.find(query).select().lean();
           } else if (categoryName === 'Inpatient Rehabilitiation') {
@@ -242,12 +274,22 @@ const healthCareController = {
             .find()
             .lean()
             .select(
-              '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress'
+              '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
             );
         } else if (name === 'Long Term Cares') {
-          result = await longTermCares.find().lean();
+          result = await longTermCares
+            .find()
+            .lean()
+            .select(
+              '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating mainCategory'
+            );
         } else if (name === 'Nursing Home') {
-          result = await nursingHome.find().lean();
+          result = await nursingHome
+            .find()
+            .lean()
+            .select(
+              '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
+            );
         } else if (name === 'Dialysis Facility') {
           result = await dialysisFacilityData.find().lean();
         } else if (name === 'Hospice') {
@@ -430,7 +472,12 @@ const healthCareController = {
       } else if (name === 'longTermCares') {
         let result;
         if (state || city || zipCode) {
-          result = await longTermCares.find(query).lean();
+          result = await longTermCares
+            .find(query)
+            .lean()
+            .select(
+              '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating mainCategory'
+            );
           res.status(200).json(result);
         } else {
           result = 'wrong parameter';
@@ -529,13 +576,28 @@ const healthCareController = {
 
       switch (category) {
         case 'hospital':
-          data = await hospital.findOne({ _id: mongoDbID });
+          data = await hospital
+            .findOne({ _id: mongoDbID })
+            .lean()
+            .select(
+              '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
+            );
           break;
         case 'longTermCares':
-          data = await longTermCares.findOne({ _id: mongoDbID });
+          data = await longTermCares
+            .findOne({ _id: mongoDbID })
+            .lean()
+            .select(
+              '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating mainCategory'
+            );
           break;
         case 'nursingHome': // Both use the same model
-          data = await nursingHome.findOne({ _id: mongoDbID });
+          data = await nursingHome
+            .findOne({ _id: mongoDbID })
+            .lean()
+            .select(
+              '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
+            );
           break;
         case 'dialysisFacilityData': // Both use the same model
           data = await dialysisFacilityData.findOne({ _id: mongoDbID });
@@ -829,9 +891,24 @@ const healthCareController = {
     try {
       if (city) {
         const allData = await Promise.all([
-          hospital.find({ city }).lean(),
-          longTermCares.find({ city }).lean(),
-          nursingHome.find({ city }).lean(),
+          hospital
+            .find({ city })
+            .lean()
+            .select(
+              '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
+            ),
+          longTermCares
+            .find({ city })
+            .lean()
+            .select(
+              '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating mainCategory'
+            ),
+          nursingHome
+            .find({ city })
+            .lean()
+            .select(
+              '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
+            ),
           dialysisFacilityData.find({ city }).lean(),
           hoSpiceData.find({ city }).lean(),
           homeHealthData.find({ city }).lean(),
@@ -870,10 +947,10 @@ const healthCareController = {
           longTermCares.find({ city: 'Andalusia' }).lean(),
           nursingHome.find({ city: 'Andalusia' }).lean(),
           dialysisFacilityData.find({ city: 'Andalusia' }).lean(),
-          hoSpiceData.find({ city }).lean(),
-          homeHealthData.find({ city }).lean(),
-          inpatientRehabilitiation.find({ city }).lean(),
-          groupPracticeData.find({ city }).lean(),
+          hoSpiceData.find({ city: 'Andalusia' }).lean(),
+          homeHealthData.find({ city: 'Andalusia' }).lean(),
+          inpatientRehabilitiation.find({ city: 'Andalusia' }).lean(),
+          groupPracticeData.find({ city: 'Andalusia' }).lean(),
         ]);
 
         let filterData = allData.flat();
@@ -909,7 +986,7 @@ const healthCareController = {
 
   //for deletion of cities
   deleteEmptyCities: async (req, res, next) => {
-    await nursingHome.deleteMany({ state: 'IN' });
+    await hospital.deleteMany({ state: 'North Dakota' });
     res.status(200).json('deleted');
   },
 
@@ -934,7 +1011,12 @@ const healthCareController = {
 
       switch (category) {
         case 'hospital':
-          const hospitalData = await hospital.findOne({ _id: mongoDbID });
+          const hospitalData = await hospital
+            .findOne({ _id: mongoDbID })
+            .lean()
+            .select(
+              '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
+            );
           if (hospitalData) {
             res.status(200).json(hospitalData);
           } else {
@@ -954,7 +1036,12 @@ const healthCareController = {
           break;
 
         case 'nursingHome':
-          const nursingHomeData = await nursingHome.findOne({ _id: mongoDbID });
+          const nursingHomeData = await nursingHome
+            .findOne({ _id: mongoDbID })
+            .lean()
+            .select(
+              '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
+            );
           if (nursingHomeData) {
             res.status(200).json(nursingHomeData);
           } else {
@@ -963,9 +1050,14 @@ const healthCareController = {
           break;
 
         case 'longTermCares':
-          const longTermCaresData = await longTermCares.findOne({
-            _id: mongoDbID,
-          });
+          const longTermCaresData = await longTermCares
+            .findOne({
+              _id: mongoDbID,
+            })
+            .lean()
+            .select(
+              '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating mainCategory'
+            );
           if (longTermCaresData) {
             res.status(200).json(longTermCaresData);
           } else {
@@ -1157,14 +1249,24 @@ const healthCareController = {
             .find()
             .lean()
             .select(
-              '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress'
+              '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
             );
           break;
         case 'longTermCares':
-          data = await longTermCares.find().lean();
+          data = await longTermCares
+            .find()
+            .lean()
+            .select(
+              '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating mainCategory'
+            );
           break;
         case 'nursingHome':
-          data = await nursingHome.find().lean();
+          data = await nursingHome
+            .find()
+            .lean()
+            .select(
+              '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
+            );
           break;
         case 'inpatientRehabilitiation':
           data = await inpatientRehabilitiation.find().lean();
@@ -1209,8 +1311,18 @@ const fetchDataFromDatabase = async () => {
     homeHealthData.find({}).lean(),
     hoSpiceData.find({}).lean(),
     inpatientRehabilitiation.find({}).lean(),
-    longTermCares.find({}).lean(),
-    nursingHome.find({}).lean(),
+    longTermCares
+      .find({})
+      .lean()
+      .select(
+        '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating'
+      ),
+    nursingHome
+      .find({})
+      .lean()
+      .select(
+        '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id'
+      ),
   ];
   const records = await Promise.all(promises);
   return [].concat(...records);
