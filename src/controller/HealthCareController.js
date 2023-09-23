@@ -75,16 +75,14 @@ const healthCareController = {
   },
   updateData: async (req, res, next) => {
     try {
-      console.log('run');
       const updateCategories = await hospital
-        .find({ state: 'Wyoming' })
+        .find({ state: 'DC' })
         .lean()
-        .select('zipCode latitude longitude');
-      console.log(updateCategories.length);
+        .select('zipCode latitude longitude state');
 
       // Loop through the documents and update the "zipCode" field
       for (const category of updateCategories) {
-        console.log('category.zipCode', category._id);
+        category.state = 'District of Columbia (DC)';
         category.zipCode = category.zipCode.toString();
         category.latitude = category.latitude.toString();
         category.longitude = category.longitude.toString();
@@ -93,6 +91,7 @@ const healthCareController = {
             zipCode: category.zipCode,
             latitude: category.latitude,
             longitude: category.longitude,
+            state: category.state,
             mainCategory: 'hospital',
           },
         });
@@ -1009,22 +1008,15 @@ const healthCareController = {
             .select(
               '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
             );
-          if (hospitalData) {
-            res.status(200).json(hospitalData);
-          } else {
-            res.status(404).json({ message: 'Not Found' });
-          }
+          res.status(200).json(hospitalData);
           break;
 
         case 'inpatientRehabilitiation':
           const rehabData = await inpatientRehabilitiation.findOne({
             _id: mongoDbID,
           });
-          if (rehabData) {
-            res.status(200).json(rehabData);
-          } else {
-            res.status(404).json({ message: 'Not Found' });
-          }
+          res.status(200).json(rehabData);
+
           break;
 
         case 'nursingHome':
@@ -1034,11 +1026,7 @@ const healthCareController = {
             .select(
               '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
             );
-          if (nursingHomeData) {
-            res.status(200).json(nursingHomeData);
-          } else {
-            res.status(404).json({ message: 'Not Found' });
-          }
+          res.status(200).json(nursingHomeData);
           break;
 
         case 'longTermCares':
@@ -1048,59 +1036,39 @@ const healthCareController = {
             })
             .lean()
             .select('-quality_reporting');
-          if (longTermCaresData) {
-            res.status(200).json(longTermCaresData);
-          } else {
-            res.status(404).json({ message: 'Not Found' });
-          }
+          res.status(200).json(longTermCaresData);
+
           break;
 
         case 'hoSpiceData':
           const hoSpice = await hoSpiceData.findOne({ _id: mongoDbID });
-          if (hoSpice) {
-            res.status(200).json(hoSpice);
-          } else {
-            res.status(404).json({ message: 'Not Found' });
-          }
+          res.status(200).json(hoSpice);
           break;
 
         case 'home Health':
           const homeHealth = await homeHealthData.findOne({ _id: mongoDbID });
-          if (homeHealth) {
-            res.status(200).json(homeHealth);
-          } else {
-            res.status(404).json({ message: 'Not Found' });
-          }
+          res.status(200).json(homeHealth);
+
           break;
         case 'groupPracticeData':
           const groupPractice = await groupPracticeData.findOne({
             _id: mongoDbID,
           });
-          if (groupPractice) {
-            res.status(200).json(groupPractice);
-          } else {
-            res.status(404).json({ message: 'Not Found' });
-          }
+          res.status(200).json(groupPractice);
+
           break;
         case 'dialysisFacilityData':
           const dialysisFacility = await dialysisFacilityData.findOne({
             _id: mongoDbID,
           });
-          if (dialysisFacility) {
-            res.status(200).json(dialysisFacility);
-          } else {
-            res.status(404).json({ message: 'Not Found' });
-          }
+          res.status(200).json(dialysisFacility);
+
           break;
         case 'professional':
           const professionalData = await Professional.findOne({
             'locations._id': mongoDbID,
           });
-          if (professionalData) {
-            res.status(200).json(professionalData);
-          } else {
-            res.status(404).json({ message: 'Professional Not Found' });
-          }
+          res.status(200).json(professionalData);
           break;
         default:
           res.status(400).json({ message: 'Invalid category' });
