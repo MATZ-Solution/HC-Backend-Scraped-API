@@ -75,7 +75,7 @@ const healthCareController = {
   },
   updateData: async (req, res, next) => {
     try {
-      const updateCategories = await hospital
+      const updateCategories = await longTermCares
         .find({ state: 'DC' })
         .lean()
         .select('zipCode latitude longitude state');
@@ -86,7 +86,7 @@ const healthCareController = {
         category.zipCode = category.zipCode.toString();
         category.latitude = category.latitude.toString();
         category.longitude = category.longitude.toString();
-        await hospital.findByIdAndUpdate(category._id, {
+        await longTermCares.findByIdAndUpdate(category._id, {
           $set: {
             zipCode: category.zipCode,
             latitude: category.latitude,
@@ -567,7 +567,7 @@ const healthCareController = {
     try {
       const { mongoDbID, category } = req.body;
 
-      let data = null;
+      let data = "null";
 
       switch (category) {
         case 'hospital':
@@ -606,7 +606,7 @@ const healthCareController = {
         case 'groupPracticeData': // Both use the same model
           data = await groupPracticeData.findOne({ _id: mongoDbID });
           break;
-        case 'homeHealthData': // Both use the same model
+        case 'home Health': // Both use the same model
           data = await homeHealthData.findOne({ _id: mongoDbID });
           break;
         case 'professional': // Both use the same model
@@ -616,11 +616,7 @@ const healthCareController = {
           return res.status(400).json('Invalid category');
       }
 
-      if (data) {
-        res.status(200).json(data);
-      } else {
-        res.status(404).json('No Data Found');
-      }
+      res.status(200).json(data);
     } catch (err) {
       next(err);
     }
@@ -1269,7 +1265,7 @@ const fetchDataFromDatabase = async () => {
       .find({})
       .lean()
       .select(
-        '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
+        '_id cms_certification_number name latitude longitude fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
       ),
   ];
   const records = await Promise.all(promises);
