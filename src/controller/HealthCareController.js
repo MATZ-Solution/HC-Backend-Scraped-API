@@ -1034,10 +1034,10 @@ const healthCareController = {
           homeHealthData.find({ city }).lean(),
           inpatientRehabilitiation.find({ city }).lean(),
           groupPracticeData.find({ city }).lean(),
-          independentLiving.find({ city }).lean(),
-          memoryCare.find({ city }).lean(),
-          inHomeCare.find({ city }).lean(),
-          assistedLiving.find({ city }).lean(),
+          // independentLiving.find({ city }).lean(),
+          // memoryCare.find({ city }).lean(),
+          // inHomeCare.find({ city }).lean(),
+          // assistedLiving.find({ city }).lean(),
         ]);
 
         let filterData = allData.flat();
@@ -1075,10 +1075,10 @@ const healthCareController = {
           homeHealthData.find({ city: 'Andalusia' }).lean(),
           inpatientRehabilitiation.find({ city: 'Andalusia' }).lean(),
           groupPracticeData.find({ city: 'Andalusia' }).lean(),
-          independentLiving.find({ city: 'Andalusia' }).lean(),
-          memoryCare.find({ city: 'Andalusia' }).lean(),
-          inHomeCare.find({ city: 'Andalusia' }).lean(),
-          assistedLiving.find({ city: 'Andalusia' }).lean(),
+          // independentLiving.find({ city: 'Andalusia' }).lean(),
+          // memoryCare.find({ city: 'Andalusia' }).lean(),
+          // inHomeCare.find({ city: 'Andalusia' }).lean(),
+          // assistedLiving.find({ city: 'Andalusia' }).lean(),
         ]);
 
         let filterData = allData.flat();
