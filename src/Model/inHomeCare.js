@@ -101,6 +101,6 @@ const americanFamilyCareSchema = new mongoose.Schema({
   },
 });
 
-const AmericanFamilyCare = mongoose.model('AmericanFamilyCare', americanFamilyCareSchema);
+const inHomeCare = mongoose.model('inHomeCare', americanFamilyCareSchema,'inHomeCare');
 
-module.exports = AmericanFamilyCare;
+module.exports = inHomeCare;
