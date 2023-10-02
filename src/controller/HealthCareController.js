@@ -309,14 +309,14 @@ const healthCareController = {
         } else if (name === 'Home Health') {
           result = await homeHealthData.find().lean();
         } else if (name === 'Independent Living') {
-          result = await independentLiving.find({ zipCode: '35613' }).lean();
+          result = await independentLiving.find().lean();
         } else if (name === 'Memory Care') {
-          result = await memoryCare.find({ zipCode: '35951' }).lean();
+          result = await memoryCare.find().lean();
         } else if (name === 'In Home Care') {
-          result = await inHomeCare.find({zipCode:"36830"}).lean();
+          result = await inHomeCare.find().lean();
         } else if (name === 'Assisted Living') {
           result = await assistedLiving
-            .find({ zipCode: '35951', latitude: '34.2889' })
+            .find()
             .lean();
         } else {
           res.status(200).json('wrong parameter');
@@ -1075,10 +1075,10 @@ const healthCareController = {
           homeHealthData.find({ city: 'Andalusia' }).lean(),
           inpatientRehabilitiation.find({ city: 'Andalusia' }).lean(),
           groupPracticeData.find({ city: 'Andalusia' }).lean(),
-          // independentLiving.find({ city: 'Andalusia' }).lean(),
-          // memoryCare.find({ city: 'Andalusia' }).lean(),
-          // inHomeCare.find({ city: 'Andalusia' }).lean(),
-          // assistedLiving.find({ city: 'Andalusia' }).lean(),
+          independentLiving.find({ city: 'Andalusia' }).lean(),
+          memoryCare.find({ city: 'Andalusia' }).lean(),
+          inHomeCare.find({ city: 'Andalusia' }).lean(),
+          assistedLiving.find({ city: 'Andalusia' }).lean(),
         ]);
 
         let filterData = allData.flat();
@@ -1429,7 +1429,6 @@ const healthCareController = {
   },
   fetchNewNursingHomeRecords: async (req, res, next) => {
     try {
-      console.log('run');
       const nursingHomeRecords = await nursingHomeNew.find({
         _id: '651aa08a532f852b79a48d45',
       });

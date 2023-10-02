@@ -82,7 +82,7 @@ const americanFamilyCareSchema = new mongoose.Schema({
       reviewer_count: Number,
     },
   ],
-  reviews: {
+  reviewss: {
     type: reviewSchema,
     default: {},
   },
