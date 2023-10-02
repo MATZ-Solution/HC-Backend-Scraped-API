@@ -308,13 +308,15 @@ const healthCareController = {
         } else if (name === 'Home Health') {
           result = await homeHealthData.find().lean();
         } else if (name === 'Independent Living') {
-          result[0] = await independentLiving.find().lean();
+          result = await independentLiving.find({ zipCode: '35613' }).lean();
         } else if (name === 'memory Care') {
-          result[0] = await memoryCare.find().lean();
+          result = await memoryCare.find({ zipCode: '35951' }).lean();
         } else if (categoryName === 'In Home Care') {
-          result[0] = await inHomeCare.find().lean();
+          result = await inHomeCare.find({ zipCode: '35213' }).lean();
         } else if (categoryName === 'Assisted Living') {
-          result[0] = await assistedLiving.find().lean();
+          result = await assistedLiving
+            .find({ zipCode: '35951', latitude: '34.2889' })
+            .lean();
         } else {
           res.status(200).json('wrong parameter');
           return;
@@ -558,6 +560,7 @@ const healthCareController = {
         }
       } else if (name === 'Independent Living') {
         result = await independentLiving.find(query).lean();
+        res.status(200).json({ independentLiving: result });
       } else if (name === 'Memory Care') {
         result = await memoryCare.find(query).lean();
       } else if (name === 'In Home Care') {
