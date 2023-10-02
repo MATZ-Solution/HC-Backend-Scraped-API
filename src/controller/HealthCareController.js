@@ -312,9 +312,9 @@ const healthCareController = {
           result = await independentLiving.find({ zipCode: '35613' }).lean();
         } else if (name === 'memory Care') {
           result = await memoryCare.find({ zipCode: '35951' }).lean();
-        } else if (categoryName === 'In Home Care') {
+        } else if (name === 'In Home Care') {
           result = await inHomeCare.find({ zipCode: '35213' }).lean();
-        } else if (categoryName === 'Assisted Living') {
+        } else if (name === 'Assisted Living') {
           result = await assistedLiving
             .find({ zipCode: '35951', latitude: '34.2889' })
             .lean();
