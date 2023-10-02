@@ -315,9 +315,7 @@ const healthCareController = {
         } else if (name === 'In Home Care') {
           result = await inHomeCare.find().lean();
         } else if (name === 'Assisted Living') {
-          result = await assistedLiving
-            .find()
-            .lean();
+          result = await assistedLiving.find().lean();
         } else {
           res.status(200).json('wrong parameter');
           return;
