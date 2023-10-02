@@ -310,7 +310,7 @@ const healthCareController = {
           result = await homeHealthData.find().lean();
         } else if (name === 'Independent Living') {
           result = await independentLiving.find({ zipCode: '35613' }).lean();
-        } else if (name === 'memory Care') {
+        } else if (name === 'Memory Care') {
           result = await memoryCare.find({ zipCode: '35951' }).lean();
         } else if (name === 'In Home Care') {
           result = await inHomeCare.find({ zipCode: '35213' }).lean();
