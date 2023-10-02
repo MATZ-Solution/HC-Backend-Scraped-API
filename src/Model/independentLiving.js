@@ -87,6 +87,10 @@ const IndependentLivingSchema = new mongoose.Schema({
   },
 });
 
-const independentLiving = mongoose.model('IndependentLivingSchema', IndependentLivingSchema);
+const independentLiving = mongoose.model(
+  'independentLiving',
+  IndependentLivingSchema,
+  'independentLiving'
+);
 
 module.exports = independentLiving;

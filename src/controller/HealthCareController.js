@@ -217,7 +217,9 @@ const healthCareController = {
           } else if (categoryName === 'Home Health') {
             result = await homeHealthData.find(query).select().lean();
           } else if (categoryName === 'Independent Living') {
+            console.log('run')
             result = await independentLiving.find(query).select().lean();
+            console.log("result",result)
           } else if (categoryName === 'Memory Care') {
             result = await memoryCare.find(query).lean();
           }
