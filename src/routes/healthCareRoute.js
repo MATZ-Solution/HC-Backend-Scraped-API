@@ -63,4 +63,10 @@ router.get('/countAllCatRecords', healthCare.countAllCatRecords);
 //get Record Using Category
 router.get('/getRecordsUsingCat/:cat', healthCare.getRecordsUsingCat);
 
+//fetch new Nursing Home Records
+router.get(
+  '/fetchNewNursingHomeRecords',
+  healthCare.fetchNewNursingHomeRecords
+);
+
 module.exports = router;

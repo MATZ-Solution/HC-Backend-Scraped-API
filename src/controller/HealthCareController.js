@@ -12,6 +12,7 @@ const independentLiving = require('../Model/independentLiving');
 const memoryCare = require('../Model/memoryCareModel');
 const inHomeCare = require('../Model/inHomeCare');
 const assistedLiving = require('../Model/assistedLiving');
+const nursingHomeNew = require('../Model/nursingHomeNewMode');
 const Otp = require('../Model/Otp');
 const axios = require('axios');
 // const Doctor = require("../Model/professional");
@@ -1422,6 +1423,17 @@ const healthCareController = {
       cache.set(cat, data);
 
       return res.status(200).json(data);
+    } catch (error) {
+      next(error);
+    }
+  },
+  fetchNewNursingHomeRecords: async (req, res, next) => {
+    try {
+      console.log('run');
+      const nursingHomeRecords = await nursingHomeNew.find({
+        _id: '651aa08a532f852b79a48d45',
+      });
+      res.status(200).json(nursingHomeRecords);
     } catch (error) {
       next(error);
     }
