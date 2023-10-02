@@ -1429,9 +1429,7 @@ const healthCareController = {
   },
   fetchNewNursingHomeRecords: async (req, res, next) => {
     try {
-      const nursingHomeRecords = await nursingHomeNew.find({
-        _id: '651aa08a532f852b79a48d45',
-      });
+      const nursingHomeRecords = await nursingHomeNew.find();
       res.status(200).json(nursingHomeRecords);
     } catch (error) {
       next(error);
