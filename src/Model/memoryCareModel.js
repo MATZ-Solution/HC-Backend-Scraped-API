@@ -126,6 +126,6 @@ const memoryCareSchema = new mongoose.Schema({
   },
 });
 
-const memoryCare = mongoose.model('memoryCare', memoryCareSchema);
+const memoryCare = mongoose.model('memoryCare', memoryCareSchema, 'memoryCare');
 
 module.exports = memoryCare;
