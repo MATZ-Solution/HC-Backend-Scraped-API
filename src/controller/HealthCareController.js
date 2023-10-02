@@ -10,6 +10,8 @@ const homeHealthData = require('../Model/homeHealth');
 const Professional = require('../Model/professional');
 const independentLiving = require('../Model/independentLiving');
 const memoryCare = require('../Model/memoryCareModel');
+const inHomeCare = require('../Model/inHomeCare');
+const assistedLiving = require('../Model/assistedLiving');
 const Otp = require('../Model/Otp');
 const axios = require('axios');
 // const Doctor = require("../Model/professional");
@@ -217,9 +219,13 @@ const healthCareController = {
           } else if (categoryName === 'Home Health') {
             result = await homeHealthData.find(query).select().lean();
           } else if (categoryName === 'Independent Living') {
-            result = await independentLiving.find(query).select().lean();
+            result[0] = await independentLiving.find(query).select().lean();
           } else if (categoryName === 'Memory Care') {
-            result = await memoryCare.find(query).lean();
+            result[0] = await memoryCare.find(query).lean();
+          } else if (categoryName === 'In Home Care') {
+            result[0] = await inHomeCare.find(query).lean();
+          } else if (categoryName === 'Assisted Living') {
+            result[0] = await assistedLiving.find(query).lean();
           }
 
           // calculate average rating
@@ -302,9 +308,13 @@ const healthCareController = {
         } else if (name === 'Home Health') {
           result = await homeHealthData.find().lean();
         } else if (name === 'Independent Living') {
-          result = await independentLiving.find().lean();
+          result[0] = await independentLiving.find().lean();
         } else if (name === 'memory Care') {
-          result = await memoryCare.find().lean();
+          result[0] = await memoryCare.find().lean();
+        } else if (categoryName === 'In Home Care') {
+          result[0] = await inHomeCare.find().lean();
+        } else if (categoryName === 'Assisted Living') {
+          result[0] = await assistedLiving.find().lean();
         } else {
           res.status(200).json('wrong parameter');
           return;
@@ -363,12 +373,25 @@ const healthCareController = {
             .select('state city zipCode')
             .lean();
         } else if (categoryName === 'Independent Living') {
-          result = await independentLiving
+          result[0] = await independentLiving
             .find()
             .select('state city zipCode')
             .lean();
         } else if (categoryName === 'Memory Care') {
-          result = await memoryCare.find().select('state city zipCode').lean();
+          result[0] = await memoryCare
+            .find()
+            .select('state city zipCode')
+            .lean();
+        } else if (categoryName === 'In Home Care') {
+          result[0] = await inHomeCare
+            .find()
+            .select('state city zipCode')
+            .lean();
+        } else if (categoryName === 'Assisted Living') {
+          result[0] = await assistedLiving
+            .find()
+            .select('state city zipCode')
+            .lean();
         } else {
           res.status(200).json('wrong parameter');
           return;
@@ -426,6 +449,16 @@ const healthCareController = {
                 .lean();
             } else if (categoryName === 'Memory Care') {
               result = await memoryCare
+                .find()
+                .select('state city zipCode')
+                .lean();
+            } else if (categoryName === 'In Home Care') {
+              result = await inHomeCare
+                .find()
+                .select('state city zipCode')
+                .lean();
+            } else if (categoryName === 'Assisted Living') {
+              result = await assistedLiving
                 .find()
                 .select('state city zipCode')
                 .lean();
@@ -527,6 +560,10 @@ const healthCareController = {
         result = await independentLiving.find(query).lean();
       } else if (name === 'Memory Care') {
         result = await memoryCare.find(query).lean();
+      } else if (name === 'In Home Care') {
+        result = await inHomeCare.find().select(query).lean();
+      } else if (name === 'Assisted Living') {
+        result = await assistedLiving.find().select(query).lean();
       } else {
         res.status(200).json('Wrong Category');
       }
@@ -547,6 +584,8 @@ const healthCareController = {
         'Home Health',
         'Independent Living',
         'Memory Care',
+        'In Home Care',
+        'Assisted Living',
       ];
 
       res.status(200).json(categoryName);
@@ -649,6 +688,13 @@ const healthCareController = {
           data = await independentLiving.find({ _id: mongoDbID }).lean();
         case 'Memory Care':
           data = await memoryCare.find({ _id: mongoDbID }).lean();
+        case 'In Home Care': {
+          data = await inHomeCare.find({ _id: mongoDbID }).lean();
+        }
+        case 'Assisted Living': {
+          data = await assistedLiving.find({ _id: mongoDbID }).lean();
+        }
+
         default:
           return res.status(400).json('Invalid category');
       }
@@ -731,11 +777,25 @@ const healthCareController = {
             { _id: mongoDbID },
             { $inc: { contactedCustomer: 1 } }
           );
+          break;
         case 'Memory Care':
           await memoryCare.updateOne(
             { _id: mongoDbID },
             { $inc: { contactedCustomer: 1 } }
           );
+          break;
+        case 'In Home Care':
+          await inHomeCare.updateOne(
+            { _id: mongoDbID },
+            { $inc: { contactedCustomer: 1 } }
+          );
+          break;
+        case 'Assisted Living':
+          await assistedLiving.updateOne(
+            { _id: mongoDbID },
+            { $inc: { contactedCustomer: 1 } }
+          );
+
         default:
           res.status(400).json({ success: false, message: 'Invalid category' });
       }
@@ -828,6 +888,20 @@ const healthCareController = {
           );
           res.status(200).json({ success: true, message: 'Updated' });
           break;
+        case 'In Home Care':
+          await inHomeCare.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { reviews: { name, email, reviews, startRating } } },
+            { new: true }
+          );
+          res.status(200).json({ success: true, message: 'Updated' });
+          break;
+        case 'Assisted Living':
+          await assistedLiving.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { reviews: { name, email, reviews, startRating } } },
+            { new: true }
+          );
         default:
           res.status(400).json({ success: false, message: 'Invalid category' });
       }
@@ -958,6 +1032,8 @@ const healthCareController = {
           groupPracticeData.find({ city }).lean(),
           independentLiving.find({ city }).lean(),
           memoryCare.find({ city }).lean(),
+          inHomeCare.find({ city }).lean(),
+          assistedLiving.find({ city }).lean(),
         ]);
 
         let filterData = allData.flat();
@@ -997,6 +1073,8 @@ const healthCareController = {
           groupPracticeData.find({ city: 'Andalusia' }).lean(),
           independentLiving.find({ city: 'Andalusia' }).lean(),
           memoryCare.find({ city: 'Andalusia' }).lean(),
+          inHomeCare.find({ city: 'Andalusia' }).lean(),
+          assistedLiving.find({ city: 'Andalusia' }).lean(),
         ]);
 
         let filterData = allData.flat();
@@ -1134,6 +1212,13 @@ const healthCareController = {
         case 'Memory Care':
           const memory = await memoryCare.findOne({ _id: mongoDbID });
           res.status(200).json(memory);
+          break;
+        case 'In Home Care':
+          const inhomecare = await inHomeCare.findOne({ _id: mongoDbID });
+          res.status(200).json(inhomecare);
+        case 'Assisted Living':
+          const assLiv = await assistedLiving.findOne({ _id: mongoDbID });
+          res.status(200).json(assLiv);
         default:
           res.status(400).json({ message: 'Invalid category' });
           break;
@@ -1202,6 +1287,8 @@ const healthCareController = {
         Professional.countDocuments().lean(),
         independentLiving.countDocuments().lean(),
         memoryCare.countDocuments().lean(),
+        inHomeCare.countDocuments().lean(),
+        assistedLiving.countDocuments().lean(),
       ];
 
       const cachedData = cache.get('countsOfAllCat');
@@ -1221,6 +1308,8 @@ const healthCareController = {
         ProfessionalCount,
         independentLiving,
         memoryCare,
+        inHomeCare,
+        assistedLiving,
       ] = await Promise.all(countPromises);
 
       cache.set(
@@ -1237,6 +1326,8 @@ const healthCareController = {
           professional: ProfessionalCount,
           independentLiving,
           memoryCare,
+          inHomeCare,
+          assistedLiving,
         },
         365 * 24 * 60 * 60 * 1000
       );
@@ -1253,6 +1344,8 @@ const healthCareController = {
         professional: ProfessionalCount,
         independentLiving,
         memoryCare,
+        inHomeCare,
+        assistedLiving,
       });
     } catch (error) {
       next(error);
@@ -1310,8 +1403,13 @@ const healthCareController = {
           break;
         case 'independentLiving':
           data = await independentLiving.find().lean();
+          break;
         case 'Memory Care':
           data = await memoryCare.find().lean();
+          break;
+        case 'In Home Care':
+          data = await inHomeCare.find().lean();
+          break;
         default:
           data = 'Invalid Category';
           break;
@@ -1349,6 +1447,7 @@ const fetchDataFromDatabase = async () => {
       ),
     independentLiving.find().lean(),
     memoryCare.find().lean(),
+    inHomeCare.find().lean(),
   ];
   const records = await Promise.all(promises);
   return [].concat(...records);
