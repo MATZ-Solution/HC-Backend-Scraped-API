@@ -220,13 +220,34 @@ const healthCareController = {
           } else if (categoryName === 'Home Health') {
             result = await homeHealthData.find(query).select().lean();
           } else if (categoryName === 'Independent Living') {
-            result = await independentLiving.find(query).select().lean();
+            result = await independentLiving
+              .find(query)
+              .select()
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              );
           } else if (categoryName === 'Memory Care') {
-            result = await memoryCare.find(query).lean();
+            result = await memoryCare
+              .find(query)
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              );
           } else if (categoryName === 'In Home Care') {
-            result = await inHomeCare.find(query).lean();
+            result = await inHomeCare
+              .find(query)
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              );
           } else if (categoryName === 'Assisted Living') {
-            result = await assistedLiving.find(query).lean();
+            result = await assistedLiving
+              .find(query)
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              );
           }
 
           // calculate average rating
@@ -309,13 +330,33 @@ const healthCareController = {
         } else if (name === 'Home Health') {
           result = await homeHealthData.find().lean();
         } else if (name === 'Independent Living') {
-          result = await independentLiving.find().lean();
+          result = await independentLiving
+            .find()
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
         } else if (name === 'Memory Care') {
-          result = await memoryCare.find().lean();
+          result = await memoryCare
+            .find()
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
         } else if (name === 'In Home Care') {
-          result = await inHomeCare.find().lean();
+          result = await inHomeCare
+            .find()
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
         } else if (name === 'Assisted Living') {
-          result = await assistedLiving.find().lean();
+          result = await assistedLiving
+            .find()
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
         } else {
           res.status(200).json('wrong parameter');
           return;
@@ -558,14 +599,36 @@ const healthCareController = {
           res.status(200).json({ longTermCares: result });
         }
       } else if (name === 'Independent Living') {
-        result = await independentLiving.find(query).lean();
+        result = await independentLiving
+          .find(query)
+          .lean()
+          .select(
+            'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+          );
         res.status(200).json({ independentLiving: result });
       } else if (name === 'Memory Care') {
-        result = await memoryCare.find(query).lean();
+        result = await memoryCare
+          .find(query)
+          .lean()
+          .select(
+            'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+          );
       } else if (name === 'In Home Care') {
-        result = await inHomeCare.find().select(query).lean();
+        result = await inHomeCare
+          .find()
+          .select(query)
+          .lean()
+          .select(
+            'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+          );
       } else if (name === 'Assisted Living') {
-        result = await assistedLiving.find().select(query).lean();
+        result = await assistedLiving
+          .find()
+          .select(query)
+          .lean()
+          .select(
+            'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+          );
       } else {
         res.status(200).json('Wrong Category');
       }
@@ -687,14 +750,34 @@ const healthCareController = {
           data = await Professional.findOne({ _id: mongoDbID });
           break;
         case 'Independent Living':
-          data = await independentLiving.find({ _id: mongoDbID }).lean();
+          data = await independentLiving
+            .find({ _id: mongoDbID })
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
         case 'Memory Care':
-          data = await memoryCare.find({ _id: mongoDbID }).lean();
+          data = await memoryCare
+            .find({ _id: mongoDbID })
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
         case 'In Home Care': {
-          data = await inHomeCare.find({ _id: mongoDbID }).lean();
+          data = await inHomeCare
+            .find({ _id: mongoDbID })
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
         }
         case 'Assisted Living': {
-          data = await assistedLiving.find({ _id: mongoDbID }).lean();
+          data = await assistedLiving
+            .find({ _id: mongoDbID })
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
         }
 
         default:
@@ -1032,10 +1115,30 @@ const healthCareController = {
           homeHealthData.find({ city }).lean(),
           inpatientRehabilitiation.find({ city }).lean(),
           groupPracticeData.find({ city }).lean(),
-          // independentLiving.find({ city }).lean(),
-          // memoryCare.find({ city }).lean(),
-          // inHomeCare.find({ city }).lean(),
-          // assistedLiving.find({ city }).lean(),
+          independentLiving
+            .find({ city })
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            ),
+          memoryCare
+            .find({ city })
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            ),
+          inHomeCare
+            .find({ city })
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            ),
+          assistedLiving
+            .find({ city })
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            ),
         ]);
 
         let filterData = allData.flat();
@@ -1073,10 +1176,30 @@ const healthCareController = {
           homeHealthData.find({ city: 'Andalusia' }).lean(),
           inpatientRehabilitiation.find({ city: 'Andalusia' }).lean(),
           groupPracticeData.find({ city: 'Andalusia' }).lean(),
-          independentLiving.find({ city: 'Andalusia' }).lean(),
-          memoryCare.find({ city: 'Andalusia' }).lean(),
-          inHomeCare.find({ city: 'Andalusia' }).lean(),
-          assistedLiving.find({ city: 'Andalusia' }).lean(),
+          independentLiving
+            .find({ city: 'Andalusia' })
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            ),
+          memoryCare
+            .find({ city: 'Andalusia' })
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            ),
+          inHomeCare
+            .find({ city: 'Andalusia' })
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            ),
+          assistedLiving
+            .find({ city: 'Andalusia' })
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            ),
         ]);
 
         let filterData = allData.flat();
@@ -1206,21 +1329,40 @@ const healthCareController = {
           res.status(200).json(professionalData);
           break;
         case 'Independent Living':
-          const independentLiv = await independentLiving.findOne({
-            _id: mongoDbID,
-          });
+          const independentLiv = await independentLiving
+            .findOne({
+              _id: mongoDbID,
+            })
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
           res.status(200).json(independentLiv);
           break;
         case 'Memory Care':
           const memory = await memoryCare.findOne({ _id: mongoDbID });
-          res.status(200).json(memory);
+          res
+            .status(200)
+            .json(memory)
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
           break;
         case 'In Home Care':
           const inhomecare = await inHomeCare.findOne({ _id: mongoDbID });
-          res.status(200).json(inhomecare);
+          res
+            .status(200)
+            .json(inhomecare)
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
         case 'Assisted Living':
           const assLiv = await assistedLiving.findOne({ _id: mongoDbID });
-          res.status(200).json(assLiv);
+          res
+            .status(200)
+            .json(assLiv)
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
         default:
           res.status(400).json({ message: 'Invalid category' });
           break;
@@ -1404,13 +1546,36 @@ const healthCareController = {
           data = await Professional.find().lean();
           break;
         case 'independentLiving':
-          data = await independentLiving.find().lean();
+          data = await independentLiving
+            .find()
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
           break;
         case 'Memory Care':
-          data = await memoryCare.find().lean();
+          data = await memoryCare
+            .find()
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
           break;
         case 'In Home Care':
-          data = await inHomeCare.find().lean();
+          data = await inHomeCare
+            .find()
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
+          break;
+        case 'Assisted Living':
+          data = await inHomeCare
+            .find()
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
           break;
         default:
           data = 'Invalid Category';
@@ -1455,9 +1620,30 @@ const fetchDataFromDatabase = async () => {
       .select(
         '_id cms_certification_number name latitude longitude fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
       ),
-    independentLiving.find().lean(),
-    memoryCare.find().lean(),
-    inHomeCare.find().lean(),
+    independentLiving
+      .find()
+      .lean()
+      .select(
+        'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+      ),
+    memoryCare
+      .find()
+      .lean()
+      .select(
+        'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+      ),
+    inHomeCare
+      .find()
+      .lean()
+      .select(
+        'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+      ),
+    assistedLiving
+      .find()
+      .lean()
+      .select(
+        'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+      ),
   ];
   const records = await Promise.all(promises);
   return [].concat(...records);

@@ -85,6 +85,27 @@ const IndependentLivingSchema = new mongoose.Schema({
       required: true,
     },
   },
+  reviews: [
+    {
+      name: { type: String },
+      email: { type: String },
+      reviews: { type: String },
+      startRating: { type: Number },
+      date: { type: Date, default: Date.now },
+    },
+  ],
+  complain: [
+    {
+      name: { type: String },
+      email: { type: String },
+      complain: { type: String },
+      date: { type: Date, default: Date.now },
+    },
+  ],
+  contactedCustomer: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const independentLiving = mongoose.model(

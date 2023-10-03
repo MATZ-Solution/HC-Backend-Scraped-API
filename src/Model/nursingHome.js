@@ -115,7 +115,7 @@ const addressSchema = new Schema({
     Sun: { type: String },
   },
 
-  reviewss: [
+  reviews: [
     {
       name: { type: String },
       email: { type: String },
