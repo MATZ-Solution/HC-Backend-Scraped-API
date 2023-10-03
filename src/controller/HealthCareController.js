@@ -373,6 +373,7 @@ const healthCareController = {
   getCategoryData: async (req, res, next) => {
     try {
       const { name } = req.body;
+
       let result;
 
       if (typeof name === 'string') {
@@ -414,23 +415,17 @@ const healthCareController = {
             .find()
             .select('state city zipCode')
             .lean();
-        } else if (categoryName === 'Independent Living') {
-          result[0] = await independentLiving
+        } else if (name === 'Independent Living') {
+          result = await independentLiving
             .find()
             .select('state city zipCode')
             .lean();
-        } else if (categoryName === 'Memory Care') {
-          result[0] = await memoryCare
-            .find()
-            .select('state city zipCode')
-            .lean();
-        } else if (categoryName === 'In Home Care') {
-          result[0] = await inHomeCare
-            .find()
-            .select('state city zipCode')
-            .lean();
-        } else if (categoryName === 'Assisted Living') {
-          result[0] = await assistedLiving
+        } else if (name === 'Memory Care') {
+          result = await memoryCare.find().select('state city zipCode').lean();
+        } else if (name === 'In Home Care') {
+          result = await inHomeCare.find().select('state city zipCode').lean();
+        } else if (name === 'Assisted Living') {
+          result = await assistedLiving
             .find()
             .select('state city zipCode')
             .lean();
