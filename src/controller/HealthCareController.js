@@ -220,13 +220,13 @@ const healthCareController = {
           } else if (categoryName === 'Home Health') {
             result = await homeHealthData.find(query).select().lean();
           } else if (categoryName === 'Independent Living') {
-            result[0] = await independentLiving.find(query).select().lean();
+            result = await independentLiving.find(query).select().lean();
           } else if (categoryName === 'Memory Care') {
-            result[0] = await memoryCare.find(query).lean();
+            result = await memoryCare.find(query).lean();
           } else if (categoryName === 'In Home Care') {
-            result[0] = await inHomeCare.find(query).lean();
+            result = await inHomeCare.find(query).lean();
           } else if (categoryName === 'Assisted Living') {
-            result[0] = await assistedLiving.find(query).lean();
+            result = await assistedLiving.find(query).lean();
           }
 
           // calculate average rating
@@ -1308,10 +1308,10 @@ const healthCareController = {
         countNursingHome,
         groupPracticeCount,
         ProfessionalCount,
-        independentLiving,
-        memoryCare,
-        inHomeCare,
-        assistedLiving,
+        independentLivingCount,
+        memoryCareCount,
+        inHomeCareCount,
+        assistedLivingCount,
       ] = await Promise.all(countPromises);
 
       cache.set(
@@ -1326,10 +1326,10 @@ const healthCareController = {
           nursingHome: countNursingHome,
           groupPracticeData: groupPracticeCount,
           professional: ProfessionalCount,
-          independentLiving,
-          memoryCare,
-          inHomeCare,
-          assistedLiving,
+          independentLiving: independentLivingCount,
+          memoryCare: memoryCareCount,
+          inHomeCare: inHomeCareCount,
+          assistedLiving: assistedLivingCount,
         },
         365 * 24 * 60 * 60 * 1000
       );
@@ -1344,10 +1344,10 @@ const healthCareController = {
         nursingHome: countNursingHome,
         groupPracticeData: groupPracticeCount,
         professional: ProfessionalCount,
-        independentLiving,
-        memoryCare,
-        inHomeCare,
-        assistedLiving,
+        independentLiving: independentLivingCount,
+        memoryCare: memoryCareCount,
+        inHomeCare: inHomeCareCount,
+        assistedLiving: assistedLivingCount,
       });
     } catch (error) {
       next(error);
