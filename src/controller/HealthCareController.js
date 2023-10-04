@@ -477,12 +477,12 @@ const healthCareController = {
             .lean();
         } else if (name === 'Adult Day Care') {
           result = await adultDayCare
-            .find(query)
+            .find()
             .lean()
             .select('city state zipCode');
         } else if (name === 'Care Retirement Communities') {
           result = await careRetirement
-            .find(query)
+            .find()
             .lean()
             .select('city state zipCode');
         } else {
@@ -557,12 +557,12 @@ const healthCareController = {
                 .lean();
             } else if (categoryName === 'Adult Day Care') {
               result = await adultDayCare
-                .find(query)
+                .find()
                 .lean()
                 .select('city state zipCode ');
             } else if (name === 'Care Retirement Communities') {
               result = await careRetirement
-                .find(query)
+                .find()
                 .lean()
                 .select('city state zipCode');
             }
