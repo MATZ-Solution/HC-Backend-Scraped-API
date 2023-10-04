@@ -197,12 +197,16 @@ const assistedLivingSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  mainCategory: {
+    type: String,
+    default: 'Assisted Living',
+  },
 });
 
 const assistedLiving = mongoose.model(
-  'assistedLiving',
+  'assistedLivingMain',
   assistedLivingSchema,
-  'assistedLiving'
+  'assistedLivingMain'
 );
 
 module.exports = assistedLiving;

@@ -120,8 +120,16 @@ const americanFamilyCareSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  mainCategory: {
+    type: String,
+    default: 'In Home Care',
+  },
 });
 
-const inHomeCare = mongoose.model('inHomeCare', americanFamilyCareSchema,'inHomeCare');
+const inHomeCare = mongoose.model(
+  'inHomeCare',
+  americanFamilyCareSchema,
+  'inHomeCare'
+);
 
 module.exports = inHomeCare;

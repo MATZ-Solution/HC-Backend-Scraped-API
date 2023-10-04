@@ -145,6 +145,10 @@ const memoryCareSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  mainCategory: {
+    type: String,
+    default: 'Memory Care',
+  },
 });
 
 const memoryCare = mongoose.model('memoryCare', memoryCareSchema, 'memoryCare');
