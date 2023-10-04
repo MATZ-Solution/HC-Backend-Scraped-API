@@ -14,6 +14,7 @@ const inHomeCare = require('../Model/inHomeCare');
 const assistedLiving = require('../Model/assistedLiving');
 const nursingHomeNew = require('../Model/nursingHomeNewMode');
 const adultDayCare = require('../Model/adultDayCareModel');
+const careRetirement = require('../Model/careRetirementCommunities');
 const Otp = require('../Model/Otp');
 const axios = require('axios');
 // const Doctor = require("../Model/professional");
@@ -272,6 +273,13 @@ const healthCareController = {
               .select(
                 'name latitude longitude fullAddress city state zipCode phoneNumber _id'
               );
+          } else if (categoryName === 'Care Retirement Communities') {
+            result = await careRetirement
+              .find(query)
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              );
           }
 
           // calculate average rating
@@ -381,8 +389,15 @@ const healthCareController = {
             .select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id'
             );
-        } else if (categoryName === 'Adult Day Care') {
+        } else if (name === 'Adult Day Care') {
           result = await adultDayCare
+            .find(query)
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
+        } else if (name === 'Care Retirement Communities') {
+          result = await careRetirement
             .find(query)
             .lean()
             .select(
@@ -460,8 +475,13 @@ const healthCareController = {
             .find()
             .select('state city zipCode')
             .lean();
-        } else if (categoryName === 'Adult Day Care') {
+        } else if (name === 'Adult Day Care') {
           result = await adultDayCare
+            .find(query)
+            .lean()
+            .select('city state zipCode');
+        } else if (name === 'Care Retirement Communities') {
+          result = await careRetirement
             .find(query)
             .lean()
             .select('city state zipCode');
@@ -540,6 +560,11 @@ const healthCareController = {
                 .find(query)
                 .lean()
                 .select('city state zipCode ');
+            } else if (name === 'Care Retirement Communities') {
+              result = await careRetirement
+                .find(query)
+                .lean()
+                .select('city state zipCode');
             }
 
             // Format the data for the list format
@@ -672,6 +697,13 @@ const healthCareController = {
           .select(
             'name latitude longitude fullAddress city state zipCode phoneNumber _id'
           );
+      } else if (name === 'Care Retirement Communities') {
+        result = await careRetirement
+          .find(query)
+          .lean()
+          .select(
+            'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+          );
       } else {
         res.status(200).json('Wrong Category');
       }
@@ -695,6 +727,7 @@ const healthCareController = {
         'In Home Care',
         'Assisted Living',
         'Adult Day Care',
+        'Care Retirement Communities',
       ];
 
       res.status(200).json(categoryName);
@@ -800,6 +833,7 @@ const healthCareController = {
             .select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id'
             );
+          break;
         case 'Memory Care':
           data = await memoryCare
             .find({ _id: mongoDbID })
@@ -807,30 +841,42 @@ const healthCareController = {
             .select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id'
             );
-        case 'In Home Care': {
+          break;
+        case 'In Home Care':
           data = await inHomeCare
             .find({ _id: mongoDbID })
             .lean()
             .select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id'
             );
-        }
-        case 'Assisted Living': {
+          break;
+
+        case 'Assisted Living':
           data = await assistedLiving
             .find({ _id: mongoDbID })
             .lean()
             .select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id'
             );
-        }
-        case 'Adult Day Care': {
+          break;
+
+        case 'Adult Day Care':
           data = await adultDayCare
             .find({ _id: mongoDbID })
             .lean()
             .select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id'
             );
-        }
+          break;
+
+        case 'Care Retirement Communities':
+          data = await careRetirement
+            .find(query)
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
+          break;
 
         default:
           return res.status(400).json('Invalid category');
@@ -939,6 +985,14 @@ const healthCareController = {
           break;
         case 'Adult Day Care': {
           await adultDayCare.updateOne(
+            { _id: mongoDbID },
+            { $inc: { contactedCustomer: 1 } }
+          );
+          res.status(200).json({ success: true, message: 'Updated' });
+          break;
+        }
+        case 'Care Retirement Communities': {
+          await careRetirement.updateOne(
             { _id: mongoDbID },
             { $inc: { contactedCustomer: 1 } }
           );
@@ -1059,6 +1113,14 @@ const healthCareController = {
             { $push: { reviews: { name, email, reviews, startRating } } },
             { new: true }
           );
+          break;
+        case 'Care Retirement Communities':
+          await careRetirement.findOneAndUpdate(
+            { _id: mongoDbID },
+            { $push: { reviews: { name, email, reviews, startRating } } },
+            { new: true }
+          );
+          break;
         default:
           res.status(400).json({ success: false, message: 'Invalid category' });
       }
@@ -1217,6 +1279,12 @@ const healthCareController = {
             .select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id'
             ),
+          careRetirement
+            .find({ city })
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            ),
         ]);
 
         let filterData = allData.flat();
@@ -1279,6 +1347,12 @@ const healthCareController = {
               'name latitude longitude fullAddress city state zipCode phoneNumber _id'
             ),
           adultDayCare
+            .find({ city: 'Andalusia' })
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            ),
+          careRetirement
             .find({ city: 'Andalusia' })
             .lean()
             .select(
@@ -1457,6 +1531,14 @@ const healthCareController = {
             );
           res.status(200).json(adultDay);
           break;
+        case 'Care Retirement Communities':
+          const careRetirementcommunity = await careRetirement
+            .findOne({ _id: mongoDbID })
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            );
+          res.status(200).json(careRetirementcommunity);
+          break;
 
         default:
           res.status(400).json({ message: 'Invalid category' });
@@ -1529,6 +1611,7 @@ const healthCareController = {
         inHomeCare.countDocuments().lean(),
         assistedLiving.countDocuments().lean(),
         adultDayCare.countDocuments().lean(),
+        careRetirement.countDocuments().lean(),
       ];
 
       const cachedData = cache.get('countsOfAllCat');
@@ -1551,6 +1634,7 @@ const healthCareController = {
         inHomeCareCount,
         assistedLivingCount,
         adultDayCareCount,
+        careRetirementCount,
       ] = await Promise.all(countPromises);
 
       cache.set(
@@ -1570,6 +1654,7 @@ const healthCareController = {
           inHomeCare: inHomeCareCount,
           assistedLiving: assistedLivingCount,
           adultDayCare: adultDayCareCount,
+          careRetirement: careRetirementCount,
         },
         365 * 24 * 60 * 60 * 1000
       );
@@ -1589,6 +1674,7 @@ const healthCareController = {
         inHomeCare: inHomeCareCount,
         assistedLiving: assistedLivingCount,
         adultDayCare: adultDayCareCount,
+        careRetirement: careRetirementCount,
       });
     } catch (error) {
       next(error);
@@ -1739,6 +1825,10 @@ const fetchDataFromDatabase = async () => {
       .lean()
       .select('_id name latitude longitude mainCategory'),
     adultDayCare
+      .find()
+      .lean()
+      .select('_id name latitude longitude mainCategory'),
+    careRetirement
       .find()
       .lean()
       .select('_id name latitude longitude mainCategory'),
