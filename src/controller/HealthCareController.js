@@ -80,24 +80,41 @@ const healthCareController = {
   },
   updateData: async (req, res, next) => {
     try {
-      const updateCategories = await longTermCares
-        .find({ state: 'DC' })
-        .lean()
-        .select('zipCode latitude longitude state');
+      console.log('Updated run');
+      // const updateResult = await independentLiving.updateMany(
+      //   {},
+      //   { $set: { mainCategory: 'Independent Living' } }
+      // );
+      // console.log(`${updateResult} records updated.`);
 
+      // const updatedResult = await independentLiving.find().lean();
+      // console.log(updatedResult.length);
+
+      // for (let index = 0; index < updatedResult.length; index++) {
+      //   updatedResult[index].mainCategory = 'Independent Living';
+      //   await updatedDocument.save();
+      // }
+
+      const updateCategories = await independentLiving
+        .find({})
+        .lean()
+        .select('_id');
+
+      console.log(updateCategories.length);
       // Loop through the documents and update the "zipCode" field
       for (const category of updateCategories) {
-        category.state = 'District of Columbia (DC)';
-        category.zipCode = category.zipCode.toString();
-        category.latitude = category.latitude.toString();
-        category.longitude = category.longitude.toString();
-        await longTermCares.findByIdAndUpdate(category._id, {
+        console.log(category);
+        // category.state = 'District of Columbia (DC)';
+        // category.zipCode = category.zipCode.toString();
+        // category.latitude = category.latitude.toString();
+        // category.longitude = category.longitude.toString();
+        await independentLiving.findByIdAndUpdate(category._id, {
           $set: {
-            zipCode: category.zipCode,
-            latitude: category.latitude,
-            longitude: category.longitude,
-            state: category.state,
-            mainCategory: 'hospital',
+            // zipCode: category.zipCode,
+            // latitude: category.latitude,
+            // longitude: category.longitude,
+            // state: category.state,
+            mainCategory: 'Independent Living',
           },
         });
       }
@@ -1598,47 +1615,42 @@ const healthCareController = {
 // Function to fetch data from the database
 const fetchDataFromDatabase = async () => {
   const promises = [
-    hospital
+    hospital.find({}).lean().select('_id name latitude longitude mainCategory'),
+    dialysisFacilityData
       .find({})
       .lean()
-      .select(
-        '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
-      ),
-    dialysisFacilityData.find({}).lean(),
-    homeHealthData.find({}).lean(),
-    hoSpiceData.find({}).lean(),
-    inpatientRehabilitiation.find({}).lean(),
-    longTermCares.find({}).lean().select('-quality_reporting'),
+      .select('_id name latitude longitude mainCategory'),
+    homeHealthData
+      .find({})
+      .lean()
+      .select('_id name latitude longitude mainCategory'),
+    hoSpiceData
+      .find({})
+      .lean()
+      .select('_id name latitude longitude mainCategory'),
+    inpatientRehabilitiation
+      .find({})
+      .lean()
+      .select('_id name latitude longitude mainCategory'),
+    longTermCares
+      .find({})
+      .lean()
+      .select('-quality_reporting')
+      .select('_id name latitude longitude mainCategory'),
     nursingHome
       .find({})
       .lean()
-      .select(
-        '_id cms_certification_number name latitude longitude fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
-      ),
+      .select('_id name latitude longitude mainCategory'),
     independentLiving
       .find()
       .lean()
-      .select(
-        'name latitude longitude fullAddress city state zipCode phoneNumber _id'
-      ),
-    memoryCare
-      .find()
-      .lean()
-      .select(
-        'name latitude longitude fullAddress city state zipCode phoneNumber _id'
-      ),
-    inHomeCare
-      .find()
-      .lean()
-      .select(
-        'name latitude longitude fullAddress city state zipCode phoneNumber _id'
-      ),
+      .select('_id name latitude longitude mainCategory'),
+    memoryCare.find().lean().select('_id name latitude longitude mainCategory'),
+    inHomeCare.find().lean().select('_id name latitude longitude mainCategory'),
     assistedLiving
       .find()
       .lean()
-      .select(
-        'name latitude longitude fullAddress city state zipCode phoneNumber _id'
-      ),
+      .select('_id name latitude longitude mainCategory'),
   ];
   const records = await Promise.all(promises);
   return [].concat(...records);

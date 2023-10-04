@@ -106,6 +106,10 @@ const IndependentLivingSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  mainCategory: {
+    type: String,
+    default: 'Independent Living',
+  },
 });
 
 const independentLiving = mongoose.model(
