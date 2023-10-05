@@ -79,6 +79,6 @@ const addressSchema = new Schema({
   ],
 });
 
-const hoSpiceData = mongoose.model('hoSpice', addressSchema);
+const hoSpiceData = mongoose.model('hospicesNew', addressSchema,'hospicesNew');
 
 module.exports = hoSpiceData;
