@@ -1633,7 +1633,7 @@ const healthCareController = {
               _id: mongoDbID,
             })
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
             );
           res.status(200).json(independentLiv);
           break;
@@ -1642,7 +1642,7 @@ const healthCareController = {
           const memory = await memoryCare
             .findOne({ _id: mongoDbID })
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
             );
           res.status(200).json(memory);
           break;
@@ -1651,7 +1651,7 @@ const healthCareController = {
           const inhomecare = await inHomeCare
             .findOne({ _id: mongoDbID })
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
             );
           res.status(200).json(inhomecare);
           break;
@@ -1659,7 +1659,7 @@ const healthCareController = {
           const assLiv = await assistedLiving
             .findOne({ _id: mongoDbID })
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
             );
           res.status(200).json(assLiv);
           break;
@@ -1668,7 +1668,7 @@ const healthCareController = {
           const adultDay = await adultDayCare
             .findOne({ _id: mongoDbID })
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
             );
           res.status(200).json(adultDay);
           break;
@@ -1676,7 +1676,7 @@ const healthCareController = {
           const careRetirementcommunity = await careRetirement
             .findOne({ _id: mongoDbID })
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
             );
           res.status(200).json(careRetirementcommunity);
           break;
@@ -1684,7 +1684,7 @@ const healthCareController = {
           const skilledNursingFacility = await skilledNursingHome
             .findOne({ _id: mongoDbID })
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
             );
           res.status(200).json(skilledNursingFacility);
           break;
@@ -1692,7 +1692,7 @@ const healthCareController = {
           const geriaticCare = await geriaticCareManager
             .findOne({ _id: mongoDbID })
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
             );
           res.status(200).json(geriaticCare);
           break;

@@ -45,11 +45,11 @@ const americanFamilyCareSchema = new mongoose.Schema({
     category: String,
   },
   latitude: {
-    type: Number,
+    type: String,
     required: true,
   },
   longitude: {
-    type: Number,
+    type: String,
     required: true,
   },
   fullAddress: {
