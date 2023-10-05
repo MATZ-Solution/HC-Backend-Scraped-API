@@ -68,8 +68,10 @@ app.use('/api/professionalRoute', professionalRoute);
 //=====================================================
 
 app.use(errorMiddleware);
+app.enable('trust proxy');
 
 app.get('/', (req, res) => {
+  console.log(req.ip)
   res.send('Professional Scrapped');
 });
 
