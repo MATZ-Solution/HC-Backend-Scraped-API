@@ -412,7 +412,7 @@ const healthCareController = {
             );
         } else if (name === 'Adult Day Care') {
           result = await adultDayCare
-            .find(query)
+            .find()
             .lean()
             .select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id'
@@ -426,14 +426,14 @@ const healthCareController = {
             );
         } else if (name === 'Skilled Nursing Facility') {
           result = await skilledNursingHome
-            .find(query)
+            .find()
             .lean()
             .select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id'
             );
         } else if (name === 'Geriatic Care Manager') {
           result = await skilledNursingHome
-            .find(query)
+            .find()
             .lean()
             .select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id'
@@ -731,16 +731,14 @@ const healthCareController = {
           );
       } else if (name === 'In Home Care') {
         result = await inHomeCare
-          .find()
-          .select(query)
+          .find(query)
           .lean()
           .select(
             'name latitude longitude fullAddress city state zipCode phoneNumber _id'
           );
       } else if (name === 'Assisted Living') {
         result = await assistedLiving
-          .find()
-          .select(query)
+          .find(query)
           .lean()
           .select(
             'name latitude longitude fullAddress city state zipCode phoneNumber _id'
@@ -761,14 +759,14 @@ const healthCareController = {
           );
       } else if (name === 'Skilled Nursing Facility') {
         result = await skilledNursingHome
-          .find()
+          .find(query)
           .lean()
           .select(
             'name latitude longitude fullAddress city state zipCode phoneNumber _id'
           );
       } else if (name === 'Geriatic Care Manager') {
         result = await geriaticCareManager
-          .find()
+          .find(query)
           .lean()
           .select(
             'name latitude longitude fullAddress city state zipCode phoneNumber _id'
@@ -942,7 +940,7 @@ const healthCareController = {
 
         case 'Care Retirement Communities':
           data = await careRetirement
-            .find(query)
+            .find({_id: mongoDbID})
             .lean()
             .select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id'
@@ -951,7 +949,7 @@ const healthCareController = {
 
         case 'Skilled Nursing Facility':
           data = await skilledNursingHome
-            .find(query)
+            .find({_id: mongoDbID})
             .lean()
             .select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id'
@@ -959,7 +957,7 @@ const healthCareController = {
           break;
         case 'Geriatic Care Manager':
           data = await geriaticCareManager
-            .find(query)
+            .find({_id: mongoDbID})
             .lean()
             .select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id'

@@ -72,9 +72,9 @@ const geriatricCareManagerSchema = new mongoose.Schema({
 });
 
 const GeriatricCareManager = mongoose.model(
-  'GeriatricCareManager',
+  'geriaticCareManager',
   geriatricCareManagerSchema,
-  'GeriatricCareManager'
+  'geriaticCareManager'
 );
 
 module.exports = GeriatricCareManager;

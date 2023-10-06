@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 const cors = require('cors');
+const axios = require('axios');
 // const rateLimit = require('express-rate-limit');
 
 //routes
@@ -70,9 +71,15 @@ app.use('/api/professionalRoute', professionalRoute);
 app.use(errorMiddleware);
 app.enable('trust proxy');
 
-app.get('/', (req, res) => {
-  console.log(req.ip)
-  res.send('Professional Scrapped');
+app.get('/', async (req, res) => {
+  try {
+    // console.log(req.ip);
+    // let res = await axios.get(`http://ip-api.com/json/192.168.10.11`);
+    // console.log(res.data);
+    res.send('Professional Scrapped');
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 // Start the server and listen for incoming requests
