@@ -1998,83 +1998,83 @@ const healthCareController = {
           if (categoryName === 'Hospital') {
             result = await hospital
               .find(query)
-              .select('_id name fullAddress mainCategory')
+              .select('_id name city  mainCategory')
               .lean();
           } else if (categoryName === 'Dialysis Facility') {
             result = await dialysisFacilityData
               .find(query)
-              .select('_id name fullAddress mainCategory')
+              .select('_id name city  mainCategory')
               .lean();
           } else if (categoryName === 'Nursing Home') {
             result = await nursingHome
               .find(query)
-              .select('_id name fullAddress mainCategory')
+              .select('_id name city  mainCategory')
               .lean();
           } else if (categoryName === 'Long Term Cares') {
             result = await longTermCares
               .find(query)
-              .select('_id name fullAddress mainCategory')
+              .select('_id name city  mainCategory')
               .lean();
           } else if (categoryName === 'Hospice') {
             result = await hoSpiceData
               .find(query)
               .lean()
-              .select('_id name fullAddress mainCategory');
+              .select('_id name city  mainCategory');
           } else if (categoryName === 'Inpatient Rehabilitiation') {
             result = await inpatientRehabilitiation
               .find(query)
-              .select('_id name fullAddress mainCategory')
+              .select('_id name city  mainCategory')
               .lean();
           } else if (categoryName === 'Group Practice') {
             result = await groupPracticeData
               .find(query)
-              .select('_id name fullAddress mainCategory')
+              .select('_id name city  mainCategory')
               .lean();
           } else if (categoryName === 'Home Health') {
             result = await homeHealthData
               .find(query)
-              .select('_id name fullAddress mainCategory')
+              .select('_id name city  mainCategory')
               .lean();
           } else if (categoryName === 'Independent Living') {
             result = await independentLiving
               .find(query)
-              .select('_id name fullAddress mainCategory')
+              .select('_id name city  mainCategory')
               .lean();
           } else if (categoryName === 'Memory Care') {
             result = await memoryCare
               .find(query)
               .lean()
-              .select('_id name fullAddress mainCategory');
+              .select('_id name city  mainCategory');
           } else if (categoryName === 'In Home Care') {
             result = await inHomeCare
               .find(query)
               .lean()
-              .select('_id name fullAddress mainCategory');
+              .select('_id name city  mainCategory');
           } else if (categoryName === 'Assisted Living') {
             result = await assistedLiving
               .find(query)
               .lean()
-              .select('_id name fullAddress mainCategory');
+              .select('_id name city  mainCategory');
           } else if (categoryName === 'Adult Day Care') {
             result = await adultDayCare
               .find(query)
               .lean()
-              .select('_id name fullAddress mainCategory');
+              .select('_id name city  mainCategory');
           } else if (categoryName === 'Care Retirement Communities') {
             result = await careRetirement
               .find(query)
               .lean()
-              .select('_id name fullAddress mainCategory');
+              .select('_id name city  mainCategory');
           } else if (categoryName === 'Skilled Nursing Facility') {
             result = await skilledNursingHome
               .find(query)
               .lean()
-              .select('_id name fullAddress mainCategory');
+              .select('_id name city  mainCategory');
           } else if (categoryName === 'Geriatic Care Manager') {
             result = await skilledNursingHome
               .find(query)
               .lean()
-              .select('_id name fullAddress mainCategory');
+              .select('_id name city  mainCategory');
           }
 
           // calculate average rating
@@ -2131,92 +2131,82 @@ const healthCareController = {
           result = await hospital
             .find()
             .lean()
-            .select(
-              '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
-            );
+            .select('_id name city  mainCategory');
         } else if (name === 'Long Term Cares') {
           result = await longTermCares
             .find()
             .lean()
-            .select('-quality_reporting');
+            .select('_id name city  mainCategory');
         } else if (name === 'Nursing Home') {
           result = await nursingHome
             .find()
             .lean()
-            .select(
-              '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
-            );
+            .select('_id name city  mainCategory');
         } else if (name === 'Dialysis Facility') {
-          result = await dialysisFacilityData.find().lean();
+          result = await dialysisFacilityData
+            .find()
+            .lean()
+            .select('_id name city  mainCategory');
         } else if (name === 'Hospice') {
           result = await hoSpiceData
             .find()
             .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews.hospice FAQs mainCategory photos about.description'
-            );
+            .select('_id name city  mainCategory');
         } else if (name === 'Inpatient Rehabilitiation') {
-          result = await inpatientRehabilitiation.find().lean();
+          result = await inpatientRehabilitiation
+            .find()
+            .lean()
+            .select('_id name city  mainCategory');
         } else if (name === 'Group Practice') {
-          result = await groupPracticeData.find().lean();
+          result = await groupPracticeData
+            .find()
+            .lean()
+            .select('_id name city  mainCategory');
         } else if (name === 'Home Health') {
-          result = await homeHealthData.find().lean();
+          result = await homeHealthData
+            .find()
+            .lean()
+            .select('_id name city  mainCategory');
         } else if (name === 'Independent Living') {
           result = await independentLiving
             .find()
             .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            );
+            .select('_id name city  mainCategory');
         } else if (name === 'Memory Care') {
           result = await memoryCare
             .find()
             .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            );
+            .select('_id name city  mainCategory');
         } else if (name === 'In Home Care') {
           result = await inHomeCare
             .find()
             .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            );
+            .select('_id name city  mainCategory');
         } else if (name === 'Assisted Living') {
           result = await assistedLiving
             .find()
             .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            );
+            .select('_id name city  mainCategory');
         } else if (name === 'Adult Day Care') {
           result = await adultDayCare
             .find()
             .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            );
+            .select('_id name city  mainCategory');
         } else if (name === 'Care Retirement Communities') {
           result = await careRetirement
             .find(query)
             .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            );
+            .select('_id name city  mainCategory');
         } else if (name === 'Skilled Nursing Facility') {
           result = await skilledNursingHome
             .find()
             .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            );
+            .select('_id name city  mainCategory');
         } else if (name === 'Geriatic Care Manager') {
           result = await skilledNursingHome
             .find()
             .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            );
+            .select('_id name city  mainCategory');
         } else {
           res.status(200).json('wrong parameter');
           return;
