@@ -53,7 +53,12 @@ const adultCareSchema = new mongoose.Schema({
   zipCode: String,
   phoneNumber: String,
   parametricRatings: [parametricRatingSchema],
-  FAQs: [String],
+  FAQs: [
+    {
+      question: String,
+      answer: String,
+    },
+  ],
   photos: [String],
   amenities: [roomAndHousingOptionsSchema],
   about: {
