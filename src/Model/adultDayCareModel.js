@@ -89,6 +89,10 @@ const adultDayCareSchema = new mongoose.Schema({
   },
 });
 
-const AdultDayCare = mongoose.model('adultDayCare', adultDayCareSchema,'adultDayCare');
+const AdultDayCare = mongoose.model(
+  'adultDayCare',
+  adultDayCareSchema,
+  'adultDayCare'
+);
 
 module.exports = AdultDayCare;
