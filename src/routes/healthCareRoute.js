@@ -69,4 +69,6 @@ router.get(
   healthCare.fetchNewNursingHomeRecords
 );
 
+//get Multiple Cat
+router.post('/getMultipleCat', healthCare.getMultipleCategories);
 module.exports = router;
