@@ -860,28 +860,22 @@ const healthCareController = {
 
       switch (category) {
         case 'hospital':
-          data = await hospital
-            .findOne({ _id: mongoDbID })
-            .lean()
-            .select(
-              '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
-            );
+          data = await hospital.findOne({ _id: mongoDbID }).lean();
+          // .select(
+          //   '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
+          // );
           break;
         case 'longTermCares':
-          data = await longTermCares
-            .findOne({ _id: mongoDbID })
-            .lean()
-            .select(
-              '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating mainCategory'
-            );
+          data = await longTermCares.findOne({ _id: mongoDbID }).lean();
+          // .select(
+          //   '_id name fullAddress city state zipCode county_or_parish latitude longitude phoneNumber category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs overall_rating mainCategory'
+          // );
           break;
         case 'nursingHome': // Both use the same model
-          data = await nursingHome
-            .findOne({ _id: mongoDbID })
-            .lean()
-            .select(
-              '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
-            );
+          data = await nursingHome.findOne({ _id: mongoDbID }).lean();
+          // .select(
+          //   '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
+          // );
           break;
         case 'dialysisFacilityData': // Both use the same model
           data = await dialysisFacilityData.findOne({ _id: mongoDbID });
@@ -890,11 +884,10 @@ const healthCareController = {
           data = await inpatientRehabilitiation.findOne({ _id: mongoDbID });
           break;
         case 'hoSpiceData': // Both use the same model
-          data = await hoSpiceData
-            .findOne({ _id: mongoDbID })
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            );
+          data = await hoSpiceData.findOne({ _id: mongoDbID });
+          // .select(
+          //   'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          // );
           break;
         case 'groupPracticeData': // Both use the same model
           data = await groupPracticeData.findOne({ _id: mongoDbID });
@@ -906,72 +899,56 @@ const healthCareController = {
           data = await Professional.findOne({ _id: mongoDbID });
           break;
         case 'Independent Living':
-          data = await independentLiving
-            .findOne({ _id: mongoDbID })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
-            );
+          data = await independentLiving.findOne({ _id: mongoDbID }).lean();
+          // .select(
+          //   'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
+          // );
           break;
         case 'Memory Care':
-          data = await memoryCare
-            .findOne({ _id: mongoDbID })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
-            );
+          data = await memoryCare.findOne({ _id: mongoDbID }).lean();
+          // .select(
+          //   'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
+          // );
           break;
         case 'In Home Care':
-          data = await inHomeCare
-            .findOne({ _id: mongoDbID })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
-            );
+          data = await inHomeCare.findOne({ _id: mongoDbID }).lean();
+          // .select(
+          //   'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
+          // );
           break;
 
         case 'Assisted Living':
-          data = await assistedLiving
-            .findOne({ _id: mongoDbID })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
-            );
+          data = await assistedLiving.findOne({ _id: mongoDbID }).lean();
+          // .select(
+          //   'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
+          // );
           break;
 
         case 'Adult Day Care':
-          data = await adultDayCare
-            .findOne({ _id: mongoDbID })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
-            );
+          data = await adultDayCare.findOne({ _id: mongoDbID }).lean();
+          // .select(
+          //   'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
+          // );
           break;
 
         case 'Care Retirement Communities':
-          data = await careRetirement
-            .findOne({ _id: mongoDbID })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
-            );
+          data = await careRetirement.findOne({ _id: mongoDbID }).lean();
+          // .select(
+          //   'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
+          // );
           break;
 
         case 'Skilled Nursing Facility':
-          data = await skilledNursingHome
-            .findOne({ _id: mongoDbID })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
-            );
+          data = await skilledNursingHome.findOne({ _id: mongoDbID }).lean();
+          // .select(
+          //   'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
+          // );
           break;
         case 'Geriatic Care Manager':
-          data = await geriaticCareManager
-            .findOne({ _id: mongoDbID })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
-            );
+          data = await geriaticCareManager.findOne({ _id: mongoDbID }).lean();
+          // .select(
+          //   'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
+          // );
           break;
 
         default:
