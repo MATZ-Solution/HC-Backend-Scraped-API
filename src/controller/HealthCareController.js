@@ -236,7 +236,7 @@ const healthCareController = {
               .find(query)
               .lean()
               .select(
-                'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
               );
           } else if (categoryName === 'Inpatient Rehabilitiation') {
             result = await inpatientRehabilitiation.find(query).select().lean();
@@ -250,56 +250,56 @@ const healthCareController = {
               .select()
               .lean()
               .select(
-                'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
               );
           } else if (categoryName === 'Memory Care') {
             result = await memoryCare
               .find(query)
               .lean()
               .select(
-                'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
               );
           } else if (categoryName === 'In Home Care') {
             result = await inHomeCare
               .find(query)
               .lean()
               .select(
-                'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
               );
           } else if (categoryName === 'Assisted Living') {
             result = await assistedLiving
               .find(query)
               .lean()
               .select(
-                'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
               );
           } else if (categoryName === 'Adult Day Care') {
             result = await adultDayCare
               .find(query)
               .lean()
               .select(
-                'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
               );
           } else if (categoryName === 'Care Retirement Communities') {
             result = await careRetirement
               .find(query)
               .lean()
               .select(
-                'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
               );
           } else if (categoryName === 'Skilled Nursing Facility') {
             result = await skilledNursingHome
               .find(query)
               .lean()
               .select(
-                'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
               );
           } else if (categoryName === 'Geriatic Care Manager') {
             result = await skilledNursingHome
               .find(query)
               .lean()
               .select(
-                'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
               );
           }
 
@@ -375,7 +375,12 @@ const healthCareController = {
         } else if (name === 'Dialysis Facility') {
           result = await dialysisFacilityData.find().lean();
         } else if (name === 'Hospice') {
-          result = await hoSpiceData.find().lean();
+          result = await hoSpiceData
+            .find()
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews.hospice faqs photos about.description'
+            );
         } else if (name === 'Inpatient Rehabilitiation') {
           result = await inpatientRehabilitiation.find().lean();
         } else if (name === 'Group Practice') {
@@ -387,56 +392,56 @@ const healthCareController = {
             .find()
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
         } else if (name === 'Memory Care') {
           result = await memoryCare
             .find()
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
         } else if (name === 'In Home Care') {
           result = await inHomeCare
             .find()
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
         } else if (name === 'Assisted Living') {
           result = await assistedLiving
             .find()
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
         } else if (name === 'Adult Day Care') {
           result = await adultDayCare
             .find()
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
         } else if (name === 'Care Retirement Communities') {
           result = await careRetirement
             .find(query)
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
         } else if (name === 'Skilled Nursing Facility') {
           result = await skilledNursingHome
             .find()
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
         } else if (name === 'Geriatic Care Manager') {
           result = await skilledNursingHome
             .find()
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
         } else {
           res.status(200).json('wrong parameter');
@@ -719,7 +724,7 @@ const healthCareController = {
           .find(query)
           .lean()
           .select(
-            'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
           );
         res.status(200).json({ independentLiving: result });
       } else if (name === 'Memory Care') {
@@ -727,49 +732,49 @@ const healthCareController = {
           .find(query)
           .lean()
           .select(
-            'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
           );
       } else if (name === 'In Home Care') {
         result = await inHomeCare
           .find(query)
           .lean()
           .select(
-            'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
           );
       } else if (name === 'Assisted Living') {
         result = await assistedLiving
           .find(query)
           .lean()
           .select(
-            'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
           );
       } else if (name === 'Adult Day Care') {
         result = await adultDayCare
           .find(query)
           .lean()
           .select(
-            'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
           );
       } else if (name === 'Care Retirement Communities') {
         result = await careRetirement
           .find(query)
           .lean()
           .select(
-            'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
           );
       } else if (name === 'Skilled Nursing Facility') {
         result = await skilledNursingHome
           .find(query)
           .lean()
           .select(
-            'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
           );
       } else if (name === 'Geriatic Care Manager') {
         result = await geriaticCareManager
           .find(query)
           .lean()
           .select(
-            'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+            'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
           );
       } else {
         res.status(200).json('Wrong Category');
@@ -884,7 +889,11 @@ const healthCareController = {
           data = await inpatientRehabilitiation.findOne({ _id: mongoDbID });
           break;
         case 'hoSpiceData': // Both use the same model
-          data = await hoSpiceData.findOne({ _id: mongoDbID });
+          data = await hoSpiceData
+            .findOne({ _id: mongoDbID })
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
+            );
           break;
         case 'groupPracticeData': // Both use the same model
           data = await groupPracticeData.findOne({ _id: mongoDbID });
@@ -900,7 +909,7 @@ const healthCareController = {
             .find({ _id: mongoDbID })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           break;
         case 'Memory Care':
@@ -908,7 +917,7 @@ const healthCareController = {
             .find({ _id: mongoDbID })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           break;
         case 'In Home Care':
@@ -916,7 +925,7 @@ const healthCareController = {
             .find({ _id: mongoDbID })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           break;
 
@@ -925,7 +934,7 @@ const healthCareController = {
             .find({ _id: mongoDbID })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           break;
 
@@ -934,33 +943,33 @@ const healthCareController = {
             .find({ _id: mongoDbID })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           break;
 
         case 'Care Retirement Communities':
           data = await careRetirement
-            .find({_id: mongoDbID})
+            .find({ _id: mongoDbID })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           break;
 
         case 'Skilled Nursing Facility':
           data = await skilledNursingHome
-            .find({_id: mongoDbID})
+            .find({ _id: mongoDbID })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           break;
         case 'Geriatic Care Manager':
           data = await geriaticCareManager
-            .find({_id: mongoDbID})
+            .find({ _id: mongoDbID })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           break;
 
@@ -1360,7 +1369,12 @@ const healthCareController = {
               '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
             ),
           dialysisFacilityData.find({ city }).lean(),
-          hoSpiceData.find({ city }).lean(),
+          hoSpiceData
+            .find({ city })
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
+            ),
           homeHealthData.find({ city }).lean(),
           inpatientRehabilitiation.find({ city }).lean(),
           groupPracticeData.find({ city }).lean(),
@@ -1368,49 +1382,49 @@ const healthCareController = {
             .find({ city })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             ),
           memoryCare
             .find({ city })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             ),
           inHomeCare
             .find({ city })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             ),
           assistedLiving
             .find({ city })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             ),
           adultDayCare
             .find({ city })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             ),
           careRetirement
             .find({ city })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             ),
           skilledNursingHome
             .find({ city })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             ),
           geriaticCareManager
             .find({ city })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             ),
         ]);
 
@@ -1445,7 +1459,12 @@ const healthCareController = {
           longTermCares.find({ city: 'Andalusia' }).lean(),
           nursingHome.find({ city: 'Andalusia' }).lean(),
           dialysisFacilityData.find({ city: 'Andalusia' }).lean(),
-          hoSpiceData.find({ city: 'Andalusia' }).lean(),
+          hoSpiceData
+            .find({ city: 'Andalusia' })
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
+            ),
           homeHealthData.find({ city: 'Andalusia' }).lean(),
           inpatientRehabilitiation.find({ city: 'Andalusia' }).lean(),
           groupPracticeData.find({ city: 'Andalusia' }).lean(),
@@ -1453,49 +1472,49 @@ const healthCareController = {
             .find({ city: 'Andalusia' })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             ),
           memoryCare
             .find({ city: 'Andalusia' })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             ),
           inHomeCare
             .find({ city: 'Andalusia' })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             ),
           assistedLiving
             .find({ city: 'Andalusia' })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             ),
           adultDayCare
             .find({ city: 'Andalusia' })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             ),
           careRetirement
             .find({ city: 'Andalusia' })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             ),
           skilledNursingHome
             .find({ city: 'Andalusia' })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             ),
           geriaticCareManager
             .find({ city: 'Andalusia' })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             ),
         ]);
 
@@ -1596,7 +1615,11 @@ const healthCareController = {
           break;
 
         case 'hoSpiceData':
-          const hoSpice = await hoSpiceData.findOne({ _id: mongoDbID });
+          const hoSpice = await hoSpiceData
+            .findOne({ _id: mongoDbID })
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
+            );
           res.status(200).json(hoSpice);
           break;
 
@@ -1631,7 +1654,7 @@ const healthCareController = {
               _id: mongoDbID,
             })
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           res.status(200).json(independentLiv);
           break;
@@ -1640,7 +1663,7 @@ const healthCareController = {
           const memory = await memoryCare
             .findOne({ _id: mongoDbID })
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           res.status(200).json(memory);
           break;
@@ -1649,7 +1672,7 @@ const healthCareController = {
           const inhomecare = await inHomeCare
             .findOne({ _id: mongoDbID })
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           res.status(200).json(inhomecare);
           break;
@@ -1657,7 +1680,7 @@ const healthCareController = {
           const assLiv = await assistedLiving
             .findOne({ _id: mongoDbID })
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           res.status(200).json(assLiv);
           break;
@@ -1666,7 +1689,7 @@ const healthCareController = {
           const adultDay = await adultDayCare
             .findOne({ _id: mongoDbID })
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           res.status(200).json(adultDay);
           break;
@@ -1674,7 +1697,7 @@ const healthCareController = {
           const careRetirementcommunity = await careRetirement
             .findOne({ _id: mongoDbID })
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           res.status(200).json(careRetirementcommunity);
           break;
@@ -1682,7 +1705,7 @@ const healthCareController = {
           const skilledNursingFacility = await skilledNursingHome
             .findOne({ _id: mongoDbID })
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           res.status(200).json(skilledNursingFacility);
           break;
@@ -1690,7 +1713,7 @@ const healthCareController = {
           const geriaticCare = await geriaticCareManager
             .findOne({ _id: mongoDbID })
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id mainCategory'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           res.status(200).json(geriaticCare);
           break;
@@ -1882,7 +1905,12 @@ const healthCareController = {
           data = await inpatientRehabilitiation.find().lean();
           break;
         case 'hoSpiceData':
-          data = await hoSpiceData.find().lean();
+          data = await hoSpiceData
+            .find()
+            .lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
+            );
           break;
         case 'groupPracticeData':
           data = await groupPracticeData.find().lean();
@@ -1898,7 +1926,7 @@ const healthCareController = {
             .find()
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           break;
         case 'Memory Care':
@@ -1906,7 +1934,7 @@ const healthCareController = {
             .find()
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           break;
         case 'In Home Care':
@@ -1914,7 +1942,7 @@ const healthCareController = {
             .find()
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           break;
         case 'Assisted Living':
@@ -1922,7 +1950,7 @@ const healthCareController = {
             .find()
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews faqs photos about'
             );
           break;
         default:
@@ -1971,7 +1999,6 @@ const fetchDataFromDatabase = async () => {
     longTermCares
       .find({})
       .lean()
-      .select('-quality_reporting')
       .select('_id name latitude longitude mainCategory'),
     nursingHome
       .find({})
