@@ -1828,34 +1828,19 @@ const healthCareController = {
           data = await dialysisFacilityData.find().lean();
           break;
         case 'hospital':
-          data = await hospital
-            .find()
-            .lean()
-            .select(
-              '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
-            );
+          data = await hospital.find().lean();
           break;
         case 'longTermCares':
-          data = await longTermCares.find().lean().select('-quality_reporting');
+          data = await longTermCares.find().lean();
           break;
         case 'nursingHome':
-          data = await nursingHome
-            .find()
-            .lean()
-            .select(
-              '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
-            );
+          data = await nursingHome.find().lean();
           break;
         case 'inpatientRehabilitiation':
           data = await inpatientRehabilitiation.find().lean();
           break;
         case 'hoSpiceData':
-          data = await hoSpiceData
-            .find()
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            );
+          data = await hoSpiceData.find().lean();
           break;
         case 'groupPracticeData':
           data = await groupPracticeData.find().lean();
@@ -1867,36 +1852,28 @@ const healthCareController = {
           data = await Professional.find().lean();
           break;
         case 'independentLiving':
-          data = await independentLiving
-            .find()
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            );
+          data = await independentLiving.find().lean();
           break;
         case 'Memory Care':
-          data = await memoryCare
-            .find()
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            );
+          data = await memoryCare.find().lean();
           break;
         case 'In Home Care':
-          data = await inHomeCare
-            .find()
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            );
+          data = await inHomeCare.find().lean();
           break;
         case 'Assisted Living':
-          data = await inHomeCare
-            .find()
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            );
+          data = await inHomeCare.find().lean();
+          break;
+        case 'Adult Day Care':
+          data = await adultDayCare.find().lean();
+          break;
+        case 'Care Retirement Communities':
+          data = await careRetirement.find().lean();
+          break;
+        case 'Skilled Nursing Facility':
+          data = await skilledNursingHome.find().lean();
+          break;
+        case 'Geriatic Care Manager':
+          data = await geriaticCareManager.find().lean();
           break;
         default:
           data = 'Invalid Category';
