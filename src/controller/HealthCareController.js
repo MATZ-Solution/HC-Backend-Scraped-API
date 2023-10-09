@@ -1825,55 +1825,121 @@ const healthCareController = {
 
       switch (cat) {
         case 'dialysisFacilityData':
-          data = await dialysisFacilityData.find().lean();
+          data = await dialysisFacilityData
+            .find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
           break;
         case 'hospital':
-          data = await hospital.find().lean();
+          data = await hospital
+            .find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
+
           break;
         case 'longTermCares':
-          data = await longTermCares.find().lean();
+          data = await longTermCares
+            .find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
+
           break;
         case 'nursingHome':
-          data = await nursingHome.find().lean();
+          data = await nursingHome
+            .find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
+
           break;
         case 'inpatientRehabilitiation':
-          data = await inpatientRehabilitiation.find().lean();
+          data = await inpatientRehabilitiation
+            .find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
+
           break;
         case 'hoSpiceData':
-          data = await hoSpiceData.find().lean();
+          data = await hoSpiceData
+            .find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
+
           break;
         case 'groupPracticeData':
-          data = await groupPracticeData.find().lean();
+          data = await groupPracticeData
+            .find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
+
           break;
         case 'homeHealthData':
-          data = await homeHealthData.find().lean();
+          data = await homeHealthData
+            .find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
+
           break;
         case 'professional':
-          data = await Professional.find().lean();
+          data = await Professional.find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
+
           break;
         case 'Independent Living':
-          data = await independentLiving.find().lean();
+          data = await independentLiving
+            .find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
+
           break;
         case 'Memory Care':
-          data = await memoryCare.find().lean();
+          data = await memoryCare
+            .find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
+
           break;
         case 'In Home Care':
-          data = await inHomeCare.find().lean();
+          data = await inHomeCare
+            .find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
+
           break;
         case 'Assisted Living':
-          data = await inHomeCare.find().lean();
+          data = await inHomeCare
+            .find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
+
           break;
         case 'Adult Day Care':
-          data = await adultDayCare.find().lean();
+          data = await adultDayCare
+            .find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
+
           break;
         case 'Care Retirement Communities':
-          data = await careRetirement.find().lean();
+          data = await careRetirement
+            .find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
+
           break;
         case 'Skilled Nursing Facility':
-          data = await skilledNursingHome.find().lean();
+          data = await skilledNursingHome
+            .find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
+
           break;
         case 'Geriatic Care Manager':
-          data = await geriaticCareManager.find().lean();
+          data = await geriaticCareManager
+            .find()
+            .lean()
+            .select('name fullAddress state city zipCode phoneNumber');
+
           break;
         default:
           data = 'Invalid Category';
