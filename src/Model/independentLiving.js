@@ -82,10 +82,13 @@ const IndependentLivingSchema = new mongoose.Schema({
     type: Number,
     default: null,
   },
-  parametricRatings: {
-    type: [Number],
-    default: [],
-  },
+  parametricRatings: [
+    {
+      type: String,
+      stars: Number,
+      reviewer_count: Number,
+    },
+  ],
   scrapedReviews: {
     independentLiving: [reviewSchema],
   },
