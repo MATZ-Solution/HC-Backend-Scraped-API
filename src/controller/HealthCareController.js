@@ -1851,7 +1851,7 @@ const healthCareController = {
         case 'professional':
           data = await Professional.find().lean();
           break;
-        case 'independentLiving':
+        case 'Independent Living':
           data = await independentLiving.find().lean();
           break;
         case 'Memory Care':
