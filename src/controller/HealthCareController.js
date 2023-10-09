@@ -611,17 +611,18 @@ const healthCareController = {
                 .find()
                 .lean()
                 .select('city state zipCode ');
-            } else if (name === 'Care Retirement Communities') {
+            } else if (categoryName === 'Care Retirement Communities') {
+              console.log("hit")
               result = await careRetirement
                 .find()
                 .lean()
                 .select('city state zipCode');
-            } else if (name === 'Skilled Nursing Facility') {
+            } else if (categoryName === 'Skilled Nursing Facility') {
               result = await skilledNursingHome
                 .find()
                 .lean()
                 .select('city state zipCode');
-            } else if (name === 'Geriatic Care Manager') {
+            } else if (categoryName === 'Geriatic Care Manager') {
               result = await geriaticCareManager
                 .find()
                 .lean()
