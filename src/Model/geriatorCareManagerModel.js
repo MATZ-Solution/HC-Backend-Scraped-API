@@ -5,7 +5,28 @@ const parametricRatingSchema = new mongoose.Schema({
   stars: Number,
   reviewer_count: Number,
 });
-
+const reviewSchema = new mongoose.Schema({
+  datePublished: {
+    type: Date,
+    required: true,
+  },
+  stars: {
+    type: Number,
+    required: true,
+  },
+  author: {
+    type: String,
+    required: true,
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+});
 
 const licenseSchema = new mongoose.Schema({
   licenses: String,
@@ -55,7 +76,9 @@ const geriatricCareManagerSchema = new mongoose.Schema({
     stars: Number,
     reviewer_count: Number,
   },
-  scrapedReviews: {},
+  scrapedReviews: {
+    geriatricCareManager: [reviewSchema],
+  },
   reviews: [
     {
       name: { type: String },

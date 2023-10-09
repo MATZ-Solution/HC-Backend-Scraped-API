@@ -108,7 +108,6 @@ const memoryCareSchema = new mongoose.Schema({
   },
   parametricRatings: [parametricRatingSchema],
   scrapedReviews: {
-    assistedLiving: [reviewSchema],
     memoryCare: [reviewSchema],
   },
   FAQs: [

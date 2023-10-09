@@ -149,10 +149,10 @@ const assistedLivingSchema = new mongoose.Schema({
       type: [reviewSchema],
       default: [],
     },
-    memoryCare: {
-      type: [reviewSchema],
-      default: [],
-    },
+    // memoryCare: {
+    //   type: [reviewSchema],
+    //   default: [],
+    // },
   },
   FAQs: [
     {

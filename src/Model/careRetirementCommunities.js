@@ -73,33 +73,6 @@ const adultCareSchema = new mongoose.Schema({
     reviewer_count: Number,
   },
   scrapedReviews: {
-    assistedLiving: [
-      {
-        datePublished: String,
-        stars: Number,
-        author: String,
-        title: String,
-        description: String,
-      },
-    ],
-    independentLiving: [
-      {
-        datePublished: String,
-        stars: Number,
-        author: String,
-        title: String,
-        description: String,
-      },
-    ],
-    nursingHome: [
-      {
-        datePublished: String,
-        stars: Number,
-        author: String,
-        title: String,
-        description: String,
-      },
-    ],
     continuingCareRetirementCommunity: [
       {
         datePublished: String,
