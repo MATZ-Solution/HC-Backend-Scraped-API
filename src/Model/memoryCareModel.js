@@ -51,6 +51,12 @@ const amenitySchema = new mongoose.Schema({
   ],
 });
 
+const parametricRatingSchema = new mongoose.Schema({
+  type: String,
+  stars: Number,
+  reviewer_count: Number,
+});
+
 const memoryCareSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -100,13 +106,7 @@ const memoryCareSchema = new mongoose.Schema({
     stars: Number,
     reviewer_count: Number,
   },
-  parametricRatings: [
-    {
-      type: String,
-      stars: Number,
-      reviewer_count: Number,
-    },
-  ],
+  parametricRatings: [parametricRatingSchema],
   scrapedReviews: {
     assistedLiving: [reviewSchema],
     memoryCare: [reviewSchema],

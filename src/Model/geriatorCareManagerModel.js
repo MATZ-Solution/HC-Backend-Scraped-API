@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+const parametricRatingSchema = new mongoose.Schema({
+  type: String,
+  stars: Number,
+  reviewer_count: Number,
+});
+
+
 const licenseSchema = new mongoose.Schema({
   licenses: String,
 });
@@ -26,7 +33,7 @@ const geriatricCareManagerSchema = new mongoose.Schema({
   caringStars: caringStarsSchema,
   location: locationSchema,
   phoneNumber: String,
-  parametricRatings: [],
+  parametricRatings: [parametricRatingSchema],
   FAQs: [
     {
       question: String,

@@ -1,5 +1,11 @@
 const mongoose = require('mongoose');
 
+const parametricRating = new mongoose.Schema({
+  type: String,
+  stars: Number,
+  reviewer_count: Number,
+});
+
 const reviewSchema = new mongoose.Schema({
   datePublished: {
     type: Date,
@@ -75,13 +81,7 @@ const americanFamilyCareSchema = new mongoose.Schema({
   averageRating: {
     type: Number,
   },
-  parametricRatings: [
-    {
-      type: String,
-      stars: Number,
-      reviewer_count: Number,
-    },
-  ],
+  parametricRatings: [parametricRating],
   scrapedReviews: {
     adultDayCare: [reviewSchema],
   },

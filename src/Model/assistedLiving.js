@@ -1,5 +1,11 @@
 const mongoose = require('mongoose');
 
+const parametricRating = new mongoose.Schema({
+  type: String,
+  stars: Number,
+  reviewer_count: Number,
+});
+
 const reviewSchema = new mongoose.Schema({
   datePublished: {
     type: Date,
@@ -137,13 +143,7 @@ const assistedLivingSchema = new mongoose.Schema({
       type: Number,
     },
   },
-  parametricRatings: [
-    {
-      type: String,
-      stars: Number,
-      reviewer_count: Number,
-    },
-  ],
+  parametricRatings: [parametricRating],
   reviews: {
     assistedLiving: {
       type: [reviewSchema],

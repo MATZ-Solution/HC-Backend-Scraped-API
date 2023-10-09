@@ -27,6 +27,12 @@ const amenitySchema = new mongoose.Schema({
   // Define your amenity fields here if needed
 });
 
+const parametricRatingSchema = new mongoose.Schema({
+  type: String,
+  stars: Number,
+  reviewer_count: Number,
+});
+
 const americanFamilyCareSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -75,13 +81,7 @@ const americanFamilyCareSchema = new mongoose.Schema({
   averageRating: {
     type: Number,
   },
-  parametricRatings: [
-    {
-      type: String,
-      stars: Number,
-      reviewer_count: Number,
-    },
-  ],
+  parametricRatings: [parametricRatingSchema],
   scrapedReviews: {
     homeCare: [reviewSchema],
   },
