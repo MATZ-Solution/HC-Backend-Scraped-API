@@ -1,5 +1,32 @@
 const mongoose = require('mongoose');
 
+const reviewSchema = new mongoose.Schema({
+  datePublished: {
+    type: Date,
+    required: true,
+  },
+  stars: {
+    type: Number,
+    required: true,
+  },
+  author: {
+    type: String,
+    required: true,
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+});
+
+const amenitySchema = new mongoose.Schema({
+  // Define your amenity fields here if needed
+});
+
 const IndependentLivingSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -59,22 +86,17 @@ const IndependentLivingSchema = new mongoose.Schema({
     type: [Number],
     default: [],
   },
-  reviews: {
-    type: Object,
-    default: {},
+  scrapedReviews: {
+    independentLiving: [reviewSchema],
   },
-  FAQs: {
-    type: Array,
-    default: [],
-  },
-  photos: {
-    type: Array,
-    default: [],
-  },
-  amenities: {
-    type: Array,
-    default: [],
-  },
+  amenities: amenitySchema,
+  FAQs: [
+    {
+      question: String,
+      answer: String,
+    },
+  ],
+  photos: [String],
   about: {
     title: {
       type: String,

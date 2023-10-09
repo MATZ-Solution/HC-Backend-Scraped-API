@@ -1,64 +1,107 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const addressSchema = new Schema({
+const reviewSchema = new mongoose.Schema({
+  datePublished: {
+    type: Date,
+    required: true,
+  },
+  stars: {
+    type: Number,
+    required: true,
+  },
+  author: {
+    type: String,
+    required: true,
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+});
+
+const amenitySchema = new mongoose.Schema({
+  // Define your amenity fields here if needed
+});
+
+const americanFamilyCareSchema = new mongoose.Schema({
   name: {
     type: String,
+    required: true,
   },
-  fullAddress: {
-    type: String,
+  offerings: {
+    type: [String],
+    required: true,
   },
-  contactedCustomer: {
-    type: Number,
-    default: 0,
-  },
-  zipCode: {
-    type: String,
-  },
-  city: {
-    type: String,
-  },
-  mainCategory: {
-    type: String,
-    default: 'hoSpiceData',
-  },
-  state: {
-    type: String,
-  },
-  phoneNumber: {
-    type: String,
+  caringStars: {
+    isTopRated: {
+      type: Boolean,
+      default: false,
+    },
+    qualifiedInYear: String,
+    category: String,
   },
   latitude: {
     type: String,
-    index: true,
+    required: true,
   },
   longitude: {
     type: String,
-    index: true,
+    required: true,
   },
-  family_caregiver_survey_rating: {
+  fullAddress: {
     type: String,
+    required: true,
   },
-  avg_daily_census: {
+  city: {
     type: String,
+    required: true,
   },
-  condition_cancer_pc: {
+  state: {
+    type: String,
+    required: true,
+  },
+  zipCode: {
+    type: String,
+    required: true,
+  },
+  phoneNumber: {
+    type: String,
+    required: true,
+  },
+  averageRating: {
     type: Number,
   },
-  condition_dementia_pc: {
-    type: Number,
+  parametricRatings: [
+    {
+      type: String,
+      stars: Number,
+      reviewer_count: Number,
+    },
+  ],
+  scrapedReviews: {
+    hospice: [reviewSchema],
   },
-  condition_stroke_pc: {
-    type: Number,
-  },
-  condition_heart_circulatory_pc: {
-    type: Number,
-  },
-  condition_respiratory_pc: {
-    type: Number,
-  },
-  condition_miscellaneous_pc: {
-    type: Number,
+  FAQs: [
+    {
+      question: String,
+      answer: String,
+    },
+  ],
+  photos: [String],
+  amenities: amenitySchema,
+  about: {
+    title: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
   },
   reviews: [
     {
@@ -77,8 +120,20 @@ const addressSchema = new Schema({
       date: { type: Date, default: Date.now },
     },
   ],
+  contactedCustomer: {
+    type: Number,
+    default: 0,
+  },
+  mainCategory: {
+    type: String,
+    default: 'hoSpiceData',
+  },
 });
 
-const hoSpiceData = mongoose.model('hospicesNew', addressSchema,'hospicesNew');
+const hoSpice = mongoose.model(
+  'hospicesNew',
+  americanFamilyCareSchema,
+  'hospicesNew'
+);
 
-module.exports = hoSpiceData;
+module.exports = hoSpice;

@@ -107,7 +107,7 @@ const memoryCareSchema = new mongoose.Schema({
       reviewer_count: Number,
     },
   ],
-  reviews: {
+  scrapedReviews: {
     assistedLiving: [reviewSchema],
     memoryCare: [reviewSchema],
   },

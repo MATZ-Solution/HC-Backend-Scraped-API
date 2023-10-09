@@ -1,10 +1,33 @@
 const mongoose = require('mongoose');
 
-const adultDayCareSchema = new mongoose.Schema({
-  mainCategory: {
+const reviewSchema = new mongoose.Schema({
+  datePublished: {
+    type: Date,
+    required: true,
+  },
+  stars: {
+    type: Number,
+    required: true,
+  },
+  author: {
     type: String,
     required: true,
   },
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+});
+
+const amenitySchema = new mongoose.Schema({
+  // Define your amenity fields here if needed
+});
+
+const americanFamilyCareSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -29,38 +52,56 @@ const adultDayCareSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  fullAddress: String,
-  city: String,
-  state: String,
-  zipCode: String,
-  phoneNumber: String,
-  parametricRatings: {
-    type: [Number],
-    default: [],
+  fullAddress: {
+    type: String,
+    required: true,
   },
-  FAQs: {
-    type: [String],
-    default: [],
+  city: {
+    type: String,
+    required: true,
   },
-  photos: {
-    type: [String],
-    default: [],
+  state: {
+    type: String,
+    required: true,
   },
-  amenities: {
-    type: [String],
-    default: [],
+  zipCode: {
+    type: String,
+    required: true,
   },
+  phoneNumber: {
+    type: String,
+    required: true,
+  },
+  averageRating: {
+    type: Number,
+  },
+  parametricRatings: [
+    {
+      type: String,
+      stars: Number,
+      reviewer_count: Number,
+    },
+  ],
+  scrapedReviews: {
+    adultDayCare: [reviewSchema],
+  },
+  FAQs: [
+    {
+      question: String,
+      answer: String,
+    },
+  ],
+  photos: [String],
+  amenities: amenitySchema,
   about: {
     title: {
       type: String,
       required: true,
     },
-    description: String,
-  },
-  scrapedAverageRating: Number,
-  scrapedReviews: {
-    type: mongoose.Schema.Types.Mixed,
-    default: {},
+    description: {
+      type: String,
+      required: true,
+    },
   },
   reviews: [
     {
@@ -89,10 +130,10 @@ const adultDayCareSchema = new mongoose.Schema({
   },
 });
 
-const AdultDayCare = mongoose.model(
+const adultDayCare = mongoose.model(
   'adultDayCare',
-  adultDayCareSchema,
+  americanFamilyCareSchema,
   'adultDayCare'
 );
 
-module.exports = AdultDayCare;
+module.exports = adultDayCare;
