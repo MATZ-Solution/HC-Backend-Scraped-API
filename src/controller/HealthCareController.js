@@ -612,7 +612,6 @@ const healthCareController = {
                 .lean()
                 .select('city state zipCode ');
             } else if (categoryName === 'Care Retirement Communities') {
-              console.log("hit")
               result = await careRetirement
                 .find()
                 .lean()
