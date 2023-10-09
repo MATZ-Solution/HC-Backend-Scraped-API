@@ -111,7 +111,12 @@ const memoryCareSchema = new mongoose.Schema({
     assistedLiving: [reviewSchema],
     memoryCare: [reviewSchema],
   },
-  FAQs: [String],
+  FAQs: [
+    {
+      question: String,
+      answer: String,
+    },
+  ],
   photos: [String],
   amenities: amenitySchema,
   about: {

@@ -154,10 +154,12 @@ const assistedLivingSchema = new mongoose.Schema({
       default: [],
     },
   },
-  FAQs: {
-    type: [String],
-    default: [],
-  },
+  FAQs: [
+    {
+      question: String,
+      answer: String,
+    },
+  ],
   photos: {
     type: [String],
     default: [],

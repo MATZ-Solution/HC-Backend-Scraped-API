@@ -44,7 +44,12 @@ const nursingHomeSchema = new mongoose.Schema({
   scrapedReviews: {
     nursingHome: [scrapedReviewSchema],
   },
-  FAQs: [String],
+  FAQs: [
+    {
+      question: String,
+      answer: String,
+    },
+  ],
   photos: [String],
   amenities: [
     {

@@ -86,7 +86,12 @@ const americanFamilyCareSchema = new mongoose.Schema({
     type: reviewSchema,
     default: {},
   },
-  FAQs: [String],
+  FAQs: [
+    {
+      question: String,
+      answer: String,
+    },
+  ],
   photos: [String],
   amenities: amenitySchema,
   about: {

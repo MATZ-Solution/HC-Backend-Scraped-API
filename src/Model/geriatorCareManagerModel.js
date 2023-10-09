@@ -27,7 +27,12 @@ const geriatricCareManagerSchema = new mongoose.Schema({
   location: locationSchema,
   phoneNumber: String,
   parametricRatings: [],
-  FAQs: [String],
+  FAQs: [
+    {
+      question: String,
+      answer: String,
+    },
+  ],
   photos: [String],
   amenities: [
     {
