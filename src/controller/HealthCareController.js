@@ -2207,6 +2207,47 @@ const healthCareController = {
       next(error);
     }
   },
+  getProfessionalEachSpecialityRecords: async (req, res, next) => {
+    try {
+      let data = await Professional.aggregate([
+        {
+          $unwind: '$specialities',
+        },
+        {
+          $group: {
+            _id: '$specialities',
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            name: '$_id',
+            count: 1,
+          },
+        },
+        {
+          $sort: { count: -1 },
+        },
+      ]);
+      res.status(200).json(data);
+    } catch (error) {
+      next(error);
+    }
+  },
+  getRecordsUsingProfessionalSpeciality: async (req, res, next) => {
+    try {
+      const { speciality } = req.params;
+      const getSpeciality = await Professional.find({
+        specialities: { $in: speciality },
+      });
+
+      res.status(200).json(getSpeciality);
+    } catch (error) {
+      next(error);
+    }
+  },
+
   // getDataUsingPagination: async (req, res, next) => {
   //   try {
   //     const { state, city, zipCode, category, pages, limit } = req.body;

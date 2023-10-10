@@ -71,4 +71,15 @@ router.get(
 
 //get Multiple Cat
 router.post('/getMultipleCat', healthCare.getMultipleCategories);
+
+router.get(
+  '/getProfessionalRecords',
+  healthCare.getProfessionalEachSpecialityRecords
+);
+
+//<-------------------get Records Using Professional Speciality -------------------------->
+router.get(
+  '/getRecordsUsingProfessionalspeciality/:speciality',
+  healthCare.getRecordsUsingProfessionalSpeciality
+);
 module.exports = router;
