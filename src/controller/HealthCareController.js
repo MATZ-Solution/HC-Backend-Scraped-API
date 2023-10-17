@@ -2088,7 +2088,7 @@ const healthCareController = {
                 '_id name city state mainCategory fullAddress phoneNumber zipCode'
               );
           } else if (categoryName === 'Geriatic Care Manager') {
-            result = await skilledNursingHome
+            result = await geriaticCareManager
               .find(query)
               .lean()
               .select(
