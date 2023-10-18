@@ -1526,7 +1526,57 @@ const healthCareController = {
       next(err);
     }
   },
+  getDataUsingZipCode: async (req, res, next) => {
+    try {
+      const { zipCode } = req.params;
 
+      if (zipCode) {
+        const allData = await Promise.all([
+          hospital.find({ zipCode }).lean(),
+          longTermCares.find({ zipCode }).lean(),
+          nursingHome.find({ zipCode }).lean(),
+          dialysisFacilityData.find({ zipCode }).lean(),
+          hoSpiceData.find({ zipCode }).lean(),
+          homeHealthData.find({ zipCode }).lean(),
+          inpatientRehabilitiation.find({ zipCode }).lean(),
+          groupPracticeData.find({ zipCode }).lean(),
+          independentLiving.find({ zipCode }).lean(),
+          memoryCare.find({ zipCode }).lean(),
+          inHomeCare.find({ zipCode }).lean(),
+          assistedLiving.find({ zipCode }).lean(),
+          adultDayCare.find({ zipCode }).lean(),
+          careRetirement.find({ zipCode }).lean(),
+          skilledNursingHome.find({ zipCode }).lean(),
+          geriaticCareManager.find({ zipCode }).lean(),
+        ]);
+        if (allData.flat().length > 0) {
+          res.status(200).json(allData.flat());
+        } else {
+          throw new ErrorHandler('Invalid Zip Code', 400);
+        }
+      }
+    } catch (err) {
+      next(err);
+    }
+  },
+  getProfessionalsUsingZipCode: async (req, res, next) => {
+    try {
+      const { zipCode } = req.params;
+      
+      if (zipCode) {
+        const allData = await Professional.find({
+          'locations.zip_code': zipCode,
+        });
+        if (allData.length > 0) {
+          res.status(200).json(allData);
+        } else {
+          throw new ErrorHandler('Invalid Zip Code', 400);
+        }
+      }
+    } catch (err) {
+      next(err);
+    }
+  },
   //for deletion of cities
   deleteEmptyCities: async (req, res, next) => {
     await hospital.deleteMany({ state: 'North Dakota' });

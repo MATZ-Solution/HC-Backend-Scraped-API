@@ -82,4 +82,12 @@ router.get(
   '/getRecordsUsingProfessionalspeciality/:speciality',
   healthCare.getRecordsUsingProfessionalSpeciality
 );
+
+router.get('/getDataUsingZipCode/:zipCode', healthCare.getDataUsingZipCode);
+
+router.get(
+  '/getProfessionalsUsingZipCode/:zipCode',
+  healthCare.getProfessionalsUsingZipCode
+);
+
 module.exports = router;
