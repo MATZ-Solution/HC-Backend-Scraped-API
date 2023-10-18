@@ -1562,10 +1562,13 @@ const healthCareController = {
   getProfessionalsUsingZipCode: async (req, res, next) => {
     try {
       const { zipCode } = req.params;
-      
+      const regex = new RegExp(
+        `(^\\d{5}-${zipCode}$|^${zipCode}-\\d{4}$)`,
+        'i'
+      );
       if (zipCode) {
         const allData = await Professional.find({
-          'locations.zip_code': zipCode,
+          'locations.zip_code': regex,
         });
         if (allData.length > 0) {
           res.status(200).json(allData);
