@@ -76,7 +76,7 @@ app.get('/', async (req, res) => {
     // console.log(req.ip);
     // let res = await axios.get(`http://ip-api.com/json/192.168.10.11`);
     // console.log(res.data);
-    res.send('Professional Scrapped 10/9/23 2:19');
+    res.send('Professional Scrapped 10/18/23 4:25');
   } catch (err) {
     console.log(err);
   }
