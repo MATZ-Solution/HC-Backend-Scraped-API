@@ -1570,11 +1570,7 @@ const healthCareController = {
         const allData = await Professional.find({
           'locations.zip_code': regex,
         });
-        if (allData.length > 0) {
-          res.status(200).json(allData);
-        } else {
-          throw new ErrorHandler('Invalid Zip Code', 400);
-        }
+        res.status(200).json(allData);
       }
     } catch (err) {
       next(err);
