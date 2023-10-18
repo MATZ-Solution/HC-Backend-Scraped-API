@@ -1549,11 +1549,7 @@ const healthCareController = {
           skilledNursingHome.find({ zipCode }).lean(),
           geriaticCareManager.find({ zipCode }).lean(),
         ]);
-        if (allData.flat().length > 0) {
-          res.status(200).json(allData.flat());
-        } else {
-          throw new ErrorHandler('Invalid Zip Code', 400);
-        }
+        res.status(200).json(allData.flat());
       }
     } catch (err) {
       next(err);
