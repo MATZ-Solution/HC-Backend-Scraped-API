@@ -128,7 +128,7 @@ const professionalController = {
         res.json(professionalcities);
       } else {
         const query = {
-          'locations.city': 'Kodiak',
+          'locations.city': 'Andalusia',
         };
 
         const professionalcities = await Professional.find(query);
