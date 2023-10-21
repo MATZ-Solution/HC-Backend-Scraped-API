@@ -77,7 +77,7 @@ const geriatricCareManagerSchema = new mongoose.Schema({
     reviewer_count: Number,
   },
   scrapedReviews: {
-    geriatricCareManager: [reviewSchema],
+    geriaticCareManager: [reviewSchema],
   },
   reviews: [
     {
