@@ -787,22 +787,22 @@ const healthCareController = {
   getCategoryName: async (req, res, next) => {
     try {
       const categoryName = [
-        'Hospital',
-        'Long Term Cares',
+        // 'Hospital',
+        // 'Long Term Cares',
         'Nursing Home',
-        'Dialysis Facility',
-        'Hospice',
-        'Inpatient Rehabilitiation',
-        'Group Practice',
-        'Home Health',
-        'Independent Living',
-        'Memory Care',
-        'In Home Care',
-        'Assisted Living',
-        'Adult Day Care',
-        'Care Retirement Communities',
+        // 'Dialysis Facility',
+        // 'Hospice',
+        // 'Inpatient Rehabilitiation',
+        // 'Group Practice',
+        // 'Home Health',
+        // 'Independent Living',
+        // 'Memory Care',
+        // 'In Home Care',
+        // 'Assisted Living',
+        // 'Adult Day Care',
+        // 'Care Retirement Communities',
         'Skilled Nursing Facility',
-        'Geriatic Care Manager',
+        // 'Geriatic Care Manager',
       ];
 
       res.status(200).json(categoryName);
@@ -1329,81 +1329,79 @@ const healthCareController = {
     try {
       const { city } = req.body;
 
-      console.log(req.ip);
-
       if (city) {
         const allData = await Promise.all([
-          hospital
-            .find({ city })
-            .lean()
-            .select(
-              '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
-            ),
-          longTermCares.find({ city }).lean().select('-quality_reporting'),
+          // hospital
+          //   .find({ city })
+          //   .lean()
+          //   .select(
+          //     '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
+          //   ),
+          // longTermCares.find({ city }).lean().select('-quality_reporting'),
           nursingHome
             .find({ city })
             .lean()
             .select(
               '_id cms_certification_number name fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
             ),
-          dialysisFacilityData.find({ city }).lean(),
-          hoSpiceData
-            .find({ city })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            ),
-          homeHealthData.find({ city }).lean(),
-          inpatientRehabilitiation.find({ city }).lean(),
-          groupPracticeData.find({ city }).lean(),
-          independentLiving
-            .find({ city })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            ),
-          memoryCare
-            .find({ city })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            ),
-          inHomeCare
-            .find({ city })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            ),
-          assistedLiving
-            .find({ city })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            ),
-          adultDayCare
-            .find({ city })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            ),
-          careRetirement
-            .find({ city })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            ),
+          // dialysisFacilityData.find({ city }).lean(),
+          // hoSpiceData
+          //   .find({ city })
+          //   .lean()
+          //   .select(
+          //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          //   ),
+          // homeHealthData.find({ city }).lean(),
+          // inpatientRehabilitiation.find({ city }).lean(),
+          // groupPracticeData.find({ city }).lean(),
+          // independentLiving
+          //   .find({ city })
+          //   .lean()
+          //   .select(
+          //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          //   ),
+          // memoryCare
+          //   .find({ city })
+          //   .lean()
+          //   .select(
+          //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          //   ),
+          // inHomeCare
+          //   .find({ city })
+          //   .lean()
+          //   .select(
+          //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          //   ),
+          // assistedLiving
+          //   .find({ city })
+          //   .lean()
+          //   .select(
+          //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          //   ),
+          // adultDayCare
+          //   .find({ city })
+          //   .lean()
+          //   .select(
+          //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          //   ),
+          // careRetirement
+          //   .find({ city })
+          //   .lean()
+          //   .select(
+          //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          //   ),
           skilledNursingHome
             .find({ city })
             .lean()
             .select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             ),
-          geriaticCareManager
-            .find({ city })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            ),
+          // geriaticCareManager
+          //   .find({ city })
+          //   .lean()
+          //   .select(
+          //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          //   ),
         ]);
 
         let filterData = allData.flat();
@@ -1433,67 +1431,67 @@ const healthCareController = {
         res.status(200).json(allData.flat());
       } else {
         const allData = await Promise.all([
-          hospital.find({ city: 'Andalusia' }).lean(),
-          longTermCares.find({ city: 'Andalusia' }).lean(),
+          // hospital.find({ city: 'Andalusia' }).lean(),
+          // longTermCares.find({ city: 'Andalusia' }).lean(),
           nursingHome.find({ city: 'Andalusia' }).lean(),
-          dialysisFacilityData.find({ city: 'Andalusia' }).lean(),
-          hoSpiceData
-            .find({ city: 'Andalusia' })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            ),
-          homeHealthData.find({ city: 'Andalusia' }).lean(),
-          inpatientRehabilitiation.find({ city: 'Andalusia' }).lean(),
-          groupPracticeData.find({ city: 'Andalusia' }).lean(),
-          independentLiving
-            .find({ city: 'Andalusia' })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            ),
-          memoryCare
-            .find({ city: 'Andalusia' })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            ),
-          inHomeCare
-            .find({ city: 'Andalusia' })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            ),
-          assistedLiving
-            .find({ city: 'Andalusia' })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            ),
-          adultDayCare
-            .find({ city: 'Andalusia' })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            ),
-          careRetirement
-            .find({ city: 'Andalusia' })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            ),
+          // dialysisFacilityData.find({ city: 'Andalusia' }).lean(),
+          // hoSpiceData
+          //   .find({ city: 'Andalusia' })
+          //   .lean()
+          //   .select(
+          //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          //   ),
+          // homeHealthData.find({ city: 'Andalusia' }).lean(),
+          // inpatientRehabilitiation.find({ city: 'Andalusia' }).lean(),
+          // groupPracticeData.find({ city: 'Andalusia' }).lean(),
+          // independentLiving
+          //   .find({ city: 'Andalusia' })
+          //   .lean()
+          //   .select(
+          //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          //   ),
+          // memoryCare
+          //   .find({ city: 'Andalusia' })
+          //   .lean()
+          //   .select(
+          //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          //   ),
+          // inHomeCare
+          //   .find({ city: 'Andalusia' })
+          //   .lean()
+          //   .select(
+          //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          //   ),
+          // assistedLiving
+          //   .find({ city: 'Andalusia' })
+          //   .lean()
+          //   .select(
+          //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          //   ),
+          // adultDayCare
+          //   .find({ city: 'Andalusia' })
+          //   .lean()
+          //   .select(
+          //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          //   ),
+          // careRetirement
+          //   .find({ city: 'Andalusia' })
+          //   .lean()
+          //   .select(
+          //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          //   ),
           skilledNursingHome
             .find({ city: 'Andalusia' })
             .lean()
             .select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             ),
-          geriaticCareManager
-            .find({ city: 'Andalusia' })
-            .lean()
-            .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            ),
+          // geriaticCareManager
+          //   .find({ city: 'Andalusia' })
+          //   .lean()
+          //   .select(
+          //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+          //   ),
         ]);
 
         let filterData = allData.flat();
@@ -2364,57 +2362,57 @@ const healthCareController = {
 // Function to fetch data from the database
 const fetchDataFromDatabase = async () => {
   const promises = [
-    hospital.find().lean().select('_id name latitude longitude mainCategory'),
-    dialysisFacilityData
-      .find({})
-      .lean()
-      .select('_id name latitude longitude mainCategory'),
-    homeHealthData
-      .find({})
-      .lean()
-      .select('_id name latitude longitude mainCategory'),
-    hoSpiceData
-      .find({})
-      .lean()
-      .select('_id name latitude longitude mainCategory'),
-    inpatientRehabilitiation
-      .find({})
-      .lean()
-      .select('_id name latitude longitude mainCategory'),
-    longTermCares
-      .find({})
-      .lean()
-      .select('_id name latitude longitude mainCategory'),
+    // hospital.find().lean().select('_id name latitude longitude mainCategory'),
+    // dialysisFacilityData
+    //   .find({})
+    //   .lean()
+    //   .select('_id name latitude longitude mainCategory'),
+    // homeHealthData
+    //   .find({})
+    //   .lean()
+    //   .select('_id name latitude longitude mainCategory'),
+    // hoSpiceData
+    //   .find({})
+    //   .lean()
+    //   .select('_id name latitude longitude mainCategory'),
+    // inpatientRehabilitiation
+    //   .find({})
+    //   .lean()
+    //   .select('_id name latitude longitude mainCategory'),
+    // longTermCares
+    //   .find({})
+    //   .lean()
+    //   .select('_id name latitude longitude mainCategory'),
     nursingHome
       .find({})
       .lean()
       .select('_id name latitude longitude mainCategory'),
-    independentLiving
-      .find()
-      .lean()
-      .select('_id name latitude longitude mainCategory'),
-    memoryCare.find().lean().select('_id name latitude longitude mainCategory'),
-    inHomeCare.find().lean().select('_id name latitude longitude mainCategory'),
-    assistedLiving
-      .find()
-      .lean()
-      .select('_id name latitude longitude mainCategory'),
-    adultDayCare
-      .find()
-      .lean()
-      .select('_id name latitude longitude mainCategory'),
-    careRetirement
-      .find()
-      .lean()
-      .select('_id name latitude longitude mainCategory'),
+    // independentLiving
+    //   .find()
+    //   .lean()
+    //   .select('_id name latitude longitude mainCategory'),
+    // memoryCare.find().lean().select('_id name latitude longitude mainCategory'),
+    // inHomeCare.find().lean().select('_id name latitude longitude mainCategory'),
+    // assistedLiving
+    //   .find()
+    //   .lean()
+    //   .select('_id name latitude longitude mainCategory'),
+    // adultDayCare
+    //   .find()
+    //   .lean()
+    //   .select('_id name latitude longitude mainCategory'),
+    // careRetirement
+    //   .find()
+    //   .lean()
+    //   .select('_id name latitude longitude mainCategory'),
     skilledNursingHome
       .find()
       .lean()
       .select('_id name latitude longitude mainCategory'),
-    geriaticCareManager
-      .find()
-      .lean()
-      .select('_id name latitude longitude mainCategory'),
+    // geriaticCareManager
+    //   .find()
+    //   .lean()
+    //   .select('_id name latitude longitude mainCategory'),
   ];
   const records = await Promise.all(promises);
   return [].concat(...records);
