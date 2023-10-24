@@ -787,22 +787,22 @@ const healthCareController = {
   getCategoryName: async (req, res, next) => {
     try {
       const categoryName = [
-        // 'Hospital',
-        // 'Long Term Cares',
+        'Hospital',
+        'Long Term Cares',
         'Nursing Home',
-        // 'Dialysis Facility',
-        // 'Hospice',
-        // 'Inpatient Rehabilitiation',
-        // 'Group Practice',
-        // 'Home Health',
-        // 'Independent Living',
-        // 'Memory Care',
-        // 'In Home Care',
-        // 'Assisted Living',
-        // 'Adult Day Care',
-        // 'Care Retirement Communities',
+        'Dialysis Facility',
+        'Hospice',
+        'Inpatient Rehabilitiation',
+        'Group Practice',
+        'Home Health',
+        'Independent Living',
+        'Memory Care',
+        'In Home Care',
+        'Assisted Living',
+        'Adult Day Care',
+        'Care Retirement Communities',
         'Skilled Nursing Facility',
-        // 'Geriatic Care Manager',
+        'Geriatic Care Manager',
       ];
 
       res.status(200).json(categoryName);
