@@ -82,6 +82,18 @@ app.get('/', async (req, res) => {
   }
 });
 
+const skilledNursingFacility = require('../src/Model/skilledNursingFacilityModel');
+app.get('/count', async (req, res) => {
+  try {
+    let data = await skilledNursingFacility.count({
+      photos: { $exists: true, $ne: [] },
+    });
+    res.status(200).json(data)
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 // Start the server and listen for incoming requests
 app.listen(3000, () => {
   console.log(`Backend server is running on ${3000}!`);
