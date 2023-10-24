@@ -787,22 +787,22 @@ const healthCareController = {
   getCategoryName: async (req, res, next) => {
     try {
       const categoryName = [
-        'Hospital',
-        'Long Term Cares',
         'Nursing Home',
-        'Dialysis Facility',
-        'Hospice',
-        'Inpatient Rehabilitiation',
-        'Group Practice',
-        'Home Health',
-        'Independent Living',
-        'Memory Care',
-        'In Home Care',
-        'Assisted Living',
-        'Adult Day Care',
-        'Care Retirement Communities',
         'Skilled Nursing Facility',
-        'Geriatic Care Manager',
+        // 'Hospital',
+        // 'Long Term Cares',
+        // 'Dialysis Facility',
+        // 'Hospice',
+        // 'Inpatient Rehabilitiation',
+        // 'Group Practice',
+        // 'Home Health',
+        // 'Independent Living',
+        // 'Memory Care',
+        // 'In Home Care',
+        // 'Assisted Living',
+        // 'Adult Day Care',
+        // 'Care Retirement Communities',
+        // 'Geriatic Care Manager',
       ];
 
       res.status(200).json(categoryName);
@@ -2362,6 +2362,14 @@ const healthCareController = {
 // Function to fetch data from the database
 const fetchDataFromDatabase = async () => {
   const promises = [
+    nursingHome
+      .find({})
+      .lean()
+      .select('_id name latitude longitude mainCategory'),
+    skilledNursingHome
+      .find()
+      .lean()
+      .select('_id name latitude longitude mainCategory'),
     // hospital.find().lean().select('_id name latitude longitude mainCategory'),
     // dialysisFacilityData
     //   .find({})
@@ -2383,10 +2391,6 @@ const fetchDataFromDatabase = async () => {
     //   .find({})
     //   .lean()
     //   .select('_id name latitude longitude mainCategory'),
-    nursingHome
-      .find({})
-      .lean()
-      .select('_id name latitude longitude mainCategory'),
     // independentLiving
     //   .find()
     //   .lean()
@@ -2405,10 +2409,6 @@ const fetchDataFromDatabase = async () => {
     //   .find()
     //   .lean()
     //   .select('_id name latitude longitude mainCategory'),
-    skilledNursingHome
-      .find()
-      .lean()
-      .select('_id name latitude longitude mainCategory'),
     // geriaticCareManager
     //   .find()
     //   .lean()
