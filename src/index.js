@@ -3,7 +3,7 @@ const app = express();
 const dotenv = require('dotenv');
 const cors = require('cors');
 const axios = require('axios');
-// const rateLimit = require('express-rate-limit');
+const rateLimit = require('express-rate-limit');
 
 //routes
 const databaseConnection = require('./utils/db');
@@ -25,14 +25,14 @@ app.use(express.json()); // Parse incoming JSON data
 // Connect to the MongoDB database
 databaseConnection.connect();
 
-// const limiter = rateLimit({
-//   windowMs: 60 * 1000,
-//   max: 25,
-//   message: 'Too many requests from this IP, please try again later.',
-// });
+const limiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 50,
+  message: 'Too many requests from this IP, please try again later.',
+});
 
 // limiter middleware to your routes
-// app.use('/api', limiter);
+app.use('/api', limiter);
 
 // app.use('/api', async (req, res, next) => {
 //   // Check if the request exceeded the rate limit
@@ -82,17 +82,82 @@ app.get('/', async (req, res) => {
   }
 });
 
-const skilledNursingFacility = require('../src/Model/skilledNursingFacilityModel');
-app.get('/count', async (req, res) => {
-  try {
-    let data = await skilledNursingFacility.count({
-      photos: { $exists: true, $ne: [] },
-    });
-    res.status(200).json(data)
-  } catch (error) {
-    console.log(error);
-  }
-});
+//for only counting purpose
+// const skilledNursingFacility = require('../src/Model/skilledNursingFacilityModel');
+// const adultDayCareModel = require('../src/Model/adultDayCareModel');
+// const assistedLiving = require('../src/Model/assistedLiving');
+// const careRetirementCommunities = require('../src/Model/careRetirementCommunities');
+// const geriatorCareManagerModel = require('../src/Model/geriatorCareManagerModel');
+// const hoSpiceModel = require('../src/Model/hoSpice');
+// const inHomeCare = require('../src/Model/inHomeCare');
+// const independentLiving = require('../src/Model/independentLiving');
+// const memoryCareModel = require('../src/Model/memoryCareModel');
+
+// const nursingHome = require('../src/Model/nursingHome');
+// const longtermCares = require('../src/Model/longtermCares');
+// const inpatientRehabilitiaion = require('../src/Model/inpatientRehabilitiaion');
+// const hoSpiceModel = require('../src/Model/hospital');
+// const hoSpiceModel = require('../src/Model/homeHealth');
+// const dialysisFacility = require('../src/Model/dialysisFacility'); not available
+// const groupPracticeModel = require('../src/Model/groupPractice'); not availble
+
+// app.get('/count', async (req, res) => {
+//   try {
+//     const [
+//       skilledNursingFacilityResponse,
+//       adultDayCareModelResponse,
+//       assistedLivingResponse,
+//       careRetirementCommunitiesResponse,
+//       geriatorCareManagerModelResponse,
+//       hoSpiceModelResponse,
+//       inHomeCareResponse,
+//       independentLivingResponse,
+//       memoryCareModelResponse,
+//     ] = await Promise.all([
+//       skilledNursingFacility.count({
+//         photos: { $exists: true, $ne: [] },
+//       }),
+//       adultDayCareModel.count({
+//         photos: { $exists: true, $ne: [] },
+//       }),
+//       assistedLiving.count({
+//         photos: { $exists: true, $ne: [] },
+//       }),
+//       careRetirementCommunities.count({
+//         photos: { $exists: true, $ne: [] },
+//       }),
+//       geriatorCareManagerModel.count({
+//         photos: { $exists: true, $ne: [] },
+//       }),
+//       hoSpiceModel.count({
+//         photos: { $exists: true, $ne: [] },
+//       }),
+//       inHomeCare.count({
+//         photos: { $exists: true, $ne: [] },
+//       }),
+//       independentLiving.count({
+//         photos: { $exists: true, $ne: [] },
+//       }),
+//       memoryCareModel.count({
+//         photos: { $exists: true, $ne: [] },
+//       }),
+//     ]);
+
+//     res.status(200).json({
+//       skilledNursingFacility: skilledNursingFacilityResponse,
+//       adultDayCare: adultDayCareModelResponse,
+//       assistedLiving: assistedLivingResponse,
+//       careRetirementCommunities: careRetirementCommunitiesResponse,
+//       geriatorCareManager: geriatorCareManagerModelResponse,
+//       hoSpice: hoSpiceModelResponse,
+//       inHomeCare: inHomeCareResponse,
+//       independentLiving: independentLivingResponse,
+//       memoryCare: memoryCareModelResponse,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// });
 
 // Start the server and listen for incoming requests
 app.listen(3000, () => {
