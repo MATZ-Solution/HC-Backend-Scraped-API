@@ -1530,22 +1530,22 @@ const healthCareController = {
 
       if (zipCode) {
         const allData = await Promise.all([
-          hospital.find({ zipCode }).lean(),
-          longTermCares.find({ zipCode }).lean(),
           nursingHome.find({ zipCode }).lean(),
-          dialysisFacilityData.find({ zipCode }).lean(),
-          hoSpiceData.find({ zipCode }).lean(),
-          homeHealthData.find({ zipCode }).lean(),
-          inpatientRehabilitiation.find({ zipCode }).lean(),
-          groupPracticeData.find({ zipCode }).lean(),
-          independentLiving.find({ zipCode }).lean(),
-          memoryCare.find({ zipCode }).lean(),
-          inHomeCare.find({ zipCode }).lean(),
-          assistedLiving.find({ zipCode }).lean(),
-          adultDayCare.find({ zipCode }).lean(),
-          careRetirement.find({ zipCode }).lean(),
           skilledNursingHome.find({ zipCode }).lean(),
-          geriaticCareManager.find({ zipCode }).lean(),
+          // hospital.find({ zipCode }).lean(),
+          // longTermCares.find({ zipCode }).lean(),
+          // dialysisFacilityData.find({ zipCode }).lean(),
+          // hoSpiceData.find({ zipCode }).lean(),
+          // homeHealthData.find({ zipCode }).lean(),
+          // inpatientRehabilitiation.find({ zipCode }).lean(),
+          // groupPracticeData.find({ zipCode }).lean(),
+          // independentLiving.find({ zipCode }).lean(),
+          // memoryCare.find({ zipCode }).lean(),
+          // inHomeCare.find({ zipCode }).lean(),
+          // assistedLiving.find({ zipCode }).lean(),
+          // adultDayCare.find({ zipCode }).lean(),
+          // careRetirement.find({ zipCode }).lean(),
+          // geriaticCareManager.find({ zipCode }).lean(),
         ]);
         res.status(200).json(allData.flat());
       }
