@@ -31,6 +31,20 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again later.',
 });
 
+
+//limit
+// app.get('/', limiter, async (req, res) => {
+//   try {
+//     // console.log(req.ip);
+//     // let res = await axios.get(`http://ip-api.com/json/192.168.10.11`);
+//     // console.log(res.data);
+//     res.send('Professional Scrapped 10/18/23 4:25');
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
+
+
 // limiter middleware to your routes
 app.use('/api', limiter);
 
@@ -69,7 +83,8 @@ app.use('/api/professionalRoute', professionalRoute);
 //=====================================================
 
 app.use(errorMiddleware);
-app.enable('trust proxy');
+// app.enable('trust proxy');
+
 
 app.get('/', async (req, res) => {
   try {
@@ -81,6 +96,7 @@ app.get('/', async (req, res) => {
     console.log(err);
   }
 });
+
 
 //for only counting purpose
 // const skilledNursingFacility = require('../src/Model/skilledNursingFacilityModel');

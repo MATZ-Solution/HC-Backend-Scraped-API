@@ -90,4 +90,8 @@ router.get(
   healthCare.getProfessionalsUsingZipCode
 );
 
+//<---------------------get Multiple Categories ---------------------------------->
+
+router.post('/getMutilpleCategories', healthCare.getMultipleCategoryData)
+
 module.exports = router;
