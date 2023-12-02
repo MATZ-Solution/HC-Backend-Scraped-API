@@ -2441,6 +2441,7 @@ const healthCareController = {
         // Format the data for the list format
         return result.map((entry) => ({
           _id: entry._id,
+          name: entry.name,
           state: entry.state,
           city: entry.city,
           phoneNumber: entry.phoneNumber,
