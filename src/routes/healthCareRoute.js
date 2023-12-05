@@ -94,4 +94,8 @@ router.get(
 
 router.post('/getMutilpleCategories', healthCare.getMultipleCategoryData)
 
+
+//<------------------------getStateCityAndZipCode-------------------------------->
+router.get('/getStateCityAndZipCode', healthCare.getStateCityAndZipCode)
+
 module.exports = router;

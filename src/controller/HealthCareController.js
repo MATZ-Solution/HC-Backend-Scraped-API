@@ -2468,6 +2468,100 @@ const healthCareController = {
       next(err)
     }
   }
+  ,
+  getStateCityAndZipCode: async (req, res, next) => {
+    try {
+
+      let cacheRecords = 'records';
+
+      const uniqureRecords = {
+        city: [],
+        state: [],
+        zipCode: []
+      }
+
+      const cachedData = cache.get(cacheRecords);
+      if (cachedData) {
+        return res.status(200).json(cachedData);
+      }
+
+      const promises = [
+        nursingHome
+          .find()
+          .lean()
+          .select('state city zipCode -_id'),
+        skilledNursingHome
+          .find()
+          .lean()
+          .select('state city zipCode'),
+        hospital.find().lean().select('state city zipCode -_id'),
+        dialysisFacilityData
+          .find()
+          .lean()
+          .select('state city zipCode -_id'),
+        homeHealthData
+          .find({})
+          .lean()
+          .select('state city zipCode -_id'),
+        hoSpiceData
+          .find({})
+          .lean()
+          .select('state city zipCode -_id'),
+        inpatientRehabilitiation
+          .find({})
+          .lean()
+          .select('state city zipCode -_id'),
+        longTermCares
+          .find({})
+          .lean()
+          .select('state city zipCode -_id'),
+        independentLiving
+          .find()
+          .lean()
+          .select('state city zipCode'),
+        memoryCare.find().lean().select('state city zipCode -_id'),
+        inHomeCare.find().lean().select('state city zipCode -_id'),
+        assistedLiving
+          .find()
+          .lean()
+          .select('state city zipCode -_id'),
+        adultDayCare
+          .find()
+          .lean()
+          .select('state city zipCode -_id'),
+        careRetirement
+          .find()
+          .lean()
+          .select('state city zipCode -_id'),
+        geriaticCareManager
+          .find()
+          .lean()
+          .select('state city zipCode -_id'),
+      ];
+
+      const records = await Promise.all(promises);
+
+      const mergedRecords = [].concat(...records);
+
+      for (let i = 0; i < mergedRecords.length; i++) {
+        if (!uniqureRecords.state.includes(mergedRecords[i].state.toLowerCase())) {
+          uniqureRecords.state.push(mergedRecords[i].state.toLowerCase());
+        }
+        if (!uniqureRecords.city.includes(mergedRecords[i].city.toLowerCase())) {
+          uniqureRecords.city.push(mergedRecords[i].city.toLowerCase());
+        }
+        if (!uniqureRecords.zipCode.includes(mergedRecords[i].zipCode)) {
+          uniqureRecords.zipCode.push(mergedRecords[i].zipCode);
+        }
+      }
+
+      cache.set(cacheRecords, uniqureRecords);
+
+      res.status(200).json(uniqureRecords);
+    } catch (error) {
+      next(error)
+    }
+  }
   // getDataUsingPagination: async (req, res, next) => {
   //   try {
   //     const { state, city, zipCode, category, pages, limit } = req.body;
@@ -2503,6 +2597,11 @@ const healthCareController = {
   //   }
   // },
 };
+
+
+//function to state city zipcode
+
+
 
 // Function to fetch data from the database
 const fetchDataFromDatabase = async () => {
