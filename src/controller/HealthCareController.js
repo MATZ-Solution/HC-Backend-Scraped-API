@@ -2478,7 +2478,7 @@ const healthCareController = {
       let cacheRecords = 'records';
 
       const uniqureRecords = {
-        city: [],
+        cities: [],
         state: [],
         zipCode: []
       }
@@ -2550,8 +2550,9 @@ const healthCareController = {
         if (!uniqureRecords.state.includes(mergedRecords[i].state)) {
           uniqureRecords.state.push(mergedRecords[i].state);
         }
-        if (!uniqureRecords.city.includes(mergedRecords[i].city)) {
-          uniqureRecords.city.push(mergedRecords[i].city);
+        if (!uniqureRecords.cities.includes(mergedRecords[i].city)) {
+          const capitalizedCity = capitalizeFirstLetter(mergedRecords[i].city);
+          uniqureRecords.cities.push(capitalizedCity);
         }
         if (!uniqureRecords.zipCode.includes(mergedRecords[i].zipCode)) {
           uniqureRecords.zipCode.push(mergedRecords[i].zipCode);
@@ -2560,7 +2561,7 @@ const healthCareController = {
 
       cache.set(cacheRecords, uniqureRecords);
 
-      res.status(200).json(uniqureRecords);
+      return res.status(200).json(uniqureRecords);
     } catch (error) {
       next(error)
     }
@@ -2725,7 +2726,7 @@ const healthCareController = {
           }
 
           res.status(200).json(uniqureRecords)
-          
+
         } catch (err) {
           next(err);
         }
@@ -2796,3 +2797,8 @@ const fetchDataFromDatabase = async () => {
 };
 
 module.exports = healthCareController;
+
+
+const capitalizeFirstLetter = (str) => {
+  return str.toLowerCase().replace(/(^|\s)\S/g, (match) => match.toUpperCase());
+};
