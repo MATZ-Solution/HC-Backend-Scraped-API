@@ -2446,6 +2446,7 @@ const healthCareController = {
           name: entry.name,
           state: entry.state,
           city: entry.city,
+          zipCode:entry.zipCode,
           phoneNumber: entry.phoneNumber,
           mainCategory: entry.mainCategory
         }));
