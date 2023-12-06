@@ -2550,7 +2550,7 @@ const healthCareController = {
         if (!uniqureRecords.state.includes(mergedRecords[i].state)) {
           uniqureRecords.state.push(mergedRecords[i].state);
         }
-        if (!uniqureRecords.cities.includes(mergedRecords[i].city)) {
+        if (!uniqureRecords.cities.includes(capitalizeFirstLetter(mergedRecords[i].city))) {
           const capitalizedCity = capitalizeFirstLetter(mergedRecords[i].city);
           uniqureRecords.cities.push(capitalizedCity);
         }
