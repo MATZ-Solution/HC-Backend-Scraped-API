@@ -2574,7 +2574,7 @@ const healthCareController = {
 
       const uniqureRecords = {
         state: [],
-        city: [],
+        cities: [],
         zipCode: []
       };
 
@@ -2717,8 +2717,9 @@ const healthCareController = {
             if (!uniqureRecords.state.includes(mergedRecords[i].state)) {
               uniqureRecords.state.push(mergedRecords[i].state);
             }
-            if (!uniqureRecords.city.includes(mergedRecords[i].city)) {
-              uniqureRecords.city.push(mergedRecords[i].city);
+            if (!uniqureRecords.cities.includes(capitalizeFirstLetter(mergedRecords[i].city))) {
+              const capitalizedCity = capitalizeFirstLetter(mergedRecords[i].city);
+              uniqureRecords.cities.push(capitalizedCity);
             }
             if (!uniqureRecords.zipCode.includes(mergedRecords[i].zipCode)) {
               uniqureRecords.zipCode.push(mergedRecords[i].zipCode);
