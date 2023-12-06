@@ -2446,7 +2446,7 @@ const healthCareController = {
           name: entry.name,
           state: entry.state,
           city: entry.city,
-          zipCode:entry.zipCode,
+          zipCode: entry.zipCode,
           phoneNumber: entry.phoneNumber,
           mainCategory: entry.mainCategory
         }));
@@ -2571,6 +2571,12 @@ const healthCareController = {
     try {
       const { state, city, zipCode, name } = req.body;
 
+      const uniqureRecords = {
+        state: [],
+        city: [],
+        zipCode: []
+      };
+
       if (typeof name === 'object') {
         const scrapeCategory = async (categoryName) => {
           let query = {};
@@ -2596,7 +2602,7 @@ const healthCareController = {
               )
               .lean();
           } else if (categoryName === 'Dialysis Facility') {
-            result = await dialysisFacilityData.find(query).select().lean();
+            result = await dialysisFacilityData.find(query).select('-_id city state zipCode').lean();
           } else if (categoryName === 'Nursing Home') {
             result = await nursingHome
               .find(query)
@@ -2704,7 +2710,22 @@ const healthCareController = {
         try {
           const scrapedData = await scrapeAllCategories(name);
 
-          res.status(200).json(scrapedData.flat());
+          let mergedRecords = scrapedData.flat()
+
+          for (let i = 0; i < mergedRecords.length; i++) {
+            if (!uniqureRecords.state.includes(mergedRecords[i].state)) {
+              uniqureRecords.state.push(mergedRecords[i].state);
+            }
+            if (!uniqureRecords.city.includes(mergedRecords[i].city)) {
+              uniqureRecords.city.push(mergedRecords[i].city);
+            }
+            if (!uniqureRecords.zipCode.includes(mergedRecords[i].zipCode)) {
+              uniqureRecords.zipCode.push(mergedRecords[i].zipCode);
+            }
+          }
+
+          res.status(200).json(uniqureRecords)
+          
         } catch (err) {
           next(err);
         }
