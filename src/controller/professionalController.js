@@ -89,6 +89,8 @@ const professionalController = {
       const selectedCity = req.body.city;
       const selectedState = req.body.state;
       const selectedZipCode = req.body.zipCode;
+      const page = req.body.page;
+      const limit = req.body.limit;
 
       const query = {
         specialities: { $in: selectedCategories },
@@ -106,9 +108,9 @@ const professionalController = {
         query['locations.zip_code'] = selectedZipCode;
       }
 
-      const professionals = await Professional.find(query);
+      const professionals = await Professional.find(query).skip(page * limit).limit(limit);
 
-      res.json(professionals);
+      res.status(200).json(professionals);
     } catch (err) {
       next(err);
     }
