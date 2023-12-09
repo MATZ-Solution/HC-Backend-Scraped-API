@@ -2748,7 +2748,7 @@ const healthCareController = {
 
       const data = await Professional.aggregate([
         {
-          $unwind: "$locations" // Split the array into multiple documents
+          $unwind: "$locations" 
         },
         {
           $project: {

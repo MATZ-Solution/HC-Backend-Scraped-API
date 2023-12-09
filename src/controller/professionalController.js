@@ -116,6 +116,94 @@ const professionalController = {
     }
   },
 
+  getProfessionalsUsingState: async (req, res, next) => {
+    try {
+      // const selectedCategories = req.body.name;
+      // const selectedCity = req.body.city;
+      // const selectedState = req.body.state;
+      // const selectedZipCode = req.body.zipCode;
+
+      // const query = {
+      //   specialities: { $in: selectedCategories },
+      // };
+
+      // if (selectedCity) {
+      //   query['locations.city'] = selectedCity;
+      // }
+
+      // if (selectedState) {
+      //   query['state'] = selectedState;
+      // }
+
+      // if (selectedZipCode) {
+      //   query['locations.zip_code'] = selectedZipCode;
+      // }
+
+      // const professionals = await Professional.find(query)
+      // res.status(200).json(professionals);
+
+      const uniqureRecords = {
+        state: [],
+        cities: [],
+        zipCode: []
+      };
+
+      const selectedCategories = req.body.name;
+      const selectedCity = req.body.city;
+      const selectedState = req.body.state;
+      const selectedZipCode = req.body.zipCode;
+
+      const aggregationPipeline = [
+        {
+          $match: {
+            specialities: { $in: selectedCategories },
+          },
+        },
+        {
+          $unwind: "$locations",
+        },
+        {
+          $match: {
+            "locations.city": selectedCity || { $exists: true },
+            state: selectedState || { $exists: true },
+            "locations.zip_code": selectedZipCode || { $exists: true },
+          },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            state: { $first: "$state" },
+            locations: { $push: "$locations" },
+          },
+        },
+      ];
+
+      const professionals = await Professional.aggregate(aggregationPipeline);
+
+      for (let i = 0; i < professionals.length; i++) {
+        if (!uniqureRecords.state.includes(professionals[i].state)) {
+          uniqureRecords.state.push(professionals[i].state);
+        }
+        for (let j = 0; j < professionals[i].locations.length; j++) {
+          if (!uniqureRecords.cities.includes(capitalizeFirstLetter(professionals[i].locations[j].city))) {
+            const capitalizedCity = capitalizeFirstLetter(professionals[i].locations[j].city);
+            uniqureRecords.cities.push(capitalizedCity);
+          }
+          if (!uniqureRecords.zipCode.includes(professionals[i].locations[j].zip_code)) {
+            uniqureRecords.zipCode.push(professionals[i].locations[j].zip_code);
+          }
+        }
+      }
+
+
+
+
+      res.status(200).json(uniqureRecords);
+    } catch (err) {
+      next(err);
+    }
+  },
+
   getProfessionalsDataForCity: async (req, res, next) => {
     try {
       const selectedCity = req.body.city;
@@ -160,3 +248,7 @@ getCategoryName: async (req, res, next) => {
     }
   },
 */
+
+const capitalizeFirstLetter = (str) => {
+  return str.toLowerCase().replace(/(^|\s)\S/g, (match) => match.toUpperCase());
+};

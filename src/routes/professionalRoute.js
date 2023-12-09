@@ -8,4 +8,8 @@ professionalrouter.route('/getProfessionalsData').post(professionalController.ge
 professionalrouter.route('/getProfessionalsbyCities').post(professionalController.getProfessionalsDataForCity)
 //====================================================
 
+//<--------------------------Get Professional Using State
+professionalrouter.route('/getProfessionalsUsingState').post(professionalController.getProfessionalsUsingState)
+
+
 module.exports = professionalrouter;
