@@ -102,5 +102,6 @@ router.get('/getStateCityAndZipCode', healthCare.getStateCityAndZipCode)
 // <-------------------GET CITY AND ZIPCODE USING ON THE BASIS OF STATE----------->
 router.post('/getCityAndZipCodeOnSTATE', healthCare.getCityAndZipCodeOnSTATE)
 
-
+//<--------------------Get Professional City state and ZipCode
+router.get('/getProfessionalCityStateAndZipCode', healthCare.getProfessionalCityStateAndZipCode)
 module.exports = router;

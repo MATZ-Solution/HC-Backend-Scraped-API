@@ -2735,6 +2735,50 @@ const healthCareController = {
     } catch (error) {
       next(error)
     }
+  },
+  getProfessionalCityStateAndZipCode: async (req, res, next) => {
+    try {
+
+      const uniqureRecords = {
+        state: [],
+        cities: [],
+        zipCode: []
+      };
+
+
+      const data = await Professional.aggregate([
+        {
+          $unwind: "$locations" // Split the array into multiple documents
+        },
+        {
+          $project: {
+            _id: 0,
+            state: 1,
+            city: "$locations.city",
+            zipCode: "$locations.zip_code"
+          }
+        }
+      ])
+
+      for (let i = 0; i < data.length; i++) {
+        if (!uniqureRecords.state.includes(data[i].state)) {
+          uniqureRecords.state.push(data[i].state);
+        }
+        if (!uniqureRecords.cities.includes(capitalizeFirstLetter(data[i].city))) {
+          const capitalizedCity = capitalizeFirstLetter(data[i].city);
+          uniqureRecords.cities.push(capitalizedCity);
+        }
+        if (!uniqureRecords.zipCode.includes(data[i].zipCode)) {
+          uniqureRecords.zipCode.push(data[i].zipCode);
+        }
+      }
+
+
+      res.status(200).json(uniqureRecords)
+
+    } catch (error) {
+      next(error)
+    }
   }
 };
 
