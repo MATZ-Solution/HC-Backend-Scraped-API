@@ -106,6 +106,7 @@ router.post('/getCityAndZipCodeOnSTATE', healthCare.getCityAndZipCodeOnSTATE)
 router.get('/getProfessionalCityStateAndZipCode', healthCare.getProfessionalCityStateAndZipCode)
 
 
-
+//<-------------maaz work----------------------------->
+router.post('/getAllRecordsCategoryOnLatLong', healthCare.getAllRecordsCategoryLatLong)
 
 module.exports = router;

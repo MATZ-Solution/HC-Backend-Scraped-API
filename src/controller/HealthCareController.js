@@ -2748,7 +2748,7 @@ const healthCareController = {
 
       const data = await Professional.aggregate([
         {
-          $unwind: "$locations" 
+          $unwind: "$locations"
         },
         {
           $project: {
@@ -2779,7 +2779,126 @@ const healthCareController = {
     } catch (error) {
       next(error)
     }
-  }
+  },
+  getAllRecordsCategoryLatLong: async (req, res, next) => {
+    try {
+      const { points } = req.body
+      //   let points = [
+      //     [37.48524542937907,-120.49079587293323],
+      //     [36.130700323188336,-120.29304196668323],
+      //     [36.46716324293588,-117.78815915418323],
+      //     [37.79842503509403, -118.05183102918323],
+      //     [39.020817672502886,-116.40388181043323],
+      //     [40.104894550630156,-118.64509274793323],
+      //     [39.548033648681546,-120.53474118543323],
+      //     [ 38.88411833429527,-121.08405759168323],
+      //     [38.48964079678024,-121.36970212293323],
+      //     [37.97184263742902,-121.54548337293323],
+      //     [37.48524542937907,-120.49079587293323],
+      // ];
+
+
+      if (!points || !Array.isArray(points) || points.length === 0) {
+        return res
+          .status(400)
+          .json({
+            success: false,
+            message:
+              "Invalid request body. Expecting an array of latitude and longitude pairs.",
+          });
+      }
+
+
+      const polygonVerticesTurf = points;
+
+      // Create a GeoJSON-like structure
+      const polygon = {
+        type: "Feature",
+        geometry: {
+          type: "Polygon",
+          coordinates: [polygonVerticesTurf],
+        },
+        properties: {},
+      };
+
+      // console.log(typeof polygon.geometry.coordinates);
+
+
+
+      const fetchDataFromDatabase = async () => {
+        const promises = [
+          nursingHome
+            .find({})
+            .lean()
+            .select("_id name latitude longitude mainCategory"),
+          skilledNursingHome
+            .find()
+            .lean()
+            .select("_id name latitude longitude mainCategory"),
+        ];
+        const records = await Promise.all(promises);
+        return [].concat(...records);
+      };
+
+      const allRecords = await fetchDataFromDatabase();
+      // console.log(allRecords,"allrecords")
+      const filteredRecords = allRecords.filter((location) => {
+        const latitude = parseFloat(location.latitude);
+        const longitude = parseFloat(location.longitude);
+        return !isNaN(latitude) && !isNaN(longitude);
+      });
+
+      const features = filteredRecords.map((location) => {
+        const latitude = parseFloat(location.latitude);
+        const longitude = parseFloat(location.longitude);
+        const point = [latitude, longitude];
+        return point
+        //   return {
+        //     type: 'Feature',
+        //     geometry: {
+        //       type: 'Point',
+        //       coordinates: point,
+        //     },
+        //     properties: {
+        //      // Include the 'name' property
+        //     },
+        //   };
+      });
+
+      // const featureCollection = {
+      //   type: 'FeatureCollection',
+      //   features: features,
+      // };
+      console.log(features)
+      // let collection=featureCollection.features.map((e)=>e.geometry.coordinates)
+      // console.log(collection)
+      //   [
+      //     [39.5489, -119.783],
+      //     [-46.6246, -23.5325],
+      //     [39.1761, -119.735],
+      //     [-46.663, -23.554],
+      //     [-46.643, -23.557]
+      // ]
+
+      let ptsWithin = turf.pointsWithinPolygon(turf.points(features), turf.polygon([points]))
+      // let ptsWithin = turf.pointsWithinPolygon(turf.points(pints), polygon);
+
+      console.log(ptsWithin.features, "ptsWtihin")
+
+
+
+
+
+
+      const locationNames = ptsWithin.features.map((loc) => loc.geometry);
+      // console.log(locationNames)
+      return res.status(200).json(locationNames);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+
 };
 
 // Function to fetch data from the database

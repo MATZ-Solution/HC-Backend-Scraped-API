@@ -118,30 +118,6 @@ const professionalController = {
 
   getProfessionalsUsingState: async (req, res, next) => {
     try {
-      // const selectedCategories = req.body.name;
-      // const selectedCity = req.body.city;
-      // const selectedState = req.body.state;
-      // const selectedZipCode = req.body.zipCode;
-
-      // const query = {
-      //   specialities: { $in: selectedCategories },
-      // };
-
-      // if (selectedCity) {
-      //   query['locations.city'] = selectedCity;
-      // }
-
-      // if (selectedState) {
-      //   query['state'] = selectedState;
-      // }
-
-      // if (selectedZipCode) {
-      //   query['locations.zip_code'] = selectedZipCode;
-      // }
-
-      // const professionals = await Professional.find(query)
-      // res.status(200).json(professionals);
-
       const uniqureRecords = {
         state: [],
         cities: [],
