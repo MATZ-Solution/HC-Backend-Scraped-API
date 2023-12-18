@@ -2784,11 +2784,7 @@ const healthCareController = {
   getAllRecordsCategoryLatLong: async (req, res, next) => {
     try {
 
-      return res.status(200).json({
-        success: 1,
-        message: "running"
-      })
-      // const { points } = req.body
+      const { points } = req.body
       //   let points = [
       //     [37.48524542937907,-120.49079587293323],
       //     [36.130700323188336,-120.29304196668323],
@@ -2804,101 +2800,101 @@ const healthCareController = {
       // ];
 
 
-      // if (!points || !Array.isArray(points) || points.length === 0) {
-      //   return res
-      //     .status(400)
-      //     .json({
-      //       success: false,
-      //       message:
-      //         "Invalid request body. Expecting an array of latitude and longitude pairs.",
-      //     });
-      // }
+      if (!points || !Array.isArray(points) || points.length === 0) {
+        return res
+          .status(400)
+          .json({
+            success: false,
+            message:
+              "Invalid request body. Expecting an array of latitude and longitude pairs.",
+          });
+      }
 
 
-      // const polygonVerticesTurf = points;
+      const polygonVerticesTurf = points;
 
-      // // Create a GeoJSON-like structure
-      // const polygon = {
-      //   type: "Feature",
-      //   geometry: {
-      //     type: "Polygon",
-      //     coordinates: [polygonVerticesTurf],
-      //   },
-      //   properties: {},
+      // Create a GeoJSON-like structure
+      const polygon = {
+        type: "Feature",
+        geometry: {
+          type: "Polygon",
+          coordinates: [polygonVerticesTurf],
+        },
+        properties: {},
+      };
+
+      // console.log(typeof polygon.geometry.coordinates);
+
+
+
+      const fetchDataFromDatabase = async () => {
+        const promises = [
+          nursingHome
+            .find({})
+            .lean()
+            .select("_id name latitude longitude mainCategory"),
+          skilledNursingHome
+            .find()
+            .lean()
+            .select("_id name latitude longitude mainCategory"),
+        ];
+        const records = await Promise.all(promises);
+        return [].concat(...records);
+      };
+
+      const allRecords = await fetchDataFromDatabase();
+      // console.log(allRecords,"allrecords")
+      const filteredRecords = allRecords.filter((location) => {
+        const latitude = parseFloat(location.latitude);
+        const longitude = parseFloat(location.longitude);
+        return !isNaN(latitude) && !isNaN(longitude);
+      });
+
+      const features = filteredRecords.map((location) => {
+        const latitude = parseFloat(location.latitude);
+        const longitude = parseFloat(location.longitude);
+        const point = [latitude, longitude];
+        return point
+        //   return {
+        //     type: 'Feature',
+        //     geometry: {
+        //       type: 'Point',
+        //       coordinates: point,
+        //     },
+        //     properties: {
+        //      // Include the 'name' property
+        //     },
+        //   };
+      });
+
+      // const featureCollection = {
+      //   type: 'FeatureCollection',
+      //   features: features,
       // };
+      console.log(features)
+      // let collection=featureCollection.features.map((e)=>e.geometry.coordinates)
+      // console.log(collection)
+      //   [
+      //     [39.5489, -119.783],
+      //     [-46.6246, -23.5325],
+      //     [39.1761, -119.735],
+      //     [-46.663, -23.554],
+      //     [-46.643, -23.557]
+      // ]
 
-      // // console.log(typeof polygon.geometry.coordinates);
+      let ptsWithin = turf.pointsWithinPolygon(turf.points(features), turf.polygon([points]))
+      // let ptsWithin = turf.pointsWithinPolygon(turf.points(pints), polygon);
 
-
-
-      // const fetchDataFromDatabase = async () => {
-      //   const promises = [
-      //     nursingHome
-      //       .find({})
-      //       .lean()
-      //       .select("_id name latitude longitude mainCategory"),
-      //     skilledNursingHome
-      //       .find()
-      //       .lean()
-      //       .select("_id name latitude longitude mainCategory"),
-      //   ];
-      //   const records = await Promise.all(promises);
-      //   return [].concat(...records);
-      // };
-
-      // const allRecords = await fetchDataFromDatabase();
-      // // console.log(allRecords,"allrecords")
-      // const filteredRecords = allRecords.filter((location) => {
-      //   const latitude = parseFloat(location.latitude);
-      //   const longitude = parseFloat(location.longitude);
-      //   return !isNaN(latitude) && !isNaN(longitude);
-      // });
-
-      // const features = filteredRecords.map((location) => {
-      //   const latitude = parseFloat(location.latitude);
-      //   const longitude = parseFloat(location.longitude);
-      //   const point = [latitude, longitude];
-      //   return point
-      //   //   return {
-      //   //     type: 'Feature',
-      //   //     geometry: {
-      //   //       type: 'Point',
-      //   //       coordinates: point,
-      //   //     },
-      //   //     properties: {
-      //   //      // Include the 'name' property
-      //   //     },
-      //   //   };
-      // });
-
-      // // const featureCollection = {
-      // //   type: 'FeatureCollection',
-      // //   features: features,
-      // // };
-      // console.log(features)
-      // // let collection=featureCollection.features.map((e)=>e.geometry.coordinates)
-      // // console.log(collection)
-      // //   [
-      // //     [39.5489, -119.783],
-      // //     [-46.6246, -23.5325],
-      // //     [39.1761, -119.735],
-      // //     [-46.663, -23.554],
-      // //     [-46.643, -23.557]
-      // // ]
-
-      // let ptsWithin = turf.pointsWithinPolygon(turf.points(features), turf.polygon([points]))
-      // // let ptsWithin = turf.pointsWithinPolygon(turf.points(pints), polygon);
-
-      // console.log(ptsWithin.features, "ptsWtihin")
+      console.log(ptsWithin.features, "ptsWtihin")
 
 
 
 
 
 
-      // const locationNames = ptsWithin.features.map((loc) => loc.geometry);
-      // // console.log(locationNames)
-      // return res.status(200).json(locationNames);
+      const locationNames = ptsWithin.features.map((loc) => loc.geometry);
+      // console.log(locationNames)
+      return res.status(200).json(locationNames);
     } catch (err) {
       next(err);
     }
