@@ -1349,7 +1349,7 @@ const healthCareController = {
                 name: 1,
                 mainCategory: 1,
                 state: 1,
-                zip_code: "$locations.zip_code",
+                zipCode: "$locations.zip_code",
                 city: "$locations.city",
                 latitude: "$locations.latitude",
                 longitude: "$locations.longitude",
