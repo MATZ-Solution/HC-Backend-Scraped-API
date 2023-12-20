@@ -2784,11 +2784,11 @@ const healthCareController = {
   // <----------------maaz work----------------------------------->
   getAllRecordsCategoryLatLong: async (req, res, next) => {
     try {
-     const {points}=req.body 
-   
+      const { points } = req.body
+
 
       if (!points || !Array.isArray(points) || points.length === 0) {
-          return res
+        return res
           .status(400)
           .json({
             success: false,
@@ -2796,7 +2796,7 @@ const healthCareController = {
               "Invalid request body. Expecting an array of latitude and longitude pairs.",
           });
       }
-   
+
 
       const allRecords = await fetchDataFromDatabase();
       const filteredRecords = allRecords.filter((location) => {
@@ -2810,28 +2810,28 @@ const healthCareController = {
         const longitude = parseFloat(location.longitude);
         const point = [latitude, longitude];
         return point
-     
+
       });
-    
-    let ptsWithin=turf.pointsWithinPolygon(turf.points(features),turf.polygon([points]))
+
+      let ptsWithin = turf.pointsWithinPolygon(turf.points(features), turf.polygon([points]))
 
 
-  
-    
+
+
 
       const coords = ptsWithin.features.map((loc) => loc.geometry.coordinates);
-    
+
       const matchingRecords = allRecords.filter((record) => {
         const latitude = parseFloat(record.latitude);
         const longitude = parseFloat(record.longitude);
         const point = [latitude, longitude];
         return coords.some((coord) => coord[0] === point[0] && coord[1] === point[1]);
-    }) .map(({ latitude, longitude, ...rest }) => rest);
+      })
 
-    
-    // console.log(matchingRecords);
 
-    return res.status(200).json(matchingRecords);
+      // console.log(matchingRecords);
+
+      return res.status(200).json(matchingRecords);
     } catch (err) {
       next(err);
     }
