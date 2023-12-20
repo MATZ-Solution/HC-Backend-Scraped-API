@@ -1339,11 +1339,34 @@ const healthCareController = {
           //     '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
           //   ),
           // longTermCares.find({ city }).lean().select('-quality_reporting'),
+          Professional.aggregate([
+            {
+              $unwind: "$locations",
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                mainCategory: 1,
+                state: 1,
+                zip_code: "$locations.zip_code",
+                city: "$locations.city",
+                latitude: "$locations.latitude",
+                longitude: "$locations.longitude",
+              },
+            },
+            {
+              $match: {
+                city: city,
+              },
+            },
+          ]),
+
           nursingHome
             .find({ city })
             .lean()
             .select(
-              '_id cms_certification_number name latitude longitude fullAddress city state zipCode phoneNumber provider_ssa_county_code county_or_parish ownership_type number_of_certified_beds average_number_of_residents_per_day average_number_of_residents_per_day_footnote provider_type provider_resides_in_hospital legal_business_name date_first_approved_to_provide_medicare_and_medicaid_services affiliated_entity_name affiliated_entity_id mainCategory'
+              '_id name latitude longitude mainCategory city state zipCode'
             ),
           // dialysisFacilityData.find({ city }).lean(),
           // hoSpiceData
@@ -1395,7 +1418,7 @@ const healthCareController = {
             .find({ city })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id longitude latitude scrapedReviews FAQs mainCategory photos about'
+              '_id name latitude longitude mainCategory city state zipCode'
             ),
           // geriaticCareManager
           //   .find({ city })
@@ -1405,36 +1428,38 @@ const healthCareController = {
           //   ),
         ]);
 
-        let filterData = allData.flat();
+        // let filterData = allData.flat();
 
-        filterData.forEach((hospital) => {
-          if (hospital.reviews && hospital.reviews.length > 0) {
-            let totalStars = 0;
-            let totalReviews = 0;
+        // filterData.forEach((hospital) => {
+        //   if (hospital.reviews && hospital.reviews.length > 0) {
+        //     let totalStars = 0;
+        //     let totalReviews = 0;
 
-            hospital.reviews.forEach((review) => {
-              if (review.startRating) {
-                totalStars += review.startRating;
-                totalReviews++;
-              }
-            });
+        //     hospital.reviews.forEach((review) => {
+        //       if (review.startRating) {
+        //         totalStars += review.startRating;
+        //         totalReviews++;
+        //       }
+        //     });
 
-            if (totalReviews > 0) {
-              hospital.averageRating = totalStars / totalReviews;
-            } else {
-              hospital.averageRating = 0;
-            }
-          } else {
-            hospital.averageRating = 0;
-          }
-        });
+        //     if (totalReviews > 0) {
+        //       hospital.averageRating = totalStars / totalReviews;
+        //     } else {
+        //       hospital.averageRating = 0;
+        //     }
+        //   } else {
+        //     hospital.averageRating = 0;
+        //   }
+        // });
 
         res.status(200).json(allData.flat());
       } else {
         const allData = await Promise.all([
           // hospital.find({ city: 'Andalusia' }).lean(),
           // longTermCares.find({ city: 'Andalusia' }).lean(),
-          nursingHome.find({ city: 'Andalusia' }).lean(),
+          nursingHome.find({ city: 'Andalusia' }).lean().select(
+            '_id name latitude longitude mainCategory city state zipCode'
+          ),
           // dialysisFacilityData.find({ city: 'Andalusia' }).lean(),
           // hoSpiceData
           //   .find({ city: 'Andalusia' })
@@ -1485,7 +1510,7 @@ const healthCareController = {
             .find({ city: 'Andalusia' })
             .lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+              '_id name latitude longitude mainCategory city state zipCode'
             ),
           // geriaticCareManager
           //   .find({ city: 'Andalusia' })
