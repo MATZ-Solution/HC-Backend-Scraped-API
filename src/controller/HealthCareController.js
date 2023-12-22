@@ -2812,7 +2812,7 @@ const healthCareController = {
     try {
       const { points } = req.body
       const capitalizeFirstLetter = (string) => {
-        return string.charAt(0).toUpperCase() + string.slice(1);
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     };
 
       if (!points || !Array.isArray(points) || points.length === 0) {
