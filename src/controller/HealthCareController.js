@@ -2811,7 +2811,9 @@ const healthCareController = {
   getAllRecordsCategoryLatLong: async (req, res, next) => {
     try {
       const { points } = req.body
-
+      const capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    };
 
       if (!points || !Array.isArray(points) || points.length === 0) {
         return res
@@ -2852,6 +2854,11 @@ const healthCareController = {
         const longitude = parseFloat(record.longitude);
         const point = [latitude, longitude];
         return coords.some((coord) => coord[0] === point[0] && coord[1] === point[1]);
+      }).map((record) => {
+        return {
+          ...record,
+          city: capitalizeFirstLetter(record.city),
+        }
       })
 
 
