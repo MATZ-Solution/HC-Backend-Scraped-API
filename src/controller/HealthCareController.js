@@ -1875,6 +1875,43 @@ const healthCareController = {
     }
   },
 
+  // testApi:async(req,res,next)=>{
+  //   try {
+  //     const promises = [
+  //       nursingHome
+  //         .find({})
+  //         .lean()
+  //         .select('_id name latitude longitude mainCategory city state zipCode'),
+  //       skilledNursingHome
+  //         .find()
+  //         .lean()
+  //         .select('_id name latitude longitude mainCategory city state zipCode'),
+  //     ];
+    
+  //     const records = await Promise.all(promises);
+  //   const data=  [].concat(...records);
+  //     // console.log(data,"data")
+
+  //     const nursingHomeCities = records[0].map((home) => home.city);
+  //     // console.log(nursingHomeCities)
+  //     const skilledNursingHomeCities = records[1].map((home) => home.city);
+    
+  //     console.log(skilledNursingHomeCities)
+  //     // Find common cities
+  //     const commonCities = nursingHomeCities.filter((city) =>
+  //       skilledNursingHomeCities.includes(city)
+  //     );
+  //     console.log(commonCities)
+
+    
+  //     res.status(200).json(commonCities);
+  //   } catch (err) {
+  //     next(err);
+  //   }
+    
+   
+  // },
+
   //for get all Corporates
   getCorporatesUsingMongoId: async (req, res, next) => {
     try {
@@ -2303,7 +2340,7 @@ const healthCareController = {
           }
 
           if (city) {
-            query.city = city;
+            query.city = { $regex: new RegExp(city, 'i') };
           }
 
           if (zipCode) {
@@ -2418,7 +2455,8 @@ const healthCareController = {
               .select(
                 '_id name city state mainCategory fullAddress phoneNumber zipCode'
               ).skip(page * limit).limit(limit);
-          } else if (categoryName === 'Geriatic Care Manager') {
+          }
+           else if (categoryName === 'Geriatic Care Manager') {
             result = await geriaticCareManager
               .find(query)
               .lean()
@@ -2570,6 +2608,8 @@ const healthCareController = {
       next(error);
     }
   },
+
+  
   getProfessionalEachSpecialityRecords: async (req, res, next) => {
     try {
       let data = await Professional.aggregate([
@@ -2747,6 +2787,7 @@ const healthCareController = {
 
 
       const scrapedData = await scrapeAllCategories(name);
+      console.log(scrapedData)
 
 
       res.status(200).json(scrapedData.flat());
@@ -2755,8 +2796,8 @@ const healthCareController = {
     } catch (err) {
       next(err)
     }
-  }
-  ,
+  },
+  
   getStateCityAndZipCode: async (req, res, next) => {
     try {
 
