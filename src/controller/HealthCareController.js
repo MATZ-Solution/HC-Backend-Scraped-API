@@ -1838,6 +1838,47 @@ const healthCareController = {
       next(err);
     }
   },
+  filterZipCode:async(req,res)=>{
+    try{ 
+
+      const {zipCode}=req.body
+    
+   
+
+        
+        const regex = new RegExp(zipCode, 'i');
+        
+        const allData = await Promise.all([
+          nursingHome.find({ zipCode: { $regex: regex } }).lean(),
+          skilledNursingHome.find({ zipCode: { $regex: regex } }).lean(),
+           // hospital.find({ zipCode: { $regex: regex } }).lean(),
+          // longTermCares.find({ zipCode: { $regex: regex } }).lean(),
+          // dialysisFacilityData.find({ zipCode: { $regex: regex } }).lean(),
+          // hoSpiceData.find({ zipCode }).lean(),
+          // homeHealthData.find({ zipCode: { $regex: regex } }).lean(),
+          inpatientRehabilitiation.find({ zipCode: { $regex: regex } }).lean(),
+          // groupPracticeData.find({ zipCode: { $regex: regex } }).lean(),
+          // independentLiving.find({ zipCode: { $regex: regex } }).lean(),
+          // memoryCare.find({ zipCode: { $regex: regex } }).lean(),
+          inHomeCare.find({ zipCode: { $regex: regex } }).lean(),
+          // assistedLiving.find({ zipCode: { $regex: regex } }).lean(),
+          // adultDayCare.find({ zipCode: { $regex: regex } }).lean(),
+          // careRetirement.find({ zipCode: { $regex: regex } }).lean(),
+          // geriaticCareManager.find({ zipCode: { $regex: regex } }).lean(),
+          
+        ]);
+        
+        const flattenedData = allData.flat();
+        
+        const sortedZipCodes = flattenedData.map((e) => e.zipCode).sort((a, b) => a.localeCompare(b));
+
+  res.status(200).json(sortedZipCodes);
+      }
+      
+    catch(err){
+      next(err)
+    }
+  },
   getProfessionalsUsingZipCode: async (req, res, next) => {
     try {
       const { zipCode } = req.params;
@@ -2498,12 +2539,42 @@ const healthCareController = {
           const results = await Promise.all(promises);
           return results;
         };
+        // const getTotalCount = async (categoryName) => {
+        //   let query = {};
+        
+        //   if (state) {
+        //     query.state = state;
+        //   }
+        
+        //   if (city) {
+        //     query.city = { $regex: new RegExp(city, 'i') };
+        //   }
+        
+        //   if (zipCode) {
+        //     query.zipCode = zipCode;
+        //   }
+        
+        //   let totalCount;
+        //   if (categoryName === 'Nursing Home') {
+        //     totalCount = await nursingHome.countDocuments(query);
+            
+        //   }
+        //   else if (categoryName === 'Skilled Nursing Facility'){
+        //     totalCount = await skilledNursingHome.countDocuments(query);
+        //   }
+        
+        //   return totalCount;
+        // };
 
         try {
-          const scrapedData = await scrapeAllCategories(name);
-          const totalCount = scrapedData.flat().length;
+      
 
-          res.status(200).json({ totalCount, data: scrapedData.flat() });
+          const scrapedData = await scrapeAllCategories(name);         
+            // const flattenedData = scrapedData.flat();
+          // const totalCount = await getTotalCount(name);
+          
+          res.status(200).json({ totalCount: "50",data: scrapedData.flat()  });
+        
 
         } catch (err) {
           next(err);
@@ -2654,7 +2725,7 @@ const healthCareController = {
   },
 
   //new api for filteration
-  getMultipleCategoryData: async (req, res, next) => {
+  getMultipleCategoryData: async (req, res, next) => {  
     try {
 
       const { name, pages, limit } = req.body;

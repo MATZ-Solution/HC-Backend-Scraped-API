@@ -112,4 +112,6 @@ router.post('/getAllRecordsCategoryOnLatLong', healthCare.getAllRecordsCategoryL
 
 router.get('/getAllCategoryRecords', healthCare.getAllCategoryDataRecords)
 
+router.post('/searchByZipCode',healthCare.filterZipCode)
+
 module.exports = router;
