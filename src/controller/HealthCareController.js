@@ -1884,6 +1884,7 @@ const healthCareController = {
   filterZipCode:async(req,res,next)=>{
     try {
       const { zipCode, page , limit } = req.body;
+      console.log(req.body)
       const regex = new RegExp(zipCode, 'i');
     
       const pipeline = [
