@@ -1883,8 +1883,8 @@ const healthCareController = {
   // },
   filterZipCode:async(req,res,next)=>{
     try {
-      const { zipCode, page , limit } = req.body;
-      console.log(req.body)
+      const { zipCode, page , limit } = req.params;
+      // console.log(zipCode,"data")
       const regex = new RegExp(zipCode, 'i');
     
       const pipeline = [
@@ -1895,10 +1895,10 @@ const healthCareController = {
           $sort: { zipCode: 1 } 
         },
         {
-          $skip: (page - 1) * limit 
+          $skip: (parseInt(page ) - 1) * parseInt(limit) 
         },
         {
-          $limit: limit 
+          $limit: parseInt(limit) 
         }
       ];
     
