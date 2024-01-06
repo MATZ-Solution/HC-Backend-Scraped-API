@@ -2476,15 +2476,25 @@ const healthCareController = {
               .lean()
               .skip(page * limit)
               .limit(limit);
-          } else if (categoryName === 'Skilled Nursing Facility') {
-            totalCount = await skilledNursingHome.countDocuments(query);
-            result = await skilledNursingHome
-              .find(query)
-              .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
-              .lean()
-              .skip(page * limit)
-              .limit(limit);
           }
+          else if (categoryName === 'Memory Care') {
+            totalCount = await memoryCare.countDocuments(query);
+                      result = await memoryCare
+                      .find(query)
+                      .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
+                      .lean()
+                      .skip(page * limit)
+                      .limit(limit);
+          }
+          //  else if (categoryName === 'Skilled Nursing Facility') {
+          //   totalCount = await skilledNursingHome.countDocuments(query);
+          //   result = await skilledNursingHome
+          //     .find(query)
+          //     .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
+          //     .lean()
+          //     .skip(page * limit)
+          //     .limit(limit);
+          // }
       
           return { result, totalCount };
         };
@@ -3069,8 +3079,12 @@ const healthCareController = {
 
       const records = await Promise.all(promises);
 
+      console.log(records.flat().length,"records")
+
+
       const mergedRecords = [].concat(...records);
 
+      console.log(mergedRecords,"merge")
       for (let i = 0; i < mergedRecords.length; i++) {
         if (!uniqureRecords.state.includes(mergedRecords[i].state)) {
           uniqureRecords.state.push(mergedRecords[i].state);
@@ -3085,7 +3099,6 @@ const healthCareController = {
       }
 
       cache.set(cacheRecords, uniqureRecords);
-
       return res.status(200).json(uniqureRecords);
     } catch (error) {
       next(error)
@@ -3387,29 +3400,29 @@ const fetchDataFromDatabase = async () => {
       .find({})
       .lean()
       .select('_id name latitude longitude mainCategory city state zipCode'),
-    skilledNursingHome
-      .find()
-      .lean()
-      .select('_id name latitude longitude mainCategory city state zipCode'),
-    Professional.aggregate([
-      {
-        $unwind: "$locations",
-      },
-      {
-        $project: {
-          _id: 1,
-          name: 1,
-          mainCategory: 1,
-          specialities: 1,
-          state: 1,
-          zipCode: "$locations.zip_code",
-          city: "$locations.city",
-          latitude: "$locations.latitude",
-          longitude: "$locations.longitude",
-        },
-      },
+    // skilledNursingHome
+    //   .find()
+    //   .lean()
+    //   .select('_id name latitude longitude mainCategory city state zipCode'),
+    // Professional.aggregate([
+    //   {
+    //     $unwind: "$locations",
+    //   },
+    //   {
+    //     $project: {
+    //       _id: 1,
+    //       name: 1,
+    //       mainCategory: 1,
+    //       specialities: 1,
+    //       state: 1,
+    //       zipCode: "$locations.zip_code",
+    //       city: "$locations.city",
+    //       latitude: "$locations.latitude",
+    //       longitude: "$locations.longitude",
+    //     },
+    //   },
 
-    ]),
+    // ]),
     // hospital.find().lean().select('_id name latitude longitude mainCategory'),
     // dialysisFacilityData
     //   .find({})
@@ -3423,10 +3436,10 @@ const fetchDataFromDatabase = async () => {
     //   .find({})
     //   .lean()
     //   .select('_id name latitude longitude mainCategory'),
-    // inpatientRehabilitiation
-    //   .find({})
-    //   .lean()
-    //   .select('_id name latitude longitude mainCategory'),
+    inpatientRehabilitiation
+      .find({})
+      .lean()
+      .select('_id name latitude longitude mainCategory city state zipCode'),
     // longTermCares
     //   .find({})
     //   .lean()
@@ -3435,8 +3448,8 @@ const fetchDataFromDatabase = async () => {
     //   .find()
     //   .lean()
     //   .select('_id name latitude longitude mainCategory'),
-    // memoryCare.find().lean().select('_id name latitude longitude mainCategory'),
-    // inHomeCare.find().lean().select('_id name latitude longitude mainCategory'),
+    memoryCare.find().lean().select('_id name latitude longitude mainCategory city state zipCode'),
+    inHomeCare.find().lean().select('_id name latitude longitude mainCategory city state zipCode'),
     // assistedLiving
     //   .find()
     //   .lean()
@@ -3462,5 +3475,6 @@ module.exports = healthCareController;
 
 
 const capitalizeFirstLetter = (str) => {
+  console.log(str,'str')
   return str.toLowerCase().replace(/(^|\s)\S/g, (match) => match.toUpperCase());
 };

@@ -102,7 +102,6 @@ router.get('/getStateCityAndZipCode', healthCare.getStateCityAndZipCode)
 
 // <-------------------GET CITY AND ZIPCODE USING ON THE BASIS OF STATE----------->
 router.post('/getCityAndZipCodeOnSTATE', healthCare.getCityAndZipCodeOnSTATE)
-
 //<--------------------Get Professional City state and ZipCode
 router.get('/getProfessionalCityStateAndZipCode', healthCare.getProfessionalCityStateAndZipCode)
 
@@ -112,6 +111,6 @@ router.post('/getAllRecordsCategoryOnLatLong', healthCare.getAllRecordsCategoryL
 
 router.get('/getAllCategoryRecords', healthCare.getAllCategoryDataRecords)
 
-router.get('/searchByZipCode/:page/:limit/:zipCode',healthCare.filterZipCode)
+router.get('/searchByZipCode/:page?/:limit?/:zipCode?',healthCare.filterZipCode)
 
 module.exports = router;
