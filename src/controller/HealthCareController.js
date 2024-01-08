@@ -791,7 +791,7 @@ const healthCareController = {
     try {
       const categoryName = [
         'Nursing Home',
-        'Skilled Nursing Facility',
+        // 'Skilled Nursing Facility',
         // 'Hospital',
         // 'Long Term Cares',
         // 'Dialysis Facility',
@@ -800,7 +800,7 @@ const healthCareController = {
         // 'Group Practice',
         // 'Home Health',
         // 'Independent Living',
-        // 'Memory Care',
+        'Memory Care',
         'In Home Care',
         // 'Assisted Living',
         // 'Adult Day Care',
@@ -2453,14 +2453,23 @@ const healthCareController = {
           let totalCount = 0;
       
           if (categoryName === 'Nursing Home') {
-            totalCount = await nursingHome.countDocuments(query);
-            result = await nursingHome
+            const nursingHomeData = await nursingHome
               .find(query)
               .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
               .lean()
               .skip(page * limit)
               .limit(limit);
-          } else if (categoryName === 'Inpatient Rehabilitiation') {
+  
+            const skilledNursingHomeData = await skilledNursingHome
+              .find(query)
+              .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
+              .lean()
+              .skip(page * limit)
+              .limit(limit);
+  
+              totalCount = await nursingHome.countDocuments(query) + await skilledNursingHome.countDocuments(query)
+            result = nursingHomeData.concat(skilledNursingHomeData);
+           } else if (categoryName === 'Inpatient Rehabilitiation') {
             totalCount = await inpatientRehabilitiation.countDocuments(query);
             result = await inpatientRehabilitiation
               .find(query)
@@ -2486,15 +2495,7 @@ const healthCareController = {
                       .skip(page * limit)
                       .limit(limit);
           }
-          //  else if (categoryName === 'Skilled Nursing Facility') {
-          //   totalCount = await skilledNursingHome.countDocuments(query);
-          //   result = await skilledNursingHome
-          //     .find(query)
-          //     .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
-          //     .lean()
-          //     .skip(page * limit)
-          //     .limit(limit);
-          // }
+         
       
           return { result, totalCount };
         };
@@ -3400,10 +3401,10 @@ const fetchDataFromDatabase = async () => {
       .find({})
       .lean()
       .select('_id name latitude longitude mainCategory city state zipCode'),
-    // skilledNursingHome
-    //   .find()
-    //   .lean()
-    //   .select('_id name latitude longitude mainCategory city state zipCode'),
+    skilledNursingHome
+      .find()
+      .lean()
+      .select('_id name latitude longitude mainCategory city state zipCode'),
     // Professional.aggregate([
     //   {
     //     $unwind: "$locations",
