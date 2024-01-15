@@ -3389,11 +3389,177 @@ const healthCareController = {
     catch (err) {
       next(err)
     }
+  },
+   getRecordsbySearch : async (req, res, next) => {
+    const { search, page, limit } = req.body;
+    try {
+      if (search) {
+        const query = {
+          $or: [
+            { name: { $regex: new RegExp(search, 'i') } },
+            { zipCode: { $regex: new RegExp(search, 'i') } },
+            { state: { $regex: new RegExp(search, 'i') } },
+            { city: { $regex: new RegExp(search, 'i') } },
+            { mainCategory: { $regex: new RegExp(search, 'i') } },
+            // Add more fields as neededsearch
+          ]
+        };
+  
+        let result = [];
+        let totalCount = 0;
+  
+        // const categories = ['Nursing Home', 'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
+        const categories = [
+          'Nursing Home',
+          'Skilled Nursing Facility',
+          // 'Hospital',
+          // 'Long Term Cares',
+          // 'Dialysis Facility',
+          // 'Hospice',
+          'Inpatient Rehabilitiation',
+          // 'Group Practice',
+          // 'Home Health',
+          // 'Independent Living',
+          'Memory Care',
+          'In Home Care',
+          // 'Assisted Living',
+          // 'Adult Day Care',
+          // 'Care Retirement Communities',
+          // 'Geriatic Care Manager',
+        ]
+        const scrapeCategory = async (categoryName) => {
+          let categoryQuery;
+  
+          // Handle different categories here...
+          if (categoryName === 'Nursing Home') {
+            categoryQuery = nursingHome;
+          } else if (categoryName === 'Inpatient Rehabilitiation') {
+            categoryQuery = inpatientRehabilitiation;
+          } else if (categoryName === 'In Home Care') {
+            categoryQuery = inHomeCare;
+          } else if (categoryName === 'Memory Care') {
+            categoryQuery = memoryCare;
+          }
+          else if(categoryName==="Skilled Nursing Facility"){
+            categoryQuery=skilledNursingHome
+          }
+  
+          const categoryCount = await categoryQuery.countDocuments(query);
+          const categoryResult = await categoryQuery
+            .find(query)
+            .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
+            .lean()
+            .skip(page * limit)
+            .limit(limit);
+  
+          totalCount += categoryCount;
+          result = result.concat(categoryResult);
+        };
+  
+        const scrapeAllCategories = async () => {
+          const promises = categories.map((categoryName) => scrapeCategory(categoryName));
+          await Promise.all(promises);
+        };
+  
+        try {
+          await scrapeAllCategories();
+  
+          res.status(200).json({ totalCount, data: result });
+        } catch (err) {
+          next(err);
+        }
+      }
+    } catch (error) {
+      next(error);
+    }
   }
+  
+ 
+  
 
 };
 
+
+
 // Function to fetch data from the database
+// const fetchDataFromDatabase = async () => {
+//   const promises = [
+
+//     nursingHome
+//       .find({})
+//       .lean()
+//       .select('_id name latitude longitude mainCategory city state zipCode'),
+//     skilledNursingHome
+//       .find()
+//       .lean()
+//       .select('_id name latitude longitude mainCategory city state zipCode'),
+//     // Professional.aggregate([
+//     //   {
+//     //     $unwind: "$locations",
+//     //   },
+//     //   {
+//     //     $project: {
+//     //       _id: 1,
+//     //       name: 1,
+//     //       mainCategory: 1,
+//     //       specialities: 1,
+//     //       state: 1,
+//     //       zipCode: "$locations.zip_code",
+//     //       city: "$locations.city",
+//     //       latitude: "$locations.latitude",
+//     //       longitude: "$locations.longitude",
+//     //     },
+//     //   },
+
+//     // ]),
+//     // hospital.find().lean().select('_id name latitude longitude mainCategory'),
+//     // dialysisFacilityData
+//     //   .find({})
+//     //   .lean()
+//     //   .select('_id name latitude longitude mainCategory'),
+//     // homeHealthData
+//     //   .find({})
+//     //   .lean()
+//     //   .select('_id name latitude longitude mainCategory'),
+//     // hoSpiceData
+//     //   .find({})
+//     //   .lean()
+//     //   .select('_id name latitude longitude mainCategory'),
+//     inpatientRehabilitiation
+//       .find({})
+//       .lean()
+//       .select('_id name latitude longitude mainCategory city state zipCode'),
+//     // longTermCares
+//     //   .find({})
+//     //   .lean()
+//     //   .select('_id name latitude longitude mainCategory'),
+//     // independentLiving
+//     //   .find()
+//     //   .lean()
+//     //   .select('_id name latitude longitude mainCategory'),
+//     memoryCare.find().lean().select('_id name latitude longitude mainCategory city state zipCode'),
+//     inHomeCare.find().lean().select('_id name latitude longitude mainCategory city state zipCode'),
+//     // assistedLiving
+//     //   .find()
+//     //   .lean()
+//     //   .select('_id name latitude longitude mainCategory'),
+//     // adultDayCare
+//     //   .find()
+//     //   .lean()
+//     //   .select('_id name latitude longitude mainCategory'),
+//     // careRetirement
+//     //   .find()
+//     //   .lean()
+//     //   .select('_id name latitude longitude mainCategory'),
+//     // geriaticCareManager
+//     //   .find()
+//     //   .lean()
+//     //   .select('_id name latitude longitude mainCategory'),
+//   ];
+//   const records = await Promise.all(promises);
+//   return [].concat(...records);
+// };
+
 const fetchDataFromDatabase = async () => {
   const promises = [
 
@@ -3405,70 +3571,23 @@ const fetchDataFromDatabase = async () => {
       .find()
       .lean()
       .select('_id name latitude longitude mainCategory city state zipCode'),
-    // Professional.aggregate([
-    //   {
-    //     $unwind: "$locations",
-    //   },
-    //   {
-    //     $project: {
-    //       _id: 1,
-    //       name: 1,
-    //       mainCategory: 1,
-    //       specialities: 1,
-    //       state: 1,
-    //       zipCode: "$locations.zip_code",
-    //       city: "$locations.city",
-    //       latitude: "$locations.latitude",
-    //       longitude: "$locations.longitude",
-    //     },
-    //   },
-
-    // ]),
-    // hospital.find().lean().select('_id name latitude longitude mainCategory'),
-    // dialysisFacilityData
-    //   .find({})
-    //   .lean()
-    //   .select('_id name latitude longitude mainCategory'),
-    // homeHealthData
-    //   .find({})
-    //   .lean()
-    //   .select('_id name latitude longitude mainCategory'),
-    // hoSpiceData
-    //   .find({})
-    //   .lean()
-    //   .select('_id name latitude longitude mainCategory'),
+   
     inpatientRehabilitiation
       .find({})
       .lean()
       .select('_id name latitude longitude mainCategory city state zipCode'),
-    // longTermCares
-    //   .find({})
-    //   .lean()
-    //   .select('_id name latitude longitude mainCategory'),
-    // independentLiving
-    //   .find()
-    //   .lean()
-    //   .select('_id name latitude longitude mainCategory'),
+   
     memoryCare.find().lean().select('_id name latitude longitude mainCategory city state zipCode'),
     inHomeCare.find().lean().select('_id name latitude longitude mainCategory city state zipCode'),
-    // assistedLiving
-    //   .find()
-    //   .lean()
-    //   .select('_id name latitude longitude mainCategory'),
-    // adultDayCare
-    //   .find()
-    //   .lean()
-    //   .select('_id name latitude longitude mainCategory'),
-    // careRetirement
-    //   .find()
-    //   .lean()
-    //   .select('_id name latitude longitude mainCategory'),
-    // geriaticCareManager
-    //   .find()
-    //   .lean()
-    //   .select('_id name latitude longitude mainCategory'),
+    
   ];
+
+
   const records = await Promise.all(promises);
+
+  const mergedNursingHomes=records[0].concat(records[1])
+  records[0] = mergedNursingHomes;
+  records.splice(1, 1);
   return [].concat(...records);
 };
 

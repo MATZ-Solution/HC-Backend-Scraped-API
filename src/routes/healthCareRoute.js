@@ -113,4 +113,6 @@ router.get('/getAllCategoryRecords', healthCare.getAllCategoryDataRecords)
 
 router.get('/searchByZipCode/:page?/:limit?/:zipCode?',healthCare.filterZipCode)
 
+router.post('/searchIngRecords',healthCare.getRecordsbySearch)
+
 module.exports = router;
