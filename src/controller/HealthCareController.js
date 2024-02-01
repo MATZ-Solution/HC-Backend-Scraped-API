@@ -1935,7 +1935,7 @@ const healthCareController = {
 
     res.status(200).json(sortedData);
     } catch (err) {
-      next(err);x
+      next(err);
     }
     
   },

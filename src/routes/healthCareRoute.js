@@ -113,7 +113,7 @@ router.get('/getAllCategoryRecords', healthCare.getAllCategoryDataRecords)
 
 router.get('/searchByZipCode/:page?/:limit?/:zipCode?',healthCare.filterZipCode)
 
-router.get('/searchByZipCode',healthCare.filterZipCodeForApp)
+router.get('/searchByZipCodeApp',healthCare.filterZipCodeForApp)
 
 router.post('/searchIngRecords',healthCare.getRecordsbySearch)
 
