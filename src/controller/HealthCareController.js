@@ -1935,10 +1935,78 @@ const healthCareController = {
 
     res.status(200).json(sortedData);
     } catch (err) {
+      next(err);x
+    }
+    
+  },
+  
+  
+  filterZipCodeForApp: async (req, res, next) => {
+    try {
+      const { zipCode, page} = req.query;
+      const regex = new RegExp(zipCode, 'i');
+    
+      const pipeline = [
+        {
+          $match: { zipCode: { $regex: regex } }
+        },
+        {
+          $group: {
+            _id: {
+              zipCode: { $toLower: '$zipCode' },
+              city: { $toLower: '$city' },
+              state:{ $toLower:"$state"}
+            }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            zipCode: '$_id.zipCode',
+            city: '$_id.city',
+            state:'$_id.state'
+          }
+        },
+        {
+          $sort: { zipCode: 1 }
+        },
+        {
+          $skip: (parseInt(page) - 1) * parseInt(2)
+        },
+        {
+          $limit: parseInt(2)
+        }
+      ];
+    
+      const nursingHomeData = await nursingHome.aggregate(pipeline);
+      const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline);
+      const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline);
+      const inHomeCareData = await inHomeCare.aggregate(pipeline);
+    
+      const mergedData = [...nursingHomeData, ...skilledNursingHomeData, ...inpatientRehabilitationData, ...inHomeCareData];
+    
+
+      const removeDuplicates = (data) => {
+        const uniqueRecords = [];
+      
+        data.forEach((record) => {
+          if (!uniqueRecords.some((r) => r.zipCode === record.zipCode && r.city === record.city && r.state===record.state)) {
+            uniqueRecords.push(record);
+          }
+        });
+      
+        return uniqueRecords;
+      };
+      
+      const result = removeDuplicates(mergedData);
+
+      res.status(200).json(result);
+    } catch (err) {
       next(err);
     }
     
   },
+  
   getProfessionalsUsingZipCode: async (req, res, next) => {
     try {
       const { zipCode } = req.params;
