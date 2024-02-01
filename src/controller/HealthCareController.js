@@ -1971,10 +1971,10 @@ const healthCareController = {
           $sort: { zipCode: 1 }
         },
         {
-          $skip: (parseInt(page) - 1) * parseInt(2)
+          $skip: (parseInt(page) - 1) * parseInt(4)
         },
         {
-          $limit: parseInt(2)
+          $limit: parseInt(4)
         }
       ];
     
