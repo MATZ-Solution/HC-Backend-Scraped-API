@@ -2523,7 +2523,7 @@ const healthCareController = {
           if (categoryName === 'Nursing Home') {
             const nursingHomeData = await nursingHome
               .find(query)
-              .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
+              .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating')
               .lean()
               .skip(page * limit)
               .limit(limit);
