@@ -1811,24 +1811,24 @@ const healthCareController = {
       next(err);
     }
   },
-  getDataUsingZipCode: async (req, res, next) => {
+   getDataUsingZipCode: async (req, res, next) => {
     try {
       const { zipCode } = req.params;
 
       if (zipCode) {
         const allData = await Promise.all([
-          nursingHome.find({ zipCode }).lean(),
-          skilledNursingHome.find({ zipCode }).lean(),
+          nursingHome.find({ zipCode }).lean().select('_id name  mainCategory city state zipCode fullAddress phoneNumber latitude longitude overall_rating'),
+          skilledNursingHome.find({ zipCode }).lean().select('_id name  mainCategory city state zipCode fullAddress phoneNumber latitude longitude'),
           // hospital.find({ zipCode }).lean(),
           // longTermCares.find({ zipCode }).lean(),
           // dialysisFacilityData.find({ zipCode }).lean(),
           // hoSpiceData.find({ zipCode }).lean(),
           // homeHealthData.find({ zipCode }).lean(),
-          // inpatientRehabilitiation.find({ zipCode }).lean(),
+          inpatientRehabilitiation.find({ zipCode }).lean().select('_id name  mainCategory city state zipCode fullAddress phoneNumber latitude longitude'),
           // groupPracticeData.find({ zipCode }).lean(),
           // independentLiving.find({ zipCode }).lean(),
-          // memoryCare.find({ zipCode }).lean(),
-          // inHomeCare.find({ zipCode }).lean(),
+          memoryCare.find({ zipCode }).lean().select('_id name  mainCategory city state zipCode fullAddress phoneNumber latitude longitude'),
+          inHomeCare.find({ zipCode }).lean().select('_id name  mainCategory city state zipCode fullAddress phoneNumber latitude longitude'),
           // assistedLiving.find({ zipCode }).lean(),
           // adultDayCare.find({ zipCode }).lean(),
           // careRetirement.find({ zipCode }).lean(),
