@@ -37,6 +37,8 @@ const getCategoryModel = (categoryName) => {
             return inHomeCare;
         case 'Memory Care':
             return memoryCare;
+        case "skilled":
+            return skilledNursingHome
         default:
             throw new Error(`Invalid category name: ${categoryName}`);
     }
@@ -2646,7 +2648,7 @@ const healthCareController = {
             }
         } else {
             // If categoryName is not provided, fetch data for all categories
-            const allCategories = ['Nursing Home', 'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
+            const allCategories = ['Nursing Home',"skilled" ,'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
             const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
             const categoryResults = await Promise.all(promises);
 
