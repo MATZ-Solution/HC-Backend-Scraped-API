@@ -27,7 +27,20 @@ const NursingHome = require('../Model/skilledNursingFacilityModel');
 const nursinghomes = require('../Model/nursingHome');
 
 const cache = new NodeCache();
-
+const getCategoryModel = (categoryName) => {
+    switch (categoryName) {
+        case 'Nursing Home':
+            return nursingHome;
+        case 'Inpatient Rehabilitiation':
+            return inpatientRehabilitiation;
+        case 'In Home Care':
+            return inHomeCare;
+        case 'Memory Care':
+            return memoryCare;
+        default:
+            throw new Error(`Invalid category name: ${categoryName}`);
+    }
+}
 const healthCareController = {
   addData: async (req, res, next) => {
     try {
@@ -2591,7 +2604,61 @@ const healthCareController = {
       next(error);
     }
   },
+  
+  getMultipleCategoriesApp: async (req, res, next) => {
+    const { state, city, zipCode, categoryName, page, limit } = req.query;
 
+    try {
+        const query = {};
+
+        if (state) query.state = state;
+        if (city) query.city = { $regex: new RegExp(city, 'i') };
+        if (zipCode) query.zipCode = zipCode;
+
+        let totalCount = 0;
+        let result = [];
+
+        const getResultsAndCount = async (model) => {
+            const count = await model.countDocuments(query);
+            const data = await model
+                .find(query)
+                .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
+                .lean()
+                .skip(page * limit)
+                .limit(limit);
+            return { count, data };
+        };
+
+        if (categoryName) {
+            if (categoryName === 'Nursing Home') {
+                const [nursingHomeData, skilledNursingHomeData] = await Promise.all([
+                    getResultsAndCount(nursingHome),
+                    getResultsAndCount(skilledNursingHome)
+                ]);
+
+                totalCount = nursingHomeData.count + skilledNursingHomeData.count;
+                result = nursingHomeData.data.concat(skilledNursingHomeData.data);
+            } else {
+                const categoryModel = getCategoryModel(categoryName);
+                const { count, data } = await getResultsAndCount(categoryModel);
+                totalCount = count;
+                result = data;
+            }
+        } else {
+            // If categoryName is not provided, fetch data for all categories
+            const allCategories = ['Nursing Home', 'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
+            const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
+            const categoryResults = await Promise.all(promises);
+
+            totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
+            result = categoryResults.flatMap((data) => data.data);
+        }
+
+        res.status(200).json({ totalCount, data: result });
+    } catch (error) {
+        next(error);
+    }
+},
 
 
   

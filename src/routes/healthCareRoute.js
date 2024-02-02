@@ -71,6 +71,7 @@ router.get(
 
 //get Multiple Cat
 router.post('/getMultipleCat', healthCare.getMultipleCategories);
+router.get('/getMultipleCatApp', healthCare.getMultipleCategoriesApp);
 
 router.get(
   '/getProfessionalRecords',
