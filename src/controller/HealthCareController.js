@@ -1435,13 +1435,13 @@ const healthCareController = {
             //   .select(
             //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             //   ),
-            skilledNursingHome
-              .find({ city })
-              .lean()
-              .select(
-                '_id name latitude longitude mainCategory city state zipCode'
-              ),
-            // geriaticCareManager
+            // skilledNursingHome
+            //   .find({ city })
+            //   .lean()
+            //   .select(
+            //     '_id name latitude longitude mainCategory city state zipCode'
+            //   ),
+            // // geriaticCareManager
             //   .find({ city })
             //   .lean()
             //   .select(
@@ -1660,12 +1660,12 @@ const healthCareController = {
             //   .select(
             //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             //   ),
-            skilledNursingHome
-              .find({ city })
-              .lean()
-              .select(
-                '_id name latitude longitude mainCategory city state zipCode about'
-              ),
+            // skilledNursingHome
+            //   .find({ city })
+            //   .lean()
+            //   .select(
+            //     '_id name latitude longitude mainCategory city state zipCode about'
+            //   ),
             // skilledNursingHome.aggregate([
             //   {
             //     $unwind:"$about"
@@ -1833,7 +1833,7 @@ const healthCareController = {
       if (zipCode) {
         const allData = await Promise.all([
           nursingHome.find({ zipCode }).lean().select('_id name  mainCategory city state zipCode fullAddress phoneNumber latitude longitude overall_rating'),
-          skilledNursingHome.find({ zipCode }).lean().select('_id name  mainCategory city state zipCode fullAddress phoneNumber latitude longitude'),
+          // skilledNursingHome.find({ zipCode }).lean().select('_id name  mainCategory city state zipCode fullAddress phoneNumber latitude longitude'),
           // hospital.find({ zipCode }).lean(),
           // longTermCares.find({ zipCode }).lean(),
           // dialysisFacilityData.find({ zipCode }).lean(),
@@ -2535,24 +2535,35 @@ const healthCareController = {
           let result = [];
           let totalCount = 0;
       
-          if (categoryName === 'Nursing Home') {
-            const nursingHomeData = await nursingHome
-              .find(query)
-              .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating')
-              .lean()
-              .skip(page * limit)
-              .limit(limit);
+          // if (categoryName === 'Nursing Home') {
+          //   totalCount = await nursingHome.countDocuments(query);
+          //   // const nursingHomeData = await nursingHome
+          //   //   .find(query)
+          //   //   .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating')
+          //   //   .lean()
+          //   //   .skip(page * limit)
+          //   //   .limit(limit);
+            
+          //   // const skilledNursingHomeData = await skilledNursingHome
+          //   //   .find(query)
+          //   //   .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
+          //   //   .lean()
+          //   //   .skip(page * limit)
+          //   //   .limit(limit);
   
-            const skilledNursingHomeData = await skilledNursingHome
+          //   //   totalCount = await nursingHome.countDocuments(query) + await skilledNursingHome.countDocuments(query)
+          //   // result = nursingHomeData.concat(skilledNursingHomeData);
+          //  }
+           if (categoryName === 'Nursing Home') {
+            totalCount = await nursingHome.countDocuments(query);
+            result = await nursingHome
               .find(query)
               .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
               .lean()
               .skip(page * limit)
               .limit(limit);
-  
-              totalCount = await nursingHome.countDocuments(query) + await skilledNursingHome.countDocuments(query)
-            result = nursingHomeData.concat(skilledNursingHomeData);
-           } else if (categoryName === 'Inpatient Rehabilitiation') {
+          } 
+           else if (categoryName === 'Inpatient Rehabilitiation') {
             totalCount = await inpatientRehabilitiation.countDocuments(query);
             result = await inpatientRehabilitiation
               .find(query)
