@@ -1435,13 +1435,13 @@ const healthCareController = {
             //   .select(
             //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             //   ),
-            // skilledNursingHome
-            //   .find({ city })
-            //   .lean()
-            //   .select(
-            //     '_id name latitude longitude mainCategory city state zipCode'
-            //   ),
-            // // geriaticCareManager
+            skilledNursingHome
+              .find({ city })
+              .lean()
+              .select(
+                '_id name latitude longitude mainCategory city state zipCode'
+              ),
+            // geriaticCareManager
             //   .find({ city })
             //   .lean()
             //   .select(
@@ -1660,12 +1660,12 @@ const healthCareController = {
             //   .select(
             //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             //   ),
-            // skilledNursingHome
-            //   .find({ city })
-            //   .lean()
-            //   .select(
-            //     '_id name latitude longitude mainCategory city state zipCode about'
-            //   ),
+            skilledNursingHome
+              .find({ city })
+              .lean()
+              .select(
+                '_id name latitude longitude mainCategory city state zipCode about'
+              ),
             // skilledNursingHome.aggregate([
             //   {
             //     $unwind:"$about"
