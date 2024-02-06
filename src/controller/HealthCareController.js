@@ -1387,7 +1387,7 @@ const healthCareController = {
               .find({ city })
               .lean()
               .select(
-                '_id name latitude longitude mainCategory city state zipCode'
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
               ),
             // dialysisFacilityData.find({ city }).lean(),
             // hoSpiceData
@@ -1398,7 +1398,7 @@ const healthCareController = {
             //   ),
             // homeHealthData.find({ city }).lean(),
             inpatientRehabilitiation.find({ city }).lean().select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
             ),
             // groupPracticeData.find({ city }).lean(),
             // independentLiving
@@ -1411,13 +1411,13 @@ const healthCareController = {
               .find({ city })
               .lean()
               .select(
-                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
               ),
             inHomeCare
               .find({ city })
               .lean()
               .select(
-                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
               ),
             // assistedLiving
             //   .find({ city })
@@ -1485,7 +1485,7 @@ const healthCareController = {
             // hospital.find({ city: 'Andalusia' }).lean(),
             // longTermCares.find({ city: 'Andalusia' }).lean(),
             nursingHome.find({ city: 'Andalusia' }).lean().select(
-              '_id name latitude longitude mainCategory city state zipCode'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
             ),
             // dialysisFacilityData.find({ city: 'Andalusia' }).lean(),
             // hoSpiceData
@@ -1497,7 +1497,7 @@ const healthCareController = {
             // homeHealthData.find({ city: 'Andalusia' }).lean(),
             inpatientRehabilitiation.find({ city: 'Andalusia' }).lean()
             .select(
-              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
             ),
             // groupPracticeData.find({ city: 'Andalusia' }).lean(),
             // independentLiving
@@ -1510,13 +1510,13 @@ const healthCareController = {
               .find({ city: 'Andalusia' })
               .lean()
               .select(
-                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
               ),
             inHomeCare
               .find({ city: 'Andalusia' })
               .lean()
               .select(
-                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
               ),
             // assistedLiving
             //   .find({ city: 'Andalusia' })
@@ -1617,7 +1617,7 @@ const healthCareController = {
               .find({ city })
               .lean()
               .select(
-                '_id name latitude longitude mainCategory city state zipCode'
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
               ),
             // dialysisFacilityData.find({ city }).lean(),
             // hoSpiceData
@@ -1739,7 +1739,7 @@ const healthCareController = {
             // hospital.find({ city: 'Andalusia' }).lean(),
             // longTermCares.find({ city: 'Andalusia' }).lean(),
             nursingHome.find({ city: 'Andalusia' }).lean().select(
-              '_id name latitude longitude mainCategory city state zipCode'
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
             ),
             // dialysisFacilityData.find({ city: 'Andalusia' }).lean(),
             // hoSpiceData
@@ -1749,7 +1749,9 @@ const healthCareController = {
             //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             //   ),
             // homeHealthData.find({ city: 'Andalusia' }).lean(),
-            // inpatientRehabilitiation.find({ city: 'Andalusia' }).lean(),
+            inpatientRehabilitiation.find({ city: 'Andalusia' }).lean().select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
+            ),
             // groupPracticeData.find({ city: 'Andalusia' }).lean(),
             // independentLiving
             //   .find({ city: 'Andalusia' })
@@ -1757,18 +1759,18 @@ const healthCareController = {
             //   .select(
             //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             //   ),
-            // memoryCare
-            //   .find({ city: 'Andalusia' })
-            //   .lean()
-            //   .select(
-            //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            //   ),
-            // inHomeCare
-            //   .find({ city: 'Andalusia' })
-            //   .lean()
-            //   .select(
-            //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            //   ),
+            memoryCare
+              .find({ city: 'Andalusia' })
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
+              ),
+            inHomeCare
+              .find({ city: 'Andalusia' })
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
+              ),
             // assistedLiving
             //   .find({ city: 'Andalusia' })
             //   .lean()
@@ -1787,12 +1789,12 @@ const healthCareController = {
             //   .select(
             //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             //   ),
-            skilledNursingHome
-              .find({ city: 'Andalusia' })
-              .lean()
-              .select(
-                '_id name latitude longitude mainCategory city state zipCode'
-              ),
+            // skilledNursingHome
+            //   .find({ city: 'Andalusia' })
+            //   .lean()
+            //   .select(
+            //     '_id name latitude longitude mainCategory city state zipCode'
+            //   ),
             // geriaticCareManager
             //   .find({ city: 'Andalusia' })
             //   .lean()
