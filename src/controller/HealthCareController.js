@@ -1397,7 +1397,9 @@ const healthCareController = {
             //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             //   ),
             // homeHealthData.find({ city }).lean(),
-            // inpatientRehabilitiation.find({ city }).lean(),
+            inpatientRehabilitiation.find({ city }).lean().select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+            ),
             // groupPracticeData.find({ city }).lean(),
             // independentLiving
             //   .find({ city })
@@ -1405,18 +1407,18 @@ const healthCareController = {
             //   .select(
             //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             //   ),
-            // memoryCare
-            //   .find({ city })
-            //   .lean()
-            //   .select(
-            //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            //   ),
-            // inHomeCare
-            //   .find({ city })
-            //   .lean()
-            //   .select(
-            //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            //   ),
+            memoryCare
+              .find({ city })
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+              ),
+            inHomeCare
+              .find({ city })
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+              ),
             // assistedLiving
             //   .find({ city })
             //   .lean()
@@ -1435,12 +1437,12 @@ const healthCareController = {
             //   .select(
             //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             //   ),
-            skilledNursingHome
-              .find({ city })
-              .lean()
-              .select(
-                '_id name latitude longitude mainCategory city state zipCode'
-              ),
+            // skilledNursingHome
+            //   .find({ city })
+            //   .lean()
+            //   .select(
+            //     '_id name latitude longitude mainCategory city state zipCode'
+            //   ),
             // geriaticCareManager
             //   .find({ city })
             //   .lean()
@@ -1493,7 +1495,10 @@ const healthCareController = {
             //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             //   ),
             // homeHealthData.find({ city: 'Andalusia' }).lean(),
-            // inpatientRehabilitiation.find({ city: 'Andalusia' }).lean(),
+            inpatientRehabilitiation.find({ city: 'Andalusia' }).lean()
+            .select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+            ),
             // groupPracticeData.find({ city: 'Andalusia' }).lean(),
             // independentLiving
             //   .find({ city: 'Andalusia' })
@@ -1501,18 +1506,18 @@ const healthCareController = {
             //   .select(
             //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             //   ),
-            // memoryCare
-            //   .find({ city: 'Andalusia' })
-            //   .lean()
-            //   .select(
-            //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            //   ),
-            // inHomeCare
-            //   .find({ city: 'Andalusia' })
-            //   .lean()
-            //   .select(
-            //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            //   ),
+            memoryCare
+              .find({ city: 'Andalusia' })
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+              ),
+            inHomeCare
+              .find({ city: 'Andalusia' })
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+              ),
             // assistedLiving
             //   .find({ city: 'Andalusia' })
             //   .lean()
@@ -1531,12 +1536,12 @@ const healthCareController = {
             //   .select(
             //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             //   ),
-            skilledNursingHome
-              .find({ city: 'Andalusia' })
-              .lean()
-              .select(
-                '_id name latitude longitude mainCategory city state zipCode'
-              ),
+            // skilledNursingHome
+            //   .find({ city: 'Andalusia' })
+            //   .lean()
+            //   .select(
+            //     '_id name latitude longitude mainCategory city state zipCode'
+            //   ),
             // geriaticCareManager
             //   .find({ city: 'Andalusia' })
             //   .lean()
@@ -1622,7 +1627,9 @@ const healthCareController = {
             //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             //   ),
             // homeHealthData.find({ city }).lean(),
-            // inpatientRehabilitiation.find({ city }).lean(),
+            inpatientRehabilitiation.find({ city }).lean().select(
+              'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+            ),
             // groupPracticeData.find({ city }).lean(),
             // independentLiving
             //   .find({ city })
@@ -1630,18 +1637,18 @@ const healthCareController = {
             //   .select(
             //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             //   ),
-            // memoryCare
-            //   .find({ city })
-            //   .lean()
-            //   .select(
-            //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            //   ),
-            // inHomeCare
-            //   .find({ city })
-            //   .lean()
-            //   .select(
-            //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            //   ),
+            memoryCare
+              .find({ city })
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+              ),
+            inHomeCare
+              .find({ city })
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+              ),
             // assistedLiving
             //   .find({ city })
             //   .lean()
@@ -1660,12 +1667,12 @@ const healthCareController = {
             //   .select(
             //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             //   ),
-            skilledNursingHome
-              .find({ city })
-              .lean()
-              .select(
-                '_id name latitude longitude mainCategory city state zipCode about'
-              ),
+            // skilledNursingHome
+            //   .find({ city })
+            //   .lean()
+            //   .select(
+            //     '_id name latitude longitude mainCategory city state zipCode about'
+            //   ),
             // skilledNursingHome.aggregate([
             //   {
             //     $unwind:"$about"
