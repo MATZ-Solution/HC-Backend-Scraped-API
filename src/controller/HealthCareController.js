@@ -2607,60 +2607,60 @@ const healthCareController = {
     }
   },
   
-  getMultipleCategoriesApp: async (req, res, next) => {
-    const { state, city, zipCode, categoryName, page, limit } = req.query;
+//   getMultipleCategoriesApp: async (req, res, next) => {
+//     const { state, city, zipCode, categoryName, page, limit } = req.query;
 
-    try {
-        const query = {};
+//     try {
+//         const query = {};
 
-        if (state) query.state = state;
-        if (city) query.city = { $regex: new RegExp(city, 'i') };
-        if (zipCode) query.zipCode = zipCode;
+//         if (state) query.state = state;
+//         if (city) query.city = { $regex: new RegExp(city, 'i') };
+//         if (zipCode) query.zipCode = zipCode;
 
-        let totalCount = 0;
-        let result = [];
+//         let totalCount = 0;
+//         let result = [];
 
-        const getResultsAndCount = async (model) => {
-            const count = await model.countDocuments(query);
-            const data = await model
-                .find(query)
-                .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
-                .lean()
-                .skip(page * limit)
-                .limit(limit);
-            return { count, data };
-        };
+//         const getResultsAndCount = async (model) => {
+//             const count = await model.countDocuments(query);
+//             const data = await model
+//                 .find(query)
+//                 .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
+//                 .lean()
+//                 .skip(page * limit)
+//                 .limit(limit);
+//             return { count, data };
+//         };
 
-        if (categoryName) {
-            if (categoryName === 'Nursing Home') {
-                const [nursingHomeData, skilledNursingHomeData] = await Promise.all([
-                    getResultsAndCount(nursingHome),
-                    getResultsAndCount(skilledNursingHome)
-                ]);
+//         if (categoryName) {
+//             if (categoryName === 'Nursing Home') {
+//                 const [nursingHomeData, skilledNursingHomeData] = await Promise.all([
+//                     getResultsAndCount(nursingHome),
+//                     getResultsAndCount(skilledNursingHome)
+//                 ]);
 
-                totalCount = nursingHomeData.count + skilledNursingHomeData.count;
-                result = nursingHomeData.data.concat(skilledNursingHomeData.data);
-            } else {
-                const categoryModel = getCategoryModel(categoryName);
-                const { count, data } = await getResultsAndCount(categoryModel);
-                totalCount = count;
-                result = data;
-            }
-        } else {
-            // If categoryName is not provided, fetch data for all categories
-            const allCategories = ['Nursing Home',"skilled" ,'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
-            const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
-            const categoryResults = await Promise.all(promises);
+//                 totalCount = nursingHomeData.count + skilledNursingHomeData.count;
+//                 result = nursingHomeData.data.concat(skilledNursingHomeData.data);
+//             } else {
+//                 const categoryModel = getCategoryModel(categoryName);
+//                 const { count, data } = await getResultsAndCount(categoryModel);
+//                 totalCount = count;
+//                 result = data;
+//             }
+//         } else {
+//             // If categoryName is not provided, fetch data for all categories
+//             const allCategories = ['Nursing Home',"skilled" ,'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
+//             const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
+//             const categoryResults = await Promise.all(promises);
 
-            totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
-            result = categoryResults.flatMap((data) => data.data);
-        }
+//             totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
+//             result = categoryResults.flatMap((data) => data.data);
+//         }
 
-        res.status(200).json({ totalCount, data: result });
-    } catch (error) {
-        next(error);
-    }
-},
+//         res.status(200).json({ totalCount, data: result });
+//     } catch (error) {
+//         next(error);
+//     }
+// },
 
 
   
@@ -2954,6 +2954,68 @@ const healthCareController = {
   //   }
   // },
 
+
+  getMultipleCategoriesApp: async (req, res, next) => {
+    const { state, city, zipCode, categoryNames, page, limit } = req.query;
+
+    try {
+        const query = {};
+
+        if (state) query.state = state;
+        if (city) query.city = { $regex: new RegExp(city, 'i') };
+        if (zipCode) query.zipCode = zipCode;
+
+        let totalCount = 0;
+        let result = [];
+
+        const getResultsAndCount = async (model) => {
+            const count = await model.countDocuments(query);
+            const data = await model
+                .find(query)
+                .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
+                .lean()
+                .skip(page * limit)
+                .limit(limit);
+            return { count, data };
+        };
+        console.log(categoryNames)
+        if (categoryNames && categoryNames.length > 0) {
+            const promises = categoryNames.map((categoryName) => {
+                if (categoryName === 'Nursing Home') {
+                    // Handle 'Nursing Home' differently if needed
+                    return Promise.all([
+                        getResultsAndCount(nursingHome),
+                        getResultsAndCount(skilledNursingHome)
+                    ]).then(([nursingHomeData, skilledNursingHomeData]) => {
+                        totalCount += nursingHomeData.count + skilledNursingHomeData.count;
+                        result = result.concat(nursingHomeData.data, skilledNursingHomeData.data);
+                    });
+                } else {
+                    const categoryModel = getCategoryModel(categoryName);
+                    return getResultsAndCount(categoryModel).then(({ count, data }) => {
+                        totalCount += count;
+                        result = result.concat(data);
+                    });
+                }
+            });
+
+            await Promise.all(promises);
+        } else {
+            // If no categories are provided, fetch data for all categories
+            const allCategories = ['Nursing Home','skilled' ,'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
+            const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
+            const categoryResults = await Promise.all(promises);
+            // console.log(categoryResults,"cat")
+
+            totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
+            result = categoryResults.flatMap((data) => data.data);
+        }
+        console.log(result)
+        res.status(200).json({ totalCount, data: result });
+    } catch (error) {
+        next(error);
+    }
+},
 
 
  
