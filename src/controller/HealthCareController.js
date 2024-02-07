@@ -873,7 +873,7 @@ const healthCareController = {
   getDataUsingMongoDbId: async (req, res, next) => {
     try {
       const { mongoDbID, category } = req.body;
-
+      
       let data = 'null';
 
       switch (category) {
@@ -970,6 +970,7 @@ const healthCareController = {
           break;
 
         default:
+          // console.log(category)
           return res.status(400).json('Invalid category');
       }
 
@@ -2992,7 +2993,7 @@ const healthCareController = {
             const count = await model.countDocuments(query);
             const data = await model
                 .find(query)
-                .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
+                .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating')
                 .lean()
                 .skip(page * limit)
                 .limit(limit);
