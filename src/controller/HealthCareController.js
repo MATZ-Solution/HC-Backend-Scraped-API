@@ -2993,7 +2993,7 @@ const healthCareController = {
             const count = await model.countDocuments(query);
             const data = await model
                 .find(query)
-                .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating')
+                .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating latitude longitude')
                 .lean()
                 .skip(page * limit)
                 .limit(limit);
