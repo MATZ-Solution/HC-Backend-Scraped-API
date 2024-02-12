@@ -23,8 +23,6 @@ const turf = require("@turf/turf");
 // const Doctor = require("../Model/professional");
 
 const NodeCache = require('node-cache');
-const NursingHome = require('../Model/skilledNursingFacilityModel');
-const nursinghomes = require('../Model/nursingHome');
 
 const cache = new NodeCache();
 const getCategoryModel = (categoryName) => {
@@ -2976,68 +2974,151 @@ const healthCareController = {
   // },
 
 
-  getMultipleCategoriesApp: async (req, res, next) => {
-    const { state, city, zipCode, categoryNames, page, limit } = req.query;
+//   getMultipleCategoriesApp: async (req, res, next) => {
+//     const { state, city, zipCode, categoryNames, page, limit, overall_rating } = req.query;
 
-    try {
-        const query = {};
+//     try {
+//         const query = {};
+//         if (overall_rating && overall_rating.length > 0) {
+//             // Assuming overall_rating is an array of numbers
+//             query.overall_rating = { $in: overall_rating.map(Number) };
+//         }
+//         if (state) query.state = state;
+//         if (city) query.city = { $regex: new RegExp(city, 'i') };
+//         if (zipCode) query.zipCode = zipCode;
 
-        if (state) query.state = state;
-        if (city) query.city = { $regex: new RegExp(city, 'i') };
-        if (zipCode) query.zipCode = zipCode;
+//         let totalCount = 0;
+//         let result = [];
 
-        let totalCount = 0;
-        let result = [];
+//         const getResultsAndCount = async (model) => {
+//             const count = await model.countDocuments(query);
+//             const data = await model
+//                 .find(query)
+//                 .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating latitude longitude')
+//                 .lean()
+//                 .skip(page * limit) // Check if pagination is correct
+//                 .limit(limit);
+//             return { count, data };
+//         };
 
-        const getResultsAndCount = async (model) => {
-            const count = await model.countDocuments(query);
-            const data = await model
-                .find(query)
-                .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating latitude longitude')
-                .lean()
-                .skip(page * limit)
-                .limit(limit);
-            return { count, data };
-        };
-        console.log(categoryNames)
-        if (categoryNames && categoryNames.length > 0) {
-            const promises = categoryNames.map((categoryName) => {
-                if (categoryName === 'Nursing Home') {
-                    // Handle 'Nursing Home' differently if needed
-                    return Promise.all([
-                        getResultsAndCount(nursingHome),
-                        getResultsAndCount(skilledNursingHome)
-                    ]).then(([nursingHomeData, skilledNursingHomeData]) => {
-                        totalCount += nursingHomeData.count + skilledNursingHomeData.count;
-                        result = result.concat(nursingHomeData.data, skilledNursingHomeData.data);
-                    });
-                } else {
-                    const categoryModel = getCategoryModel(categoryName);
-                    return getResultsAndCount(categoryModel).then(({ count, data }) => {
-                        totalCount += count;
-                        result = result.concat(data);
-                    });
-                }
-            });
+//         if (categoryNames && categoryNames.length > 0) {
+//             const promises = categoryNames.map((categoryName) => {
+//                 if (categoryName === 'Nursing Home') {
+//                     // Handle 'Nursing Home' differently if needed
+//                     // return Promise.all([
+//                     //     getResultsAndCount(nursingHome),
+//                     //     getResultsAndCount(skilledNursingHome)
+//                     // ]).then(([nursingHomeData, skilledNursingHomeData]) => {
+//                     //     totalCount += nursingHomeData.count + skilledNursingHomeData.count;
+//                     //     result = result.concat(nursingHomeData.data, skilledNursingHomeData.data);
+//                     // });
+//                     const categoryModel = getCategoryModel(categoryName);
+//                     return getResultsAndCount(categoryModel).then(({ count, data }) => {
+//                         totalCount += count;
+//                         result = result.concat(data);
+//                     });
+                    
+//                 } else {
+//                     const categoryModel = getCategoryModel(categoryName);
+//                     return getResultsAndCount(categoryModel).then(({ count, data }) => {
+//                         totalCount += count;
+//                         result = result.concat(data);
+//                     });
+//                 }
+//             });
 
-            await Promise.all(promises);
-        } else {
-            // If no categories are provided, fetch data for all categories
-            const allCategories = ['Nursing Home','skilled' ,'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
-            const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
-            const categoryResults = await Promise.all(promises);
-            // console.log(categoryResults,"cat")
+//             await Promise.all(promises);
+//         } else {
+//             // If no categories are provided, fetch data for all categories
+//             const allCategories = ['Nursing Home', 'skilled', 'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
+//             const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
+//             const categoryResults = await Promise.all(promises);
 
-            totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
-            result = categoryResults.flatMap((data) => data.data);
-        }
-        console.log(result)
-        res.status(200).json({ totalCount, data: result });
-    } catch (error) {
-        next(error);
+//             totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
+//             result = categoryResults.flatMap((data) => data.data);
+//         }
+
+//         res.status(200).json({ totalCount, data: result });
+//     } catch (error) {
+//         next(error); // Make sure error handling middleware is set up properly
+//     }
+// },
+
+
+getMultipleCategoriesApp: async (req, res, next) => {
+  const { state, city, zipCode, categoryNames, page, limit, overall_rating, search } = req.query;
+
+  try {
+    const query = {};
+    if (overall_rating && overall_rating.length > 0) {
+      // Check if overall_rating is an array
+      const ratingArray = Array.isArray(overall_rating) ? overall_rating : [overall_rating];
+      query.overall_rating = { $in: ratingArray.map(Number) };
     }
-},
+    console.log(query,"query")
+    if (state) query.state = state;
+    if (city) query.city = { $regex: new RegExp(city, 'i') };
+    if (zipCode) query.zipCode = zipCode;
 
+    if (search) {
+      const searchQuery = {
+        $or: [
+          { name: { $regex: new RegExp(search, 'i') } },
+          { mainCategory: { $regex: new RegExp(search, 'i') } },
+          // Add more fields as needed
+        ]
+      };
+      Object.assign(query, searchQuery);
+    }
+
+    let totalCount = 0;
+    let result = [];
+
+    const getResultsAndCount = async (model) => {
+      const count = await model.countDocuments(query);
+      const data = await model
+          .find(query) // Use the 'query' object here
+          .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating latitude longitude')
+          .lean()
+          .skip(page * limit)
+          .limit(limit);
+      console.log(data, "data");
+      return { count, data };
+  };
+
+    if (categoryNames && categoryNames.length > 0) {
+      const promises = categoryNames.map((categoryName) => {
+        if (categoryName === 'Nursing Home') {
+          const categoryModel = getCategoryModel(categoryName);
+          return getResultsAndCount(categoryModel).then(({ count, data }) => {
+            totalCount += count;
+            result = result.concat(data);
+          });
+        } else {
+          const categoryModel = getCategoryModel(categoryName);
+          return getResultsAndCount(categoryModel).then(({ count, data }) => {
+            totalCount += count;
+            result = result.concat(data);
+          });
+        }
+      });
+
+      await Promise.all(promises);
+    } else {
+      // If no categories are provided, fetch data for all categories
+      const allCategories = ['Nursing Home', 'skilled', 'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
+      const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
+      const categoryResults = await Promise.all(promises);
+
+      totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
+      result = categoryResults.flatMap((data) => data.data);
+    }
+
+    res.status(200).json({ totalCount, data: result });
+  } catch (error) {
+    next(error); // Make sure error handling middleware is set up properly
+  }
+},
 
  
   getProfessionalEachSpecialityRecords: async (req, res, next) => {
