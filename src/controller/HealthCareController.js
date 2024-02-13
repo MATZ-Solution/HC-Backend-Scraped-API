@@ -3046,16 +3046,12 @@ const healthCareController = {
 
 
 getMultipleCategoriesApp: async (req, res, next) => {
-  const { state, city, zipCode, categoryNames, page, limit, overall_rating, search } = req.query;
+  const { state, city, zipCode, categoryNames, page, limit, search } = req.query;
 
   try {
     const query = {};
-    if (overall_rating && overall_rating.length > 0) {
-      // Check if overall_rating is an array
-      const ratingArray = Array.isArray(overall_rating) ? overall_rating : [overall_rating];
-      query.overall_rating = { $in: ratingArray.map(Number) };
-    }
-    console.log(query,"query")
+   
+    // console.log(query,"query")
     if (state) query.state = state;
     if (city) query.city = { $regex: new RegExp(city, 'i') };
     if (zipCode) query.zipCode = zipCode;
@@ -3064,6 +3060,9 @@ getMultipleCategoriesApp: async (req, res, next) => {
       const searchQuery = {
         $or: [
           { name: { $regex: new RegExp(search, 'i') } },
+          { zipCode: { $regex: new RegExp(search, 'i') } },
+          { state: { $regex: new RegExp(search, 'i') } },
+          { city: { $regex: new RegExp(search, 'i') } },
           { mainCategory: { $regex: new RegExp(search, 'i') } },
           // Add more fields as needed
         ]
@@ -3116,7 +3115,7 @@ getMultipleCategoriesApp: async (req, res, next) => {
 
     res.status(200).json({ totalCount, data: result });
   } catch (error) {
-    next(error); // Make sure error handling middleware is set up properly
+    next(error); 
   }
 },
 
