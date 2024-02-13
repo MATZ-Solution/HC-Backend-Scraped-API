@@ -2626,433 +2626,15 @@ const healthCareController = {
     }
   },
   
-//   getMultipleCategoriesApp: async (req, res, next) => {
-//     const { state, city, zipCode, categoryName, page, limit } = req.query;
-
-//     try {
-//         const query = {};
-
-//         if (state) query.state = state;
-//         if (city) query.city = { $regex: new RegExp(city, 'i') };
-//         if (zipCode) query.zipCode = zipCode;
-
-//         let totalCount = 0;
-//         let result = [];
-
-//         const getResultsAndCount = async (model) => {
-//             const count = await model.countDocuments(query);
-//             const data = await model
-//                 .find(query)
-//                 .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
-//                 .lean()
-//                 .skip(page * limit)
-//                 .limit(limit);
-//             return { count, data };
-//         };
-
-//         if (categoryName) {
-//             if (categoryName === 'Nursing Home') {
-//                 const [nursingHomeData, skilledNursingHomeData] = await Promise.all([
-//                     getResultsAndCount(nursingHome),
-//                     getResultsAndCount(skilledNursingHome)
-//                 ]);
-
-//                 totalCount = nursingHomeData.count + skilledNursingHomeData.count;
-//                 result = nursingHomeData.data.concat(skilledNursingHomeData.data);
-//             } else {
-//                 const categoryModel = getCategoryModel(categoryName);
-//                 const { count, data } = await getResultsAndCount(categoryModel);
-//                 totalCount = count;
-//                 result = data;
-//             }
-//         } else {
-//             // If categoryName is not provided, fetch data for all categories
-//             const allCategories = ['Nursing Home',"skilled" ,'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
-//             const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
-//             const categoryResults = await Promise.all(promises);
-
-//             totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
-//             result = categoryResults.flatMap((data) => data.data);
-//         }
-
-//         res.status(200).json({ totalCount, data: result });
-//     } catch (error) {
-//         next(error);
-//     }
-// },
-
-
-  
-  // getMultiple Categories and without Count 
-  // getMultipleCategories: async (req, res, next) => {
-  //   const { state, city, zipCode, name, page, limit } = req.body;
-  //   try {
-
-  //     if (typeof name === 'object') {
-  //       const scrapeCategory = async (categoryName) => {
-  //         let query = {};
-
-  //         if (state) {
-  //           query.state = state;
-  //         }
-
-  //         if (city) {
-  //           query.city = { $regex: new RegExp(city, 'i') };
-  //         }
-
-  //         if (zipCode) {
-  //           query.zipCode = zipCode;
-  //         }
-
-  //         let result = [];
-  //         if (categoryName === 'Hospital') {
-  //           result = await hospital
-  //             .find(query)
-  //             .select(
-  //               '_id name city state mainCategory fullAddress phoneNumber zipCode'
-  //             )
-  //             .lean()
-  //             .skip(page * limit).limit(limit);
-  //         } else if (categoryName === 'Dialysis Facility') {
-  //           result = await dialysisFacilityData
-  //             .find(query)
-  //             .select(
-  //               '_id name city state mainCategory fullAddress phoneNumber zipCode'
-  //             )
-  //             .lean()
-  //             .skip(page * limit).limit(limit);
-  //         } else if (categoryName === 'Nursing Home') {
-  //           result = await nursingHome
-  //             .find(query)
-  //             .select(
-  //               '_id name city state mainCategory fullAddress phoneNumber zipCode'
-  //             )
-  //             .lean().skip(page * limit).limit(limit);
-  //         } else if (categoryName === 'Long Term Cares') {
-  //           result = await longTermCares
-  //             .find(query)
-  //             .select(
-  //               '_id name city state mainCategory fullAddress phoneNumber zipCode'
-  //             )
-  //             .lean().skip(page * limit).limit(limit);
-  //         } else if (categoryName === 'Hospice') {
-  //           result = await hoSpiceData
-  //             .find(query)
-  //             .lean()
-  //             .select(
-  //               '_id name city state mainCategory fullAddress phoneNumber zipCode'
-  //             ).skip(page * limit).limit(limit);;
-  //         } else if (categoryName === 'Inpatient Rehabilitiation') {
-  //           result = await inpatientRehabilitiation
-  //             .find(query)
-  //             .select(
-  //               '_id name city state mainCategory fullAddress phoneNumber zipCode'
-  //             )
-  //             .lean().skip(page * limit).limit(limit);;
-  //         } else if (categoryName === 'Group Practice') {
-  //           result = await groupPracticeData
-  //             .find(query)
-  //             .select(
-  //               '_id name city state mainCategory fullAddress phoneNumber zipCode'
-  //             )
-  //             .lean().skip(page * limit).limit(limit);;
-  //         } else if (categoryName === 'Home Health') {
-  //           result = await homeHealthData
-  //             .find(query)
-  //             .select(
-  //               '_id name city state mainCategory fullAddress phoneNumber zipCode'
-  //             )
-  //             .lean().skip(page * limit).limit(limit);;
-  //         } else if (categoryName === 'Independent Living') {
-  //           result = await independentLiving
-  //             .find(query)
-  //             .select(
-  //               '_id name city state mainCategory fullAddress phoneNumber zipCode'
-  //             )
-  //             .lean().skip(page * limit).limit(limit);;
-  //         } else if (categoryName === 'Memory Care') {
-  //           result = await memoryCare
-  //             .find(query)
-  //             .lean()
-  //             .select(
-  //               '_id name city state mainCategory fullAddress phoneNumber zipCode'
-  //             ).skip(page * limit).limit(limit);
-  //         } else if (categoryName === 'In Home Care') {
-  //           result = await inHomeCare
-  //             .find(query)
-  //             .lean()
-  //             .select(
-  //               '_id name city state mainCategory fullAddress phoneNumber zipCode'
-  //             ).skip(page * limit).limit(limit);;
-  //         } else if (categoryName === 'Assisted Living') {
-  //           result = await assistedLiving
-  //             .find(query)
-  //             .lean()
-  //             .select(
-  //               '_id name city state mainCategory fullAddress phoneNumber zipCode'
-  //             ).skip(page * limit).limit(limit);;
-  //         } else if (categoryName === 'Adult Day Care') {
-  //           result = await adultDayCare
-  //             .find(query)
-  //             .lean()
-  //             .select(
-  //               '_id name city state mainCategory fullAddress phoneNumber zipCode'
-  //             ).skip(page * limit).limit(limit);;
-  //         } else if (categoryName === 'Care Retirement Communities') {
-  //           result = await careRetirement
-  //             .find(query)
-  //             .lean()
-  //             .select(
-  //               '_id name city state mainCategory fullAddress phoneNumber zipCode'
-  //             ).skip(page * limit).limit(limit);
-  //         } else if (categoryName === 'Skilled Nursing Facility') {
-  //           result = await skilledNursingHome
-  //             .find(query)
-  //             .lean()
-  //             .select(
-  //               '_id name city state mainCategory fullAddress phoneNumber zipCode'
-  //             ).skip(page * limit).limit(limit);
-  //         }
-  //         else if (categoryName === 'Geriatic Care Manager') {
-  //           result = await geriaticCareManager
-  //             .find(query)
-  //             .lean()
-  //             .select(
-  //               '_id name city state mainCategory fullAddress phoneNumber zipCode'
-  //             ).skip(page * limit).limit(limit);
-  //         }
-
-
-  //         result.forEach((hospital) => {
-  //           if (hospital.reviews && hospital.reviews.length > 0) {
-  //             let totalStars = 0;
-  //             let totalReviews = 0;
-
-  //             hospital.reviews.forEach((review) => {
-  //               if (review.startRating) {
-  //                 totalStars += review.startRating;
-  //                 totalReviews++;
-  //               }
-  //             });
-
-  //             if (totalReviews > 0) {
-  //               hospital.averageRating = totalStars / totalReviews;
-  //             } else {
-  //               hospital.averageRating = 0;
-  //             }
-  //           } else {
-  //             hospital.averageRating = 0;
-  //           }
-  //         });
-
-  //         return result;
-  //       };
-
-  //       const scrapeAllCategories = async (categories) => {
-  //         const promises = categories.map((categoryName) =>
-  //           scrapeCategory(categoryName)
-  //         );
-  //         const results = await Promise.all(promises);
-  //         return results;
-  //       };
-  //       try {
-      
-
-  //         const scrapedData = await scrapeAllCategories(name); 
-  //         const length=scrapedData.flat.length
-  //         console.log(length,"length")        
-  //           // const flattenedData = scrapedData.flat();
-       
-
-  //         res.status(200).json( scrapedData.flat()  );
-        
-
-  //       } catch (err) {
-  //         next(err);
-  //       }
-  //     }
-  //     else if (typeof name === 'string') {
-  //       const cachedData = cache.get(name);
-  //       if (cachedData) {
-  //         res.status(200).json(cachedData);
-  //         return;
-  //       }
-
-  //       // If data is not in cache, run query the database
-  //       if (name === 'Hospital') {
-  //         result = await hospital
-  //           .find()
-  //           .lean()
-  //           .select('_id name city state mainCategory');
-  //       } else if (name === 'Long Term Cares') {
-  //         result = await longTermCares
-  //           .find()
-  //           .lean()
-  //           .select('_id name city state mainCategory');
-  //       } else if (name === 'Nursing Home') {
-  //         result = await nursingHome
-  //           .find()
-  //           .lean()
-  //           .select('_id name city state mainCategory');
-  //       } else if (name === 'Dialysis Facility') {
-  //         result = await dialysisFacilityData
-  //           .find()
-  //           .lean()
-  //           .select('_id name city state mainCategory');
-  //       } else if (name === 'Hospice') {
-  //         result = await hoSpiceData
-  //           .find()
-  //           .lean()
-  //           .select('_id name city state mainCategory');
-  //       } else if (name === 'Inpatient Rehabilitiation') {
-  //         result = await inpatientRehabilitiation
-  //           .find()
-  //           .lean()
-  //           .select('_id name city state mainCategory');
-  //       } else if (name === 'Group Practice') {
-  //         result = await groupPracticeData
-  //           .find()
-  //           .lean()
-  //           .select('_id name city state mainCategory');
-  //       } else if (name === 'Home Health') {
-  //         result = await homeHealthData
-  //           .find()
-  //           .lean()
-  //           .select('_id name city state mainCategory');
-  //       } else if (name === 'Independent Living') {
-  //         result = await independentLiving
-  //           .find()
-  //           .lean()
-  //           .select('_id name city state mainCategory');
-  //       } else if (name === 'Memory Care') {
-  //         result = await memoryCare
-  //           .find()
-  //           .lean()
-  //           .select('_id name city state mainCategory');
-  //       } else if (name === 'In Home Care') {
-  //         result = await inHomeCare
-  //           .find()
-  //           .lean()
-  //           .select('_id name city state mainCategory');
-  //       } else if (name === 'Assisted Living') {
-  //         result = await assistedLiving
-  //           .find()
-  //           .lean()
-  //           .select('_id name city state mainCategory');
-  //       } else if (name === 'Adult Day Care') {
-  //         result = await adultDayCare
-  //           .find()
-  //           .lean()
-  //           .select('_id name city state mainCategory');
-  //       } else if (name === 'Care Retirement Communities') {
-  //         result = await careRetirement
-  //           .find(query)
-  //           .lean()
-  //           .select('_id name city state mainCategory');
-  //       } else if (name === 'Skilled Nursing Facility') {
-  //         result = await skilledNursingHome
-  //           .find()
-  //           .lean()
-  //           .select('_id name city state mainCategory');
-  //       } else if (name === 'Geriatic Care Manager') {
-  //         result = await skilledNursingHome
-  //           .find()
-  //           .lean()
-  //           .select('_id name city state mainCategory');
-  //       } else {
-  //         res.status(200).json('wrong parameter');
-  //         return;
-  //       }
-
-  //       cache.set(name, result, 365 * 24 * 60 * 60);
-
-  //       res.status(200).json(result.flat());
-  //     }
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // },
-
-
-//   getMultipleCategoriesApp: async (req, res, next) => {
-//     const { state, city, zipCode, categoryNames, page, limit, overall_rating } = req.query;
-
-//     try {
-//         const query = {};
-//         if (overall_rating && overall_rating.length > 0) {
-//             // Assuming overall_rating is an array of numbers
-//             query.overall_rating = { $in: overall_rating.map(Number) };
-//         }
-//         if (state) query.state = state;
-//         if (city) query.city = { $regex: new RegExp(city, 'i') };
-//         if (zipCode) query.zipCode = zipCode;
-
-//         let totalCount = 0;
-//         let result = [];
-
-//         const getResultsAndCount = async (model) => {
-//             const count = await model.countDocuments(query);
-//             const data = await model
-//                 .find(query)
-//                 .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating latitude longitude')
-//                 .lean()
-//                 .skip(page * limit) // Check if pagination is correct
-//                 .limit(limit);
-//             return { count, data };
-//         };
-
-//         if (categoryNames && categoryNames.length > 0) {
-//             const promises = categoryNames.map((categoryName) => {
-//                 if (categoryName === 'Nursing Home') {
-//                     // Handle 'Nursing Home' differently if needed
-//                     // return Promise.all([
-//                     //     getResultsAndCount(nursingHome),
-//                     //     getResultsAndCount(skilledNursingHome)
-//                     // ]).then(([nursingHomeData, skilledNursingHomeData]) => {
-//                     //     totalCount += nursingHomeData.count + skilledNursingHomeData.count;
-//                     //     result = result.concat(nursingHomeData.data, skilledNursingHomeData.data);
-//                     // });
-//                     const categoryModel = getCategoryModel(categoryName);
-//                     return getResultsAndCount(categoryModel).then(({ count, data }) => {
-//                         totalCount += count;
-//                         result = result.concat(data);
-//                     });
-                    
-//                 } else {
-//                     const categoryModel = getCategoryModel(categoryName);
-//                     return getResultsAndCount(categoryModel).then(({ count, data }) => {
-//                         totalCount += count;
-//                         result = result.concat(data);
-//                     });
-//                 }
-//             });
-
-//             await Promise.all(promises);
-//         } else {
-//             // If no categories are provided, fetch data for all categories
-//             const allCategories = ['Nursing Home', 'skilled', 'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
-//             const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
-//             const categoryResults = await Promise.all(promises);
-
-//             totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
-//             result = categoryResults.flatMap((data) => data.data);
-//         }
-
-//         res.status(200).json({ totalCount, data: result });
-//     } catch (error) {
-//         next(error); // Make sure error handling middleware is set up properly
-//     }
-// },
 
 
 getMultipleCategoriesApp: async (req, res, next) => {
-  const { state, city, zipCode, categoryNames, page, limit, search } = req.query;
-
+  const { state, city, zipCode, categoryNames, page, limit, search,overall_rating } = req.query;
   try {
     const query = {};
    
-    // console.log(query,"query")
-    if (state) query.state = state;
+
+    if (state) query.state = state; 
     if (city) query.city = { $regex: new RegExp(city, 'i') };
     if (zipCode) query.zipCode = zipCode;
 
@@ -3069,37 +2651,33 @@ getMultipleCategoriesApp: async (req, res, next) => {
       };
       Object.assign(query, searchQuery);
     }
-
+    if (overall_rating) {
+      const overallRatings = overall_rating.map(Number); 
+      query.overall_rating = { $in: overallRatings };
+    }
+    console.log(query, "query");
     let totalCount = 0;
     let result = [];
 
     const getResultsAndCount = async (model) => {
       const count = await model.countDocuments(query);
       const data = await model
-          .find(query) // Use the 'query' object here
-          .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating latitude longitude')
-          .lean()
-          .skip(page * limit)
-          .limit(limit);
-      console.log(data, "data");
+        .find(query) // Use the 'query' object here
+        .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating latitude longitude')
+        .lean()
+        .skip(page * limit)
+        .limit(limit);
+      
       return { count, data };
-  };
+    };
 
     if (categoryNames && categoryNames.length > 0) {
       const promises = categoryNames.map((categoryName) => {
-        if (categoryName === 'Nursing Home') {
-          const categoryModel = getCategoryModel(categoryName);
-          return getResultsAndCount(categoryModel).then(({ count, data }) => {
-            totalCount += count;
-            result = result.concat(data);
-          });
-        } else {
-          const categoryModel = getCategoryModel(categoryName);
-          return getResultsAndCount(categoryModel).then(({ count, data }) => {
-            totalCount += count;
-            result = result.concat(data);
-          });
-        }
+        const categoryModel = getCategoryModel(categoryName);
+        return getResultsAndCount(categoryModel).then(({ count, data }) => {
+          totalCount += count;
+          result = result.concat(data);
+        });
       });
 
       await Promise.all(promises);
@@ -3118,8 +2696,9 @@ getMultipleCategoriesApp: async (req, res, next) => {
     next(error); 
   }
 },
-
  
+
+
   getProfessionalEachSpecialityRecords: async (req, res, next) => {
     try {
       let data = await Professional.aggregate([

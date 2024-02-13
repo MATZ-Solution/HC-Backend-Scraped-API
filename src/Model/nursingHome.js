@@ -87,9 +87,7 @@ const addressSchema = new Schema({
     type: String,
     index: true,
   },
-  overall_rating: {
-    type: String,
-  },
+
   patient_survey_rating: {
     type: String,
   },
@@ -97,7 +95,7 @@ const addressSchema = new Schema({
     type: String,
   },
   overall_rating: {
-    type: String,
+    type: Number,
   },
   management: {
     type: String,
