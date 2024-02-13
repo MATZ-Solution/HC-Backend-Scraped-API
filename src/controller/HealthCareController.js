@@ -3576,6 +3576,51 @@ getMultipleCategoriesApp: async (req, res, next) => {
       next(error)
     }
   },
+  getCityAndZipCodeOnSTATEApp: async (req, res, next) => {
+   
+    try {
+      const { state } = req.body;
+    
+      const uniqueRecords = {
+        cities: [],
+      };
+    
+      let query = {};
+    
+      if (state) {
+        query.state = { $regex: new RegExp(state, 'i') };
+      }
+    
+   
+      const nursingHomeResult = await nursingHome.find(query).select('-_id city state zipCode').lean();
+      const inpatientRehabilitiationResult = await inpatientRehabilitiation.find(query).select('-_id city state zipCode').lean();
+      const memoryCareResult = await memoryCare.find(query).select('-_id city state zipCode').lean();
+      const inHomeCareResult = await inHomeCare.find(query).select('-_id city state zipCode').lean();
+
+    
+      const mergedRecords = [
+        ...nursingHomeResult,
+        ...inpatientRehabilitiationResult,
+        ...memoryCareResult,
+        ...inHomeCareResult
+      ];
+    
+      mergedRecords.forEach(record => {
+       
+        const capitalizedCity = record.city; 
+        if (!uniqueRecords.cities.includes(capitalizedCity)) {
+          uniqueRecords.cities.push(capitalizedCity);
+        }
+        
+      });
+    
+      res.status(200).json(uniqueRecords);
+    } catch (error) {
+      next(error);
+    }
+    
+    
+  },
   getProfessionalCityStateAndZipCode: async (req, res, next) => {
     try {
 
@@ -3868,10 +3913,10 @@ const fetchDataFromDatabase = async () => {
       .find({})
       .lean()
       .select('_id name latitude longitude mainCategory city state zipCode'),
-    skilledNursingHome
-      .find()
-      .lean()
-      .select('_id name latitude longitude mainCategory city state zipCode'),
+    // skilledNursingHome
+    //   .find()
+    //   .lean()
+    //   .select('_id name latitude longitude mainCategory city state zipCode'),
    
     inpatientRehabilitiation
       .find({})
@@ -3896,6 +3941,6 @@ module.exports = healthCareController;
 
 
 const capitalizeFirstLetter = (str) => {
-  console.log(str,'str')
+  // console.log(str,'str')
   return str.toLowerCase().replace(/(^|\s)\S/g, (match) => match.toUpperCase());
 };
