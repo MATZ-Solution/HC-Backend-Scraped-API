@@ -4,14 +4,14 @@ const { google } = require("googleapis");
 
 const createTransporter = async () => {
   const oauth2Client = new google.auth.OAuth2(
-    "755309505753-i1bthdnl4gbvpc0eipcivnotg4gn5thf.apps.googleusercontent.com",
-    "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",
+    "314005293340-9eh88g6318enm271d5ti60538lfsr43k.apps.googleusercontent.com",
+    "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",
     "https://developers.google.com/oauthplayground"
   );
 
 
   oauth2Client.setCredentials({
-    refresh_token: "1//0403hO-ql4fj8CgYIARAAGAQSNwF-L9Ir3fKKHGwrdkIFRLAnK2AOYFJDFkycGbggjQbpIhDDGIlLzjXs_udHY6x4CpzhZC8Ttik",
+    refresh_token: "1//04AOWCmqvdobSCgYIARAAGAQSNwF-L9Ire2LiZhFn3OUK8x00E38RLeEbC37vCdhtQAwcpXq0Sc5B8lKDgqxn5-bdcYd6wSG_fv0",
   });
 
   const accessToken = await new Promise((resolve, reject) => {
@@ -27,12 +27,14 @@ const createTransporter = async () => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      type: "OAuth2",
-      user: "ns265331@gmail.com",
+      type: 'OAuth2',
+      user: 'maazurrehman42@gmail.com',
       accessToken,
-      clientId: "755309505753-i1bthdnl4gbvpc0eipcivnotg4gn5thf.apps.googleusercontent.com",
-      clientSecret: "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",
-      refreshToken: "1//0403hO-ql4fj8CgYIARAAGAQSNwF-L9Ir3fKKHGwrdkIFRLAnK2AOYFJDFkycGbggjQbpIhDDGIlLzjXs_udHY6x4CpzhZC8Ttik",
+      clientId:
+        '314005293340-9eh88g6318enm271d5ti60538lfsr43k.apps.googleusercontent.com',
+      clientSecret: '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',
+      refreshToken:
+        '1//04AOWCmqvdobSCgYIARAAGAQSNwF-L9Ire2LiZhFn3OUK8x00E38RLeEbC37vCdhtQAwcpXq0Sc5B8lKDgqxn5-bdcYd6wSG_fv0',
     },
   });
 
@@ -43,7 +45,7 @@ const sendEmail = async ({ to, subject, text, html, res }) => {
   try {
     const emailTransporter = await createTransporter();
     const emailOptions = {
-      from: "noreply@gmail.com",
+      from: "maazurrehman42@gmail.com",
       to,
       subject,
       text,
