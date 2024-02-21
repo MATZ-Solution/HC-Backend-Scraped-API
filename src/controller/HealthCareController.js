@@ -35,8 +35,8 @@ const getCategoryModel = (categoryName) => {
             return inHomeCare;
         case 'Memory Care':
             return memoryCare;
-        case "skilled":
-            return skilledNursingHome
+        // case "skilled":
+        //     return skilledNursingHome
         default:
             throw new Error(`Invalid category name: ${categoryName}`);
     }
@@ -2628,76 +2628,184 @@ const healthCareController = {
   
 
 
-getMultipleCategoriesApp: async (req, res, next) => {
-  const { state, city, zipCode, categoryNames, page, limit, search,overall_rating } = req.query;
-  try {
-    const query = {};
-   
-
-    if (state) query.state = state; 
-    if (city) query.city = { $regex: new RegExp(city, 'i') };
-    if (zipCode) query.zipCode = zipCode;
-
-    if (search) {
-      const searchQuery = {
-        $or: [
-          { name: { $regex: new RegExp(search, 'i') } },
-          { zipCode: { $regex: new RegExp(search, 'i') } },
-          { state: { $regex: new RegExp(search, 'i') } },
-          { city: { $regex: new RegExp(search, 'i') } },
-          { mainCategory: { $regex: new RegExp(search, 'i') } },
-          // Add more fields as needed
-        ]
-      };
-      Object.assign(query, searchQuery);
-    }
-    if (overall_rating) {
-      const overallRatings = overall_rating.map(Number); 
-      query.overall_rating = { $in: overallRatings };
-    }
-    console.log(query, "query");
-    let totalCount = 0;
-    let result = [];
-
-    const getResultsAndCount = async (model) => {
-      const count = await model.countDocuments(query);
-      const data = await model
-        .find(query) // Use the 'query' object here
-        .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating latitude longitude')
-        .lean()
-        .skip(page * limit)
-        .limit(limit);
-      
-      return { count, data };
-    };
-
-    if (categoryNames && categoryNames.length > 0) {
-      const promises = categoryNames.map((categoryName) => {
-        const categoryModel = getCategoryModel(categoryName);
-        return getResultsAndCount(categoryModel).then(({ count, data }) => {
-          totalCount += count;
-          result = result.concat(data);
+  getMultipleCategoriesApp: async (req, res, next) => {
+    const { state, city, zipCode, categoryNames, page, limit, search, overall_rating, longitude, latitude } = req.query;
+    try {
+      const query = {};
+  
+      if (state) query.state = state;
+      if (city) query.city = { $regex: new RegExp(city, 'i') };
+      if (zipCode) query.zipCode = zipCode;
+  
+      if (search) {
+        const searchQuery = {
+          $or: [
+            { name: { $regex: new RegExp(search, 'i') } },
+            { zipCode: { $regex: new RegExp(search, 'i') } },
+            { state: { $regex: new RegExp(search, 'i') } },
+            { city: { $regex: new RegExp(search, 'i') } },
+            { mainCategory: { $regex: new RegExp(search, 'i') } },
+            // Add more fields as needed
+          ],
+        };
+        Object.assign(query, searchQuery);
+      }
+  
+      if (overall_rating) {
+        const overallRatings = overall_rating.map(Number);
+        query.overall_rating = { $in: overallRatings };
+      }
+  
+      let aggregationPipeline = [];
+  
+      if (longitude && latitude) {
+        // If longitude and latitude are provided, add $geoNear stage to sort by distance
+        aggregationPipeline.push({
+          $geoNear: {
+            near: {
+              type: 'Point',
+              coordinates: [parseFloat(longitude), parseFloat(latitude)],
+            },
+            distanceField: 'distance',
+            spherical: true,
+          },
         });
-      });
-
-      await Promise.all(promises);
-    } else {
-      // If no categories are provided, fetch data for all categories
-      const allCategories = ['Nursing Home', 'skilled', 'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
-      const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
-      const categoryResults = await Promise.all(promises);
-
-      totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
-      result = categoryResults.flatMap((data) => data.data);
+      }
+  
+      const getResultsAndCount = async (model) => {
+        const count = await model.countDocuments(query);
+        const pipeline = [...aggregationPipeline]; // Copy the pipeline to avoid modification across iterations
+        pipeline.push(
+          {
+            $match: query,
+          },
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+              city: 1,
+              state: 1,
+              mainCategory: 1,
+              fullAddress: 1,
+              phoneNumber: 1,
+              zipCode: 1,
+              overall_rating: 1,
+              latitude: 1,
+              longitude: 1,
+            },
+          },
+          {
+            $skip: page * parseInt(limit),
+          },
+          {
+            $limit: parseInt(limit),
+          }
+        );
+        const data = await model.aggregate(pipeline).allowDiskUse(true).exec();
+        return { count, data };
+      };
+  
+      let totalCount = 0;
+      let result = [];
+  
+      if (categoryNames && categoryNames.length > 0) {
+        const promises = categoryNames.map((categoryName) => {
+          const categoryModel = getCategoryModel(categoryName);
+          return getResultsAndCount(categoryModel).then(({ count, data }) => {
+            totalCount += count;
+            result = result.concat(data);
+          });
+        });
+  
+        await Promise.all(promises);
+      } else {
+        // If no categories are provided, fetch data for all categories
+        const allCategories = ['Nursing Home','Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
+        const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
+        const categoryResults = await Promise.all(promises);
+  
+        totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
+        result = categoryResults.flatMap((data) => data.data);
+      }
+  
+      res.status(200).json({ totalCount, data: result });
+    } catch (error) {
+      next(error);
     }
-
-    res.status(200).json({ totalCount, data: result });
-  } catch (error) {
-    next(error); 
-  }
-},
+  },
+  
  
+// updateLatLong: async (req, res, next) => {
+//   try {
+//     // const documents = await nursingHome.find();
+//     const documents= await nursingHome.find({ location: { $exists: false } });
 
+
+//     const documents2 = await inpatientRehabilitiation.find({ location: { $exists: false } });
+//     const documents3 = await memoryCare.find({ location: { $exists: false } });
+//     const documents4 = await inHomeCare.find({ location: { $exists: false } });
+//     console.log(documents.length, "documents");
+//     console.log(documents2.length, "documents");
+//     console.log(documents3.length, "documents");
+//     console.log(documents4.length, "documents");
+//     for (const doc of documents4) {
+//       await inHomeCare.findByIdAndDelete(doc._id);
+//     }
+//     // for (const doc of documents) {
+//     //   const latitude = parseFloat(doc.latitude);
+//     //   const longitude = parseFloat(doc.longitude);
+
+//     //   const location = {
+//     //     type: 'Point',
+//     //     coordinates: [longitude, latitude],
+//     //   };
+
+//     //   await nursingHome.findByIdAndUpdate(doc._id, { $set: { location } });
+    
+//     // }
+//     // for (const doc of documents2) {
+//     //   const latitude = parseFloat(doc.latitude);
+//     //   const longitude = parseFloat(doc.longitude);
+
+//     //   const location = {
+//     //     type: 'Point',
+//     //     coordinates: [longitude, latitude],
+//     //   };
+
+//     //   await inpatientRehabilitiation.findByIdAndUpdate(doc._id, { $set: { location } });
+//     // }
+//     // for (const doc of documents4) {
+//     //   if(doc.latitude!=="None" && doc.longitude!=="None"){
+//     //     console.log(doc.latitude,doc.longitude,"lat long");
+//     //     const latitude = parseFloat(doc.latitude);
+//     //     const longitude = parseFloat(doc.longitude);
+//     //     console.log(latitude,longitude,"lat long");
+//     //     const location = {
+//     //       type: 'Point',
+//     //       coordinates: [longitude, latitude],
+//     //     };
+  
+//     //     await inHomeCare.findByIdAndUpdate(doc._id, { $set: { location } });
+//     //   }
+      
+//     // }
+//     // for (const doc of documents4) {
+//     //   const latitude = parseFloat(doc.latitude);
+//     //   const longitude = parseFloat(doc.longitude);
+
+//     //   const location = {
+//     //     type: 'Point',
+//     //     coordinates: [longitude, latitude],
+//     //   };
+
+//     //   await inHomeCare.findByIdAndUpdate(doc._id, { $set: { location } });
+//     // }
+//     res.status(200).json({ success: true, message: 'Data migration completed.' });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ success: false, message: 'Internal server error.' });
+//   }
+// },
 
   getProfessionalEachSpecialityRecords: async (req, res, next) => {
     try {

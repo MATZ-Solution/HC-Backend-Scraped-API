@@ -37,6 +37,17 @@ const addressSchema = new Schema({
     type: String,
     index: true,
   },
+  location: {
+    type: {
+      type: String,
+      enum: ['Point'], // Only 'Point' is allowed
+      required: true,
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      required: true,
+    },
+  },
   treatment_non_traumatic_brain_condition: {
     type: Number,
   },
@@ -82,7 +93,7 @@ const addressSchema = new Schema({
     },
   ],
 });
-
+addressSchema.index({ location: '2dsphere' });
 const inpatientRehabilitiationData = mongoose.model(
   'inpatientRehabilitiation',
   addressSchema
