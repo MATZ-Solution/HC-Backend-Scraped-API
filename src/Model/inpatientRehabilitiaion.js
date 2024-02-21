@@ -31,11 +31,11 @@ const addressSchema = new Schema({
   },
   latitude: {
     type: String,
-    index: true,
+    // index:"2dsphere"
   },
   longitude: {
     type: String,
-    index: true,
+    // index:"2dsphere"
   },
   treatment_non_traumatic_brain_condition: {
     type: Number,
@@ -82,10 +82,23 @@ const addressSchema = new Schema({
     },
   ],
 });
-
+// addressSchema.indexes({
+//   longitude:"2dsphere",
+//   latitude:"2dsphere"
+// })
 const inpatientRehabilitiationData = mongoose.model(
   'inpatientRehabilitiation',
   addressSchema
 );
+// inpatientRehabilitiationData.updateMany({},{
+//   $set:{
+//     longitude:{$convert:{input:"$longitude",to:"double"}},
+//     latitude:{$convert:{input:"$latitude",to:"double"}}
 
+//   }
+// })
+// inpatientRehabilitiationData.createIndexes({
+//   longitude:"2dsphere",
+//   latitude:"2dsphere"
+// })
 module.exports = inpatientRehabilitiationData;

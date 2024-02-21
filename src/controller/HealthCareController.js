@@ -2628,75 +2628,174 @@ const healthCareController = {
   
 
 
-getMultipleCategoriesApp: async (req, res, next) => {
-  const { state, city, zipCode, categoryNames, page, limit, search,overall_rating } = req.query;
-  try {
-    const query = {};
-   
+  getMultipleCategoriesApp: async (req, res, next) => {
+    const { state, city, zipCode, categoryNames, page, limit, search, overall_rating } = req.query;
+    console.log(req.user,"user")
+    const {isAdmin,_id}=req.user
+    if(isAdmin==="patient"){
+      console.log(_id,"id")
+      try {
+        const query = {};
+        if (state) query.state = state;
+        if (city) query.city = { $regex: new RegExp(city, 'i') };
+        if (zipCode) query.zipCode = zipCode;
+        if (search) {
+            const searchQuery = {
+                $or: [
+                    { name: { $regex: new RegExp(search, 'i') } },
+                    { zipCode: { $regex: new RegExp(search, 'i') } },
+                    { state: { $regex: new RegExp(search, 'i') } },
+                    { city: { $regex: new RegExp(search, 'i') } },
+                    { mainCategory: { $regex: new RegExp(search, 'i') } },
+                ]
+            };
+            Object.assign(query, searchQuery);
+        }
+        if (overall_rating) {
+            const overallRatings = overall_rating.map(Number);
+            query.overall_rating = { $in: overallRatings };
+        }
+        console.log(query, "query");
+        let totalCount = 0;
+        let result = [];
 
-    if (state) query.state = state; 
-    if (city) query.city = { $regex: new RegExp(city, 'i') };
-    if (zipCode) query.zipCode = zipCode;
+        const getResultsAndCount = async (model) => {
+            const count = await model.countDocuments(query);
+            const data = await model
+                .find(query) // Use the 'query' object here
+                .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating latitude longitude')
+                .lean()
+                .skip(page * limit)
+                .limit(limit);
 
-    if (search) {
-      const searchQuery = {
-        $or: [
-          { name: { $regex: new RegExp(search, 'i') } },
-          { zipCode: { $regex: new RegExp(search, 'i') } },
-          { state: { $regex: new RegExp(search, 'i') } },
-          { city: { $regex: new RegExp(search, 'i') } },
-          { mainCategory: { $regex: new RegExp(search, 'i') } },
-          // Add more fields as needed
-        ]
-      };
-      Object.assign(query, searchQuery);
-    }
-    if (overall_rating) {
-      const overallRatings = overall_rating.map(Number); 
-      query.overall_rating = { $in: overallRatings };
-    }
-    console.log(query, "query");
-    let totalCount = 0;
-    let result = [];
+            return { count, data };
+        };
 
-    const getResultsAndCount = async (model) => {
-      const count = await model.countDocuments(query);
-      const data = await model
-        .find(query) // Use the 'query' object here
-        .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating latitude longitude')
-        .lean()
-        .skip(page * limit)
-        .limit(limit);
-      
-      return { count, data };
-    };
+        if (categoryNames && categoryNames.length > 0) {
+            const promises = categoryNames.map((categoryName) => {
+                const categoryModel = getCategoryModel(categoryName);
+                return getResultsAndCount(categoryModel).then(({ count, data }) => {
+                    totalCount += count;
+                    result = result.concat(data);
+                });
+            });
 
-    if (categoryNames && categoryNames.length > 0) {
-      const promises = categoryNames.map((categoryName) => {
-        const categoryModel = getCategoryModel(categoryName);
-        return getResultsAndCount(categoryModel).then(({ count, data }) => {
-          totalCount += count;
-          result = result.concat(data);
-        });
+            await Promise.all(promises);
+        } else {
+            const allCategories = ['Nursing Home', 'skilled', 'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
+            const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
+            const categoryResults = await Promise.all(promises);
+
+            totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
+            result = categoryResults.flatMap((data) => data.data);
+        }
+
+        // Update to include favorite field
+        const getFavourateWithResponse = await axios.get(process.env.favApiUrl, {});
+        const responseData = getFavourateWithResponse.data;
+        // console.log(responseData,"data")
+       
+
+        const matchDataById = responseData.filter((item) => {
+          return item.patId === _id; // Keep only items where patId matches _id
       });
+      
+      result.forEach((item) => {
+          const isFavorite = matchDataById.some((fav) => {
+              console.log(fav, "favorite"); // Log inside the some() callback
+              return fav.scrapeObjectId === item._id.toString();
+          });
+          item.favorite = isFavorite;
+      });
+    
+    
 
-      await Promise.all(promises);
-    } else {
-      // If no categories are provided, fetch data for all categories
-      const allCategories = ['Nursing Home', 'skilled', 'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
-      const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
-      const categoryResults = await Promise.all(promises);
-
-      totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
-      result = categoryResults.flatMap((data) => data.data);
+        res.status(200).json({ totalCount, data: result });
+    } catch (error) {
+        next(error);
     }
+    }
+    else if(req.user==="notLogin"){
+      try {
+        const query = {};
+        if (state) query.state = state;
+        if (city) query.city = { $regex: new RegExp(city, 'i') };
+        if (zipCode) query.zipCode = zipCode;
+        if (search) {
+            const searchQuery = {
+                $or: [
+                    { name: { $regex: new RegExp(search, 'i') } },
+                    { zipCode: { $regex: new RegExp(search, 'i') } },
+                    { state: { $regex: new RegExp(search, 'i') } },
+                    { city: { $regex: new RegExp(search, 'i') } },
+                    { mainCategory: { $regex: new RegExp(search, 'i') } },
+                ]
+            };
+            Object.assign(query, searchQuery);
+        }
+        if (overall_rating) {
+            const overallRatings = overall_rating.map(Number);
+            query.overall_rating = { $in: overallRatings };
+        }
+        console.log(query, "query");
+        let totalCount = 0;
+        let result = [];
 
-    res.status(200).json({ totalCount, data: result });
-  } catch (error) {
-    next(error); 
-  }
+        const getResultsAndCount = async (model) => {
+            const count = await model.countDocuments(query);
+            const data = await model
+                .find(query) // Use the 'query' object here
+                .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating latitude longitude')
+                .lean()
+                .skip(page * limit)
+                .limit(limit);
+
+            return { count, data };
+        };
+
+        if (categoryNames && categoryNames.length > 0) {
+            const promises = categoryNames.map((categoryName) => {
+                const categoryModel = getCategoryModel(categoryName);
+                return getResultsAndCount(categoryModel).then(({ count, data }) => {
+                    totalCount += count;
+                    result = result.concat(data);
+                });
+            });
+
+            await Promise.all(promises);
+        } else {
+            const allCategories = ['Nursing Home', 'skilled', 'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
+            const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
+            const categoryResults = await Promise.all(promises);
+
+            totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
+            result = categoryResults.flatMap((data) => data.data);
+        }
+
+        // Update to include favorite field
+        const getFavourateWithResponse = await axios.get(process.env.favApiUrl, {});
+        const responseData = getFavourateWithResponse.data;
+        // console.log(responseData,"data")
+       
+
+        const matchDataById = responseData.filter((item) => {
+          return item.patId === _id; // Keep only items where patId matches _id
+      });
+      
+    
+    
+    
+
+        res.status(200).json({ totalCount, data: result });
+    } catch (error) {
+        next(error);
+    }
+    }
+    
 },
- 
+
+
+   
 
 
   getProfessionalEachSpecialityRecords: async (req, res, next) => {

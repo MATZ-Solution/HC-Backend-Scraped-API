@@ -77,10 +77,13 @@ const memoryCareSchema = new mongoose.Schema({
   latitude: {
     type: String,
     required: true,
+    // index:"2dsphere"
   },
   longitude: {
     type: String,
     required: true,
+    // index:"2dsphere"
+
   },
   fullAddress: {
     type: String,
@@ -155,6 +158,20 @@ const memoryCareSchema = new mongoose.Schema({
   },
 });
 
+// memoryCareSchema.indexes({
+//   longitude:"2dsphere",
+//   latitude:"2dsphere"
+// })
 const memoryCare = mongoose.model('memoryCare', memoryCareSchema, 'memoryCare');
+// memoryCare.updateMany({},{
+//   $set:{
+//     longitude:{$convert:{input:"$longitude",to:"double"}},
+//     latitude:{$convert:{input:"$latitude",to:"double"}}
 
+//   }
+// })
+// memoryCare.createIndexes({
+//   longitude:"2dsphere",
+//   latitude:"2dsphere"
+// })
 module.exports = memoryCare;
