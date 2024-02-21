@@ -81,11 +81,11 @@ const addressSchema = new Schema({
   //mohsin scraping
   latitude: {
     type: String,
-    index: true,
+    // index: "2dsphere",
   },
   longitude: {
     type: String,
-    index: true,
+    // index: "2dsphere",
   },
   location: {
     type: {
@@ -141,7 +141,10 @@ const addressSchema = new Schema({
     },
   ],
 });
-
+// addressSchema.indexes({
+//   longitude:"2dsphere",
+//   latitude:"2dsphere"
+// })
 // const hospitals = mongoose.model('hospitalnew', addressSchema, 'hospitalnew');
 addressSchema.index({ location: '2dsphere' });
 
@@ -150,5 +153,18 @@ const nursinghomes = mongoose.model(
   addressSchema,
   'nursingHomenew'
 );
+// nursinghomes.updateMany({},{
+//   $set:{
+//     longitude:{$convert:{input:"$longitude",to:"double"}},
+//     latitude:{$convert:{input:"$latitude",to:"double"}}
 
+//   }
+// })
+// nursinghomes.createIndexes({
+//   longitude:"2dsphere",
+//   latitude:"2dsphere"
+// })
+// nursinghomes.index({
+//   "location":"2dsphere"
+// })
 module.exports = nursinghomes;

@@ -5,15 +5,38 @@ const verifyToken = (req, res, next) => {
     if (authorization && authorization.startsWith("Bearer"))  {
         const token = authorization.split(" ")[1];
         jwt.verify(token, process.env.JWT_SEC, (err, user) => {
+            // console.log(user)
             if (err) {
                 res.status(400).json(err)
             } else {
+
                 req.user = user;
                 next();
             }
         })
     } else {
         res.status(400).json("you are not authenticated");
+    }
+}
+
+const verifyTokenForFav = (req, res, next) => {
+    const { authorization } = req.headers;
+    if (authorization && authorization.startsWith("Bearer"))  {
+        const token = authorization.split(" ")[1];
+        jwt.verify(token, process.env.JWT_SEC, (err, user) => {
+            // console.log(user)
+            if (err) {
+                res.status(400).json(err)
+            } else {
+
+                req.user = user;
+                next();
+            }
+        })
+    } else {
+        // res.status(400).json("you are not authenticated");
+        req.user="notLogin"
+        next()
     }
 }
 
@@ -52,5 +75,5 @@ module.exports = {
     verifyToken,
     verifyTokenAndAdmin,
     verifyTokenAndCorporate,
-    verifyTokenAndCareGivers
+    verifyTokenAndCareGivers,verifyTokenForFav
 };

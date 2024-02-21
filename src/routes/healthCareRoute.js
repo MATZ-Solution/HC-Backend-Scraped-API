@@ -1,5 +1,6 @@
 const express = require('express');
 const healthCare = require('../controller/HealthCareController');
+const { verifyTokenForFav } = require('../middleware/verifytokens');
 const router = express.Router();
 
 router.route('/').post(healthCare.addData);
@@ -71,8 +72,8 @@ router.get(
 
 //get Multiple Cat
 router.post('/getMultipleCat', healthCare.getMultipleCategories);
-router.get('/getMultipleCatApp', healthCare.getMultipleCategoriesApp);
-// router.get('/latlong', healthCare.updateLatLong);
+router.get('/getMultipleCatApp',verifyTokenForFav, healthCare.getMultipleCategoriesApp);
+
 router.get(
   '/getProfessionalRecords',
   healthCare.getProfessionalEachSpecialityRecords

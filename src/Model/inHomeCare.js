@@ -53,10 +53,12 @@ const americanFamilyCareSchema = new mongoose.Schema({
   latitude: {
     type: String,
     required: true,
+    // index:"2dsphere"
   },
   longitude: {
     type: String,
     required: true,
+    // index:"2dsphere"
   },
   location: {
     type: {
@@ -146,5 +148,15 @@ const inHomeCare = mongoose.model(
   americanFamilyCareSchema,
   'inHomeCare'
 );
+// inHomeCare.updateMany({},{
+//   $set:{
+//     longitude:{$convert:{input:"$longitude",to:"double"}},
+//     latitude:{$convert:{input:"$latitude",to:"double"}}
 
+//   }
+// })
+// inHomeCare.createIndexes({
+//   longitude:"2dsphere",
+//   latitude:"2dsphere"
+// })
 module.exports = inHomeCare;
