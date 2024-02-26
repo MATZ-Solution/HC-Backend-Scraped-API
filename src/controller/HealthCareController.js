@@ -3512,7 +3512,7 @@ const healthCareController = {
         // const categories = ['Nursing Home', 'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
         const categories = [
           'Nursing Home',
-          'Skilled Nursing Facility',
+          // 'Skilled Nursing Facility',
           // 'Hospital',
           // 'Long Term Cares',
           // 'Dialysis Facility',
