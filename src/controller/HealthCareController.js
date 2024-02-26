@@ -2566,7 +2566,7 @@ const healthCareController = {
             totalCount = await nursingHome.countDocuments(query);
             result = await nursingHome
               .find(query)
-              .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
+              .select('_id name city state mainCategory fullAddress phoneNumber zipCode images')
               .lean()
               .skip(page * limit)
               .limit(limit);
@@ -2583,7 +2583,7 @@ const healthCareController = {
             totalCount = await inHomeCare.countDocuments(query);
             result = await inHomeCare
               .find(query)
-              .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
+              .select('_id name city state mainCategory fullAddress phoneNumber zipCode photos')
               .lean()
               .skip(page * limit)
               .limit(limit);
@@ -2592,7 +2592,7 @@ const healthCareController = {
             totalCount = await memoryCare.countDocuments(query);
                       result = await memoryCare
                       .find(query)
-                      .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
+                      .select('_id name city state mainCategory fullAddress phoneNumber zipCode photos')
                       .lean()
                       .skip(page * limit)
                       .limit(limit);
