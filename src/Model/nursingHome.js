@@ -87,7 +87,17 @@ const addressSchema = new Schema({
     type: String,
     // index: "2dsphere",
   },
-
+  location: {
+    type: {
+      type: String,
+      enum: ['Point'], // Only 'Point' is allowed
+      required: true,
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      required: true,
+    },
+  },
   patient_survey_rating: {
     type: String,
   },
@@ -136,6 +146,8 @@ const addressSchema = new Schema({
 //   latitude:"2dsphere"
 // })
 // const hospitals = mongoose.model('hospitalnew', addressSchema, 'hospitalnew');
+addressSchema.index({ location: '2dsphere' });
+
 const nursinghomes = mongoose.model(
   'nursingHomenew',
   addressSchema,

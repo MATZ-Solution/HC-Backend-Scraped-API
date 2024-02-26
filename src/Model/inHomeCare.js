@@ -60,6 +60,17 @@ const americanFamilyCareSchema = new mongoose.Schema({
     required: true,
     // index:"2dsphere"
   },
+  location: {
+    type: {
+      type: String,
+      enum: ['Point'], // Only 'Point' is allowed
+      required: true,
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      required: true,
+    },
+  },
   fullAddress: {
     type: String,
     required: true,
@@ -131,10 +142,7 @@ const americanFamilyCareSchema = new mongoose.Schema({
     default: 'In Home Care',
   },
 });
-// americanFamilyCareSchema.indexes({
-//   longitude:"2dsphere",
-//   latitude:"2dsphere"
-// })
+americanFamilyCareSchema.index({ location: '2dsphere' });
 const inHomeCare = mongoose.model(
   'inHomeCare',
   americanFamilyCareSchema,

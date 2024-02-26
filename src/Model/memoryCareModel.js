@@ -85,6 +85,17 @@ const memoryCareSchema = new mongoose.Schema({
     // index:"2dsphere"
 
   },
+  location: {
+    type: {
+      type: String,
+      enum: ['Point'], // Only 'Point' is allowed
+      required: true,
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      required: true,
+    },
+  },
   fullAddress: {
     type: String,
     required: true,
@@ -157,11 +168,7 @@ const memoryCareSchema = new mongoose.Schema({
     default: 'Memory Care',
   },
 });
-
-// memoryCareSchema.indexes({
-//   longitude:"2dsphere",
-//   latitude:"2dsphere"
-// })
+memoryCareSchema.index({ location: '2dsphere' });
 const memoryCare = mongoose.model('memoryCare', memoryCareSchema, 'memoryCare');
 // memoryCare.updateMany({},{
 //   $set:{

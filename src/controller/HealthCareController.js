@@ -35,8 +35,8 @@ const getCategoryModel = (categoryName) => {
             return inHomeCare;
         case 'Memory Care':
             return memoryCare;
-        case "skilled":
-            return skilledNursingHome
+        // case "skilled":
+        //     return skilledNursingHome
         default:
             throw new Error(`Invalid category name: ${categoryName}`);
     }
@@ -2105,6 +2105,7 @@ const healthCareController = {
   // },
 
   //for get all Corporates
+  
   getCorporatesUsingMongoId: async (req, res, next) => {
     try {
       const { mongoDbID, category } = req.body;
@@ -2625,11 +2626,8 @@ const healthCareController = {
       next(error);
     }
   },
-  
-
-
   getMultipleCategoriesApp: async (req, res, next) => {
-    const { state, city, zipCode, categoryNames, page, limit, search, overall_rating } = req.query;
+    const { state, city, zipCode, categoryNames, page, limit, search, overall_rating,longitude, latitude,ascending,descending } = req.query;
     console.log(req.user,"user")
     const {isAdmin,_id}=req.user
     if(isAdmin==="patient"){
@@ -2655,40 +2653,80 @@ const healthCareController = {
             const overallRatings = overall_rating.map(Number);
             query.overall_rating = { $in: overallRatings };
         }
-        console.log(query, "query");
-        let totalCount = 0;
-        let result = [];
-
-        const getResultsAndCount = async (model) => {
-            const count = await model.countDocuments(query);
-            const data = await model
-                .find(query) // Use the 'query' object here
-                .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating latitude longitude')
-                .lean()
-                .skip(page * limit)
-                .limit(limit);
-
-            return { count, data };
-        };
-
-        if (categoryNames && categoryNames.length > 0) {
-            const promises = categoryNames.map((categoryName) => {
-                const categoryModel = getCategoryModel(categoryName);
-                return getResultsAndCount(categoryModel).then(({ count, data }) => {
-                    totalCount += count;
-                    result = result.concat(data);
-                });
-            });
-
-            await Promise.all(promises);
-        } else {
-            const allCategories = ['Nursing Home', 'skilled', 'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
-            const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
-            const categoryResults = await Promise.all(promises);
-
-            totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
-            result = categoryResults.flatMap((data) => data.data);
+        let aggregationPipeline = [];
+        if (longitude && latitude) {
+          // If longitude and latitude are provided, add $geoNear stage to sort by distance
+          aggregationPipeline.push({
+            $geoNear: {
+              near: {
+                type: 'Point',
+                coordinates: [parseFloat(longitude), parseFloat(latitude)],
+              },
+              distanceField: 'distance',
+              spherical: true,
+            },
+          });
         }
+            const getResultsAndCount = async (model) => {
+        const count = await model.countDocuments(query);
+        const pipeline = [...aggregationPipeline]; // Copy the pipeline to avoid modification across iterations
+        if (ascending === 'true') {
+          pipeline.push({ $sort: { name: 1 } }); // Sort in ascending order by name (you can change 'name' to the field you want to sort by)
+        } else if (descending === 'true') {
+          pipeline.push({ $sort: { name: -1 } }); // Sort in descending order by name (you can change 'name' to the field you want to sort by)
+        }
+        pipeline.push(
+          {
+            $match: query,
+          },
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+              city: 1,
+              state: 1,
+              mainCategory: 1,
+              fullAddress: 1,
+              phoneNumber: 1,
+              zipCode: 1,
+              overall_rating: 1,
+              latitude: 1,
+              longitude: 1,
+            },
+          },
+          {
+            $skip: page * parseInt(limit),
+          },
+          {
+            $limit: parseInt(limit),
+          }
+        );
+        const data = await model.aggregate(pipeline).allowDiskUse(true).exec();
+        return { count, data };
+      };
+  
+      let totalCount = 0;
+      let result = [];
+  
+      if (categoryNames && categoryNames.length > 0) {
+        const promises = categoryNames.map((categoryName) => {
+          const categoryModel = getCategoryModel(categoryName);
+          return getResultsAndCount(categoryModel).then(({ count, data }) => {
+            totalCount += count;
+            result = result.concat(data);
+          });
+        });
+  
+        await Promise.all(promises);
+      } else {
+        // If no categories are provided, fetch data for all categories
+        const allCategories = ['Nursing Home','Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
+        const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
+        const categoryResults = await Promise.all(promises);
+  
+        totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
+        result = categoryResults.flatMap((data) => data.data);
+      }
 
         // Update to include favorite field
         const getFavourateWithResponse = await axios.get(process.env.favApiUrl, {});
@@ -2737,39 +2775,80 @@ const healthCareController = {
             const overallRatings = overall_rating.map(Number);
             query.overall_rating = { $in: overallRatings };
         }
+        let aggregationPipeline = [];
+        if (longitude && latitude) {
+          // If longitude and latitude are provided, add $geoNear stage to sort by distance
+          aggregationPipeline.push({
+            $geoNear: {
+              near: {
+                type: 'Point',
+                coordinates: [parseFloat(longitude), parseFloat(latitude)],
+              },
+              distanceField: 'distance',
+              spherical: true,
+            },
+          });
+        }
         console.log(query, "query");
+        const getResultsAndCount = async (model) => {
+          const count = await model.countDocuments(query);
+          const pipeline = [...aggregationPipeline]; // Copy the pipeline to avoid modification across iterations
+          if (ascending === 'true') {
+            pipeline.push({ $sort: { name: 1 } }); // Sort in ascending order by name (you can change 'name' to the field you want to sort by)
+          } else if (descending === 'true') {
+            pipeline.push({ $sort: { name: -1 } }); // Sort in descending order by name (you can change 'name' to the field you want to sort by)
+          }
+          pipeline.push(
+            {
+              $match: query,
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                city: 1,
+                state: 1,
+                mainCategory: 1,
+                fullAddress: 1,
+                phoneNumber: 1,
+                zipCode: 1,
+                overall_rating: 1,
+                latitude: 1,
+                longitude: 1,
+              },
+            },
+            {
+              $skip: page * parseInt(limit),
+            },
+            {
+              $limit: parseInt(limit),
+            }
+          );
+          const data = await model.aggregate(pipeline).allowDiskUse(true).exec();
+          return { count, data };
+        };
+    
         let totalCount = 0;
         let result = [];
-
-        const getResultsAndCount = async (model) => {
-            const count = await model.countDocuments(query);
-            const data = await model
-                .find(query) // Use the 'query' object here
-                .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating latitude longitude')
-                .lean()
-                .skip(page * limit)
-                .limit(limit);
-
-            return { count, data };
-        };
-
+    
         if (categoryNames && categoryNames.length > 0) {
-            const promises = categoryNames.map((categoryName) => {
-                const categoryModel = getCategoryModel(categoryName);
-                return getResultsAndCount(categoryModel).then(({ count, data }) => {
-                    totalCount += count;
-                    result = result.concat(data);
-                });
+          const promises = categoryNames.map((categoryName) => {
+            const categoryModel = getCategoryModel(categoryName);
+            return getResultsAndCount(categoryModel).then(({ count, data }) => {
+              totalCount += count;
+              result = result.concat(data);
             });
-
-            await Promise.all(promises);
+          });
+    
+          await Promise.all(promises);
         } else {
-            const allCategories = ['Nursing Home', 'skilled', 'Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
-            const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
-            const categoryResults = await Promise.all(promises);
-
-            totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
-            result = categoryResults.flatMap((data) => data.data);
+          // If no categories are provided, fetch data for all categories
+          const allCategories = ['Nursing Home','Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
+          const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
+          const categoryResults = await Promise.all(promises);
+    
+          totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
+          result = categoryResults.flatMap((data) => data.data);
         }
 
         // Update to include favorite field
@@ -2788,14 +2867,13 @@ const healthCareController = {
 
         res.status(200).json({ totalCount, data: result });
     } catch (error) {
+      console.log(error,"error")
         next(error);
     }
     }
     
 },
 
-
-   
 
 
   getProfessionalEachSpecialityRecords: async (req, res, next) => {
