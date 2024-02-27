@@ -3541,14 +3541,14 @@ const healthCareController = {
           } else if (categoryName === 'Memory Care') {
             categoryQuery = memoryCare;
           }
-          else if(categoryName==="Skilled Nursing Facility"){
-            categoryQuery=skilledNursingHome
-          }
+          // else if(categoryName==="Skilled Nursing Facility"){
+          //   categoryQuery=skilledNursingHome
+          // }
   
           const categoryCount = await categoryQuery.countDocuments(query);
           const categoryResult = await categoryQuery
             .find(query)
-            .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
+            .select('_id name city state mainCategory fullAddress phoneNumber zipCode images')
             .lean()
             .skip(page * limit)
             .limit(limit);
