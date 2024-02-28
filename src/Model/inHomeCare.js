@@ -42,6 +42,9 @@ const americanFamilyCareSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  amenities:[
+    {}
+  ],
   caringStars: {
     isTopRated: {
       type: Boolean,
@@ -105,7 +108,9 @@ const americanFamilyCareSchema = new mongoose.Schema({
     },
   ],
   photos: [String],
-  amenities: amenitySchema,
+  amenities:[
+    {}
+  ],
   about: {
     title: {
       type: String,

@@ -2567,7 +2567,7 @@ const healthCareController = {
             totalCount = await nursingHome.countDocuments(query);
             result = await nursingHome
               .find(query)
-              .select('_id name city state mainCategory fullAddress phoneNumber zipCode images vicinity')
+              .select('_id name city state mainCategory fullAddress phoneNumber zipCode images')
               .lean()
               .skip(page * limit)
               .limit(limit);

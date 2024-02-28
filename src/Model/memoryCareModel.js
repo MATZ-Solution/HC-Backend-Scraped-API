@@ -74,6 +74,7 @@ const memoryCareSchema = new mongoose.Schema({
     qualifiedInYear: String,
     category: String,
   },
+
   latitude: {
     type: String,
     required: true,
@@ -131,7 +132,9 @@ const memoryCareSchema = new mongoose.Schema({
     },
   ],
   photos: [String],
-  amenities: amenitySchema,
+  amenities:[
+    {}
+  ],
   about: {
     title: {
       type: String,
@@ -167,6 +170,7 @@ const memoryCareSchema = new mongoose.Schema({
     type: String,
     default: 'Memory Care',
   },
+
 });
 memoryCareSchema.index({ location: '2dsphere' });
 const memoryCare = mongoose.model('memoryCare', memoryCareSchema, 'memoryCare');
