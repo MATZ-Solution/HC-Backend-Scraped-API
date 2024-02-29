@@ -2002,7 +2002,7 @@ const healthCareController = {
       ];
     
       const nursingHomeData = await nursingHome.aggregate(pipeline);
-      const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline);
+      // const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline);
       const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline);
       const inHomeCareData = await inHomeCare.aggregate(pipeline);
     
