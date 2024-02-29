@@ -1927,7 +1927,7 @@ const healthCareController = {
     
       const nursingHomeData = await nursingHome.aggregate(pipeline)
     
-      const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline)
+      // const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline)
       // const hospitaleData = await hospital.aggregate(pipeline)
       // const longTermCaresData = await longTermCares.aggregate(pipeline)
       // const dialysisFacilityDataData = await dialysisFacilityData.aggregate(pipeline)
@@ -1938,14 +1938,14 @@ const healthCareController = {
       const inHomeCareData = await inHomeCare.aggregate(pipeline)
       // const groupPracticeDataData= await groupPracticeData.aggregate(pipeline)
       // const independentLivingData= await independentLiving.aggregate(pipeline)
-      // const memoryCareData=await memoryCare.aggregate(pipeline)
+      const memoryCareData=await memoryCare.aggregate(pipeline)
       // const homeHealthData=await homeHealthData.aggregate(pipeline)
       // const assistedLivingData=await assistedLiving.aggregate(pipeline)
       // const adultDayCareData=await adultDayCare.aggregate(pipeline)
       // const careRetirementData=await careRetirement.aggregate(pipeline)
       // const geriaticCareManagerData=await geriaticCareManager.aggregate(pipeline)
     
-      const mergedData = [...nursingHomeData, ...skilledNursingHomeData, ...inpatientRehabilitationData, ...inHomeCareData];
+      const mergedData = [...nursingHomeData, ...memoryCareData, ...inpatientRehabilitationData, ...inHomeCareData];
     
     // Extract unique zip codes using a Set
     const uniqueZipCodes = new Set(mergedData.map((e) => e.zipCode));
