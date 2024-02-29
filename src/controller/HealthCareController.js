@@ -2005,8 +2005,8 @@ const healthCareController = {
       // const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline);
       const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline);
       const inHomeCareData = await inHomeCare.aggregate(pipeline);
-    
-      const mergedData = [...nursingHomeData, ...skilledNursingHomeData, ...inpatientRehabilitationData, ...inHomeCareData];
+      const memoryCareData=await memoryCare.aggregate(pipeline)
+      const mergedData = [...nursingHomeData, ...inpatientRehabilitationData,...memoryCareData ,...inHomeCareData];
     
 
       const removeDuplicates = (data) => {
