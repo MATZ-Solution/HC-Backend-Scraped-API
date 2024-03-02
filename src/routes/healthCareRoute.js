@@ -17,7 +17,7 @@ router
   .get(healthCare.getHealthCareZipCodesData);
 
 router.route('/dltemptycities').get(healthCare.deleteEmptyCities);
-
+router.get('/latlong', healthCare.updateLatLong);
 //getProfessionalSpecialty
 // router.route('/getProfessionalSpeciality').get(healthCare.getSpecialitiesExcel);
 

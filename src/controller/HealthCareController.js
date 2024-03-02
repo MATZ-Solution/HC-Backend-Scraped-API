@@ -2522,7 +2522,7 @@ const healthCareController = {
   },
 // getMultiple Categories and Count
   getMultipleCategories: async (req, res, next) => {
-    const { state, city, zipCode, name, page, limit } = req.body;
+    const { state, city, zipCode,overall_rating, name, page, limit } = req.body;
     try {
 
       if (typeof name === 'object') {
@@ -2540,6 +2540,10 @@ const healthCareController = {
           if (zipCode) {
             query.zipCode = zipCode;
           }
+          if (overall_rating) {
+            const overallRatings = overall_rating.map(Number);
+            query.overall_rating = { $in: overallRatings };
+        }
       
           let result = [];
           let totalCount = 0;
@@ -2567,7 +2571,7 @@ const healthCareController = {
             totalCount = await nursingHome.countDocuments(query);
             result = await nursingHome
               .find(query)
-              .select('_id name city state mainCategory fullAddress phoneNumber zipCode images')
+              .select('_id name city state mainCategory fullAddress phoneNumber zipCode images overall_rating')
               .lean()
               .skip(page * limit)
               .limit(limit);
@@ -3573,7 +3577,34 @@ const healthCareController = {
     } catch (error) {
       next(error);
     }
+  },
+    updateLatLong: async (req, res, next) => {
+  try {
+    // const documents = await nursingHome.find();
+    const documents= await nursingHome.find({ location: { $exists: false } });
+    // const documents= await nursingHome.find();
+    console.log(documents,"documents")
+
+    // for (const doc of documents) {
+    //   if(doc.latitude==="None" && doc.longitude==="None"){
+    //   const latitude = parseFloat(doc.latitude);
+    //   const longitude = parseFloat(doc.longitude);
+
+    //   const location = {
+    //     type: 'Point',
+    //     coordinates: [longitude, latitude],
+    //   };
+
+    //   await nursingHome.findByIdAndUpdate(doc._id, { $set: { location , mainCategory:"nursingHome" } });
+    // }
+    // }
+   
+    res.status(200).json({ success: true, message: 'Data migration completed.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Internal server error.' });
   }
+},
   
  
   
