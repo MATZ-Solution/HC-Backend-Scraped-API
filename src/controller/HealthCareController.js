@@ -3552,7 +3552,7 @@ const healthCareController = {
           const categoryCount = await categoryQuery.countDocuments(query);
           const categoryResult = await categoryQuery
             .find(query)
-            .select('_id name city state mainCategory fullAddress phoneNumber zipCode images')
+            .select('_id name city state mainCategory fullAddress phoneNumber zipCode images overall_rating')
             .lean()
             .skip(page * limit)
             .limit(limit);
