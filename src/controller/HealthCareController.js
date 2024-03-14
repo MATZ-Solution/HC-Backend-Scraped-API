@@ -3079,10 +3079,10 @@ const healthCareController = {
         zipCode: []
       }
 
-      // const cachedData = cache.get(cacheRecords);
-      // if (cachedData) {
-      //   return res.status(200).json(cachedData);
-      // }
+      const cachedData = cache.get(cacheRecords);
+      if (cachedData) {
+        return res.status(200).json(cachedData);
+      }
 
       const promises = [
         nursingHome
@@ -3159,7 +3159,7 @@ const healthCareController = {
         }
       }
       uniqureRecords.state.sort();
-      // cache.set(cacheRecords, uniqureRecords);
+      cache.set(cacheRecords, uniqureRecords);
       return res.status(200).json(uniqureRecords);
     } catch (error) {
       next(error)
