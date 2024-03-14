@@ -3079,10 +3079,10 @@ const healthCareController = {
         zipCode: []
       }
 
-      const cachedData = cache.get(cacheRecords);
-      if (cachedData) {
-        return res.status(200).json(cachedData);
-      }
+      // const cachedData = cache.get(cacheRecords);
+      // if (cachedData) {
+      //   return res.status(200).json(cachedData);
+      // }
 
       const promises = [
         nursingHome
@@ -3145,7 +3145,7 @@ const healthCareController = {
 
       const mergedRecords = [].concat(...records);
 
-      console.log(mergedRecords,"merge")
+      // console.log(mergedRecords,"merge")
       for (let i = 0; i < mergedRecords.length; i++) {
         if (!uniqureRecords.state.includes(mergedRecords[i].state)) {
           uniqureRecords.state.push(mergedRecords[i].state);
@@ -3158,8 +3158,8 @@ const healthCareController = {
           uniqureRecords.zipCode.push(mergedRecords[i].zipCode);
         }
       }
-
-      cache.set(cacheRecords, uniqureRecords);
+      uniqureRecords.state.sort();
+      // cache.set(cacheRecords, uniqureRecords);
       return res.status(200).json(uniqureRecords);
     } catch (error) {
       next(error)
@@ -3350,12 +3350,10 @@ const healthCareController = {
         query.state = { $regex: new RegExp(state, 'i') };
       }
     
-   
       const nursingHomeResult = await nursingHome.find(query).select('-_id city state zipCode').lean();
       const inpatientRehabilitiationResult = await inpatientRehabilitiation.find(query).select('-_id city state zipCode').lean();
       const memoryCareResult = await memoryCare.find(query).select('-_id city state zipCode').lean();
       const inHomeCareResult = await inHomeCare.find(query).select('-_id city state zipCode').lean();
-
     
       const mergedRecords = [
         ...nursingHomeResult,
@@ -3364,19 +3362,28 @@ const healthCareController = {
         ...inHomeCareResult
       ];
     
+      const citySet = new Set(); // Using a Set to store unique city names
+    
+      const capitalizeFirstLetter = (str) => {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+      };
+    
       mergedRecords.forEach(record => {
-       
-        const capitalizedCity = record.city; 
-        if (!uniqueRecords.cities.includes(capitalizedCity)) {
-          uniqueRecords.cities.push(capitalizedCity);
+        const formattedCity = capitalizeFirstLetter(record.city); 
+        if (!citySet.has(formattedCity)) {
+          citySet.add(formattedCity);
+          uniqueRecords.cities.push(formattedCity);
         }
-        
       });
+    
+      uniqueRecords.cities.sort();
     
       res.status(200).json(uniqueRecords);
     } catch (error) {
       next(error);
     }
+    
+    
     
     
   },
@@ -3582,22 +3589,32 @@ const healthCareController = {
   try {
     // const documents = await nursingHome.find();
     const documents= await nursingHome.find({ location: { $exists: false } });
+
     // const documents= await nursingHome.find();
-    console.log(documents,"documents")
+    
+    console.log(documents,"documents")  
+    for (const doc of documents) {
+      // console.log(doc.latitude,"latitude")
+      if((doc.latitude && doc.longitude)&&(doc.latitude!=="None" && doc.longitude!=="None")){
+      const latitude = parseFloat(doc.latitude);
+      const longitude = parseFloat(doc.longitude);
 
-    // for (const doc of documents) {
-    //   if(doc.latitude==="None" && doc.longitude==="None"){
-    //   const latitude = parseFloat(doc.latitude);
-    //   const longitude = parseFloat(doc.longitude);
+      const location = {
+        type: 'Point',
+        coordinates: [longitude, latitude],
+      };
 
-    //   const location = {
-    //     type: 'Point',
-    //     coordinates: [longitude, latitude],
-    //   };
+      await nursingHome.findByIdAndUpdate(doc._id, { $set: { location , mainCategory:"nursingHome" } });
+    }
+    else{
+      const location = {
+        type: 'Point',
+        coordinates: [0.000, 0.00],
+      };
 
-    //   await nursingHome.findByIdAndUpdate(doc._id, { $set: { location , mainCategory:"nursingHome" } });
-    // }
-    // }
+      await nursingHome.findByIdAndUpdate(doc._id, { $set: { location , mainCategory:"nursingHome" } });
+    }
+    }
    
     res.status(200).json({ success: true, message: 'Data migration completed.' });
   } catch (error) {
