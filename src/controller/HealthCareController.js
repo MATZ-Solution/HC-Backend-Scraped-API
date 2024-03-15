@@ -1966,7 +1966,8 @@ const healthCareController = {
   
   filterZipCodeForApp: async (req, res, next) => {
     try {
-      const { zipCode, page} = req.query;
+      const { zipCode, page } = req.query;
+      let notFound=false;
       const regex = new RegExp(zipCode, 'i');
     
       const pipeline = [
@@ -1978,7 +1979,7 @@ const healthCareController = {
             _id: {
               zipCode: { $toLower: '$zipCode' },
               city: { $toLower: '$city' },
-              state:{ $toLower:"$state"}
+              state: { $toLower: "$state" }
             }
           }
         },
@@ -1987,7 +1988,7 @@ const healthCareController = {
             _id: 0,
             zipCode: '$_id.zipCode',
             city: '$_id.city',
-            state:'$_id.state'
+            state: '$_id.state'
           }
         },
         {
@@ -2000,7 +2001,7 @@ const healthCareController = {
           $limit: parseInt(2)
         }
       ];
-    
+  
       const nursingHomeData = await nursingHome.aggregate(pipeline);
       // const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline);
       const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline);
@@ -2021,13 +2022,72 @@ const healthCareController = {
         return uniqueRecords;
       };
       
-      const result = removeDuplicates(mergedData);
+      let result = removeDuplicates(mergedData);
+      // Check if no exact match found and try to find closest zip codes
+      if (result.length === 0) {
+        notFound=true
+        // Find zip codes with similar prefix
+        const similarPipeline = [
+          {
+            $match: { zipCode: { $regex: new RegExp("^" + zipCode.substring(0, 4), 'i') } }
+          },
+          {
+            $group: {
+              _id: {
+                zipCode: { $toLower: '$zipCode' },
+                city: { $toLower: '$city' },
+                state: { $toLower: "$state" }
+              }
+            }
+          },
+          {
+            $project: {
+              _id: 0,
+              zipCode: '$_id.zipCode',
+              city: '$_id.city',
+              state: '$_id.state'
+            }
+          },
+          {
+            $sort: { zipCode: 1 }
+          },
+          {
+            $skip: (parseInt(page) - 1) * parseInt(2)
+          },
+          {
+            $limit: parseInt(5)
+          }
+        ];
+        const nursingHomeData = await nursingHome.aggregate(similarPipeline);
+      // const skilledNursingHomeData = await skilledNursingHome.aggregate(similarPipeline);
+      const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(similarPipeline);
+      const inHomeCareData = await inHomeCare.aggregate(similarPipeline);
+      const memoryCareData=await memoryCare.aggregate(similarPipeline)
+      const mergedData = [...nursingHomeData, ...inpatientRehabilitationData,...memoryCareData ,...inHomeCareData];
+    
 
-      res.status(200).json(result);
+      const removeDuplicates = (data) => {
+        const uniqueRecords = [];
+      
+        data.forEach((record) => {
+          if (!uniqueRecords.some((r) => r.zipCode === record.zipCode && r.city === record.city && r.state===record.state)) {
+            uniqueRecords.push(record);
+          }
+        });
+      
+        return uniqueRecords;
+      };
+      
+      result = removeDuplicates(mergedData);
+      }
+      
+      res.status(200).json({
+        data:result,
+        notFound:notFound
+      });
     } catch (err) {
       next(err);
     }
-    
   },
   
   getProfessionalsUsingZipCode: async (req, res, next) => {
