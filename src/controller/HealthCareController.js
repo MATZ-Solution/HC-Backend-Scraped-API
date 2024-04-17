@@ -2008,15 +2008,14 @@ const healthCareController = {
         }
       ];
   
-      // const nursingHomeData = await nursingHome.aggregate(pipeline);
-      // const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline);
-      // const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline);
-      // const inHomeCareData = await inHomeCare.aggregate(pipeline);
-      // const memoryCareData=await memoryCare.aggregate(pipeline)
-      // const medicalFacilitiesData=await medicalFacilities.aggregate(pipeline)
+      const nursingHomeData = await nursingHome.aggregate(pipeline);
+      const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline);
+      const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline);
+      const inHomeCareData = await inHomeCare.aggregate(pipeline);
+      const memoryCareData=await memoryCare.aggregate(pipeline)
+      const medicalFacilitiesData=await medicalFacilities.aggregate(pipeline)
       const medicalSuppliersData=await medicalSuppliers.aggregate(pipeline)
-      // const mergedData = [...nursingHomeData, ...inpatientRehabilitationData,...memoryCareData ,...inHomeCareData];
-      const mergedData=[...medicalSuppliersData]
+      const mergedData = [...medicalSuppliersData ,...medicalFacilitiesData ,...nursingHomeData, ...inpatientRehabilitationData,...memoryCareData ,...inHomeCareData];
     
 
       const removeDuplicates = (data) => {
@@ -2288,6 +2287,18 @@ const healthCareController = {
             _id: mongoDbID,
           });
           res.status(200).json(geriaticCare);
+          break;
+          case 'Medicare Facility':
+          const MedicareFacility = await medicalFacilities.findOne({
+            _id: mongoDbID,
+          });
+          res.status(200).json(MedicareFacility);
+          break;
+          case 'Medicare Supplier':
+          const MedicareSupplier = await medicalSuppliers.findOne({
+            _id: mongoDbID,
+          });
+          res.status(200).json(MedicareSupplier);
           break;
 
         default:
@@ -3202,6 +3213,14 @@ const healthCareController = {
           .lean()
           .select('state city zipCode -_id'),
         geriaticCareManager
+          .find()
+          .lean()
+          .select('state city zipCode -_id'),
+          medicalSuppliers
+          .find()
+          .lean()
+          .select('state city zipCode -_id'),
+          medicalFacilities
           .find()
           .lean()
           .select('state city zipCode -_id'),
