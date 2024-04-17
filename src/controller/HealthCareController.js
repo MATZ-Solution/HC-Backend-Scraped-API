@@ -23,6 +23,8 @@ const turf = require("@turf/turf");
 // const Doctor = require("../Model/professional");
 
 const NodeCache = require('node-cache');
+const medicalFacilities = require('../Model/medicalFacilities');
+const medicalSuppliers = require('../Model/medicalSupliers');
 
 const cache = new NodeCache();
 const getCategoryModel = (categoryName) => {
@@ -35,6 +37,10 @@ const getCategoryModel = (categoryName) => {
             return inHomeCare;
         case 'Memory Care':
             return memoryCare;
+        case 'Medicare Supplier':
+            return medicalSuppliers;
+        case 'Medicare Facility':
+            return medicalFacilities
         // case "skilled":
         //     return skilledNursingHome
         default:
@@ -67,7 +73,7 @@ const healthCareController = {
 
         const cityZip = addressData[1] ? addressData[1].trim() : '';
 
-        console.log(description[0]);
+        // console.log(description[0]);
 
         const [state, zipCode] = cityZip.split(' ');
 
@@ -100,7 +106,7 @@ const healthCareController = {
   },
   updateData: async (req, res, next) => {
     try {
-      console.log('Updated run');
+      // console.log('Updated run');
       // const updateResult = await independentLiving.updateMany(
       //   {},
       //   { $set: { mainCategory: 'Independent Living' } }
@@ -2002,12 +2008,15 @@ const healthCareController = {
         }
       ];
   
-      const nursingHomeData = await nursingHome.aggregate(pipeline);
+      // const nursingHomeData = await nursingHome.aggregate(pipeline);
       // const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline);
-      const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline);
-      const inHomeCareData = await inHomeCare.aggregate(pipeline);
-      const memoryCareData=await memoryCare.aggregate(pipeline)
-      const mergedData = [...nursingHomeData, ...inpatientRehabilitationData,...memoryCareData ,...inHomeCareData];
+      // const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline);
+      // const inHomeCareData = await inHomeCare.aggregate(pipeline);
+      // const memoryCareData=await memoryCare.aggregate(pipeline)
+      // const medicalFacilitiesData=await medicalFacilities.aggregate(pipeline)
+      const medicalSuppliersData=await medicalSuppliers.aggregate(pipeline)
+      // const mergedData = [...nursingHomeData, ...inpatientRehabilitationData,...memoryCareData ,...inHomeCareData];
+      const mergedData=[...medicalSuppliersData]
     
 
       const removeDuplicates = (data) => {
@@ -2692,10 +2701,10 @@ const healthCareController = {
   },
   getMultipleCategoriesApp: async (req, res, next) => {
     const { state, city, zipCode, categoryNames, page, limit, search, overall_rating,longitude, latitude,ascending,descending } = req.query;
-    console.log(req.user,"user")
+    // console.log(req.user,"user")
     const {isAdmin,_id}=req.user
     if(isAdmin==="patient"){
-      console.log(_id,"id")
+      // console.log(_id,"id")
       try {
         const query = {};
         if (state) query.state = state;
@@ -2804,7 +2813,7 @@ const healthCareController = {
       
       result.forEach((item) => {
           const isFavorite = matchDataById.some((fav) => {
-              console.log(fav, "favorite"); // Log inside the some() callback
+              // console.log(fav, "favorite"); // Log inside the some() callback
               return fav.scrapeObjectId === item._id.toString();
           });
           item.favorite = isFavorite;
@@ -2853,7 +2862,7 @@ const healthCareController = {
             },
           });
         }
-        console.log(query, "query");
+        // console.log(query, "query");
         const getResultsAndCount = async (model) => {
           const count = await model.countDocuments(query);
           const pipeline = [...aggregationPipeline]; // Copy the pipeline to avoid modification across iterations
@@ -2931,7 +2940,7 @@ const healthCareController = {
 
         res.status(200).json({ totalCount, data: result });
     } catch (error) {
-      console.log(error,"error")
+      // console.log(error,"error")
         next(error);
     }
     }
@@ -3117,7 +3126,7 @@ const healthCareController = {
 
 
       const scrapedData = await scrapeAllCategories(name);
-      console.log(scrapedData)
+      // console.log(scrapedData)
 
 
       res.status(200).json(scrapedData.flat());
@@ -3200,7 +3209,7 @@ const healthCareController = {
 
       const records = await Promise.all(promises);
 
-      console.log(records.flat().length,"records")
+      // console.log(records.flat().length,"records")
 
 
       const mergedRecords = [].concat(...records);
@@ -3409,17 +3418,27 @@ const healthCareController = {
       if (state) {
         query.state = { $regex: new RegExp(state, 'i') };
       }
+
+      
     
       const nursingHomeResult = await nursingHome.find(query).select('-_id city state zipCode').lean();
       const inpatientRehabilitiationResult = await inpatientRehabilitiation.find(query).select('-_id city state zipCode').lean();
+      
+      
+      // console.log(medicalFacilitiesResult,"result")
+      
       const memoryCareResult = await memoryCare.find(query).select('-_id city state zipCode').lean();
       const inHomeCareResult = await inHomeCare.find(query).select('-_id city state zipCode').lean();
+      const medicalFacilitiesResult = await medicalFacilities.find(query).select('-_id city state zipCode')
+      const medicalSuppliersResult = await medicalSuppliers.find(query).select('-_id city state zipCode')
     
       const mergedRecords = [
         ...nursingHomeResult,
         ...inpatientRehabilitiationResult,
         ...memoryCareResult,
-        ...inHomeCareResult
+        ...inHomeCareResult,
+        ...medicalFacilitiesResult,
+        ...medicalSuppliersResult
       ];
     
       const citySet = new Set(); // Using a Set to store unique city names
@@ -3652,7 +3671,7 @@ const healthCareController = {
 
     // const documents= await nursingHome.find();
     
-    console.log(documents,"documents")  
+    // console.log(documents,"documents")  
     for (const doc of documents) {
       // console.log(doc.latitude,"latitude")
       if((doc.latitude && doc.longitude)&&(doc.latitude!=="None" && doc.longitude!=="None")){
