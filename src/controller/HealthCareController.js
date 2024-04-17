@@ -2288,13 +2288,13 @@ const healthCareController = {
           });
           res.status(200).json(geriaticCare);
           break;
-          case 'Medicare Facility':
+          case 'medicalFacilities':
           const MedicareFacility = await medicalFacilities.findOne({
             _id: mongoDbID,
           });
           res.status(200).json(MedicareFacility);
           break;
-          case 'Medicare Supplier':
+          case 'medicareSupplier':
           const MedicareSupplier = await medicalSuppliers.findOne({
             _id: mongoDbID,
           });
