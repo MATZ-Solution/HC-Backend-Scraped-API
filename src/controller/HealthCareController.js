@@ -2310,6 +2310,12 @@ const healthCareController = {
           });
           res.status(200).json(MedicareSupplier);
           break;
+          case 'physician':
+          const physiciansSupplier = await physicians.findOne({
+            _id: mongoDbID,
+          });
+          res.status(200).json(physiciansSupplier);
+          break;
 
         default:
           res.status(400).json({ message: 'Invalid category' });

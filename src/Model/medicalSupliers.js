@@ -59,7 +59,7 @@ const medicalSuppliersSchema = new Schema({
         required: true,
       },
       phoneNumber: {
-        type: String,
+        type: Array,
         required: true,
       },
       averageRating: {
