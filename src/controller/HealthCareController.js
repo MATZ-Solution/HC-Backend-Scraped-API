@@ -2692,7 +2692,7 @@ const healthCareController = {
                       .skip(page * limit)
                       .limit(limit);
           }
-          else if (categoryName === 'physician') {
+          else if (categoryName === 'Physician') {
             totalCount = await physicians.countDocuments(query);
                       result = await physicians
                       .find(query)
@@ -2701,7 +2701,7 @@ const healthCareController = {
                       .skip(page * limit)
                       .limit(limit);
           }
-          else if (categoryName === 'medicalFacilities') {
+          else if (categoryName === 'Medical Facilities') {
             totalCount = await medicalFacilities.countDocuments(query);
                       result = await medicalFacilities
                       .find(query)
@@ -2710,7 +2710,7 @@ const healthCareController = {
                       .skip(page * limit)
                       .limit(limit);
           }
-          else if (categoryName === 'medicareSupplier') {
+          else if (categoryName === 'Medical Supplier') {
             totalCount = await medicalSuppliers.countDocuments(query);
                       result = await medicalSuppliers
                       .find(query)
