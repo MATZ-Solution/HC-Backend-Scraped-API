@@ -2710,7 +2710,7 @@ const healthCareController = {
                       .skip(page * limit)
                       .limit(limit);
           }
-          else if (categoryName === 'Medical Supplier') {
+          else if (categoryName === 'Medical Suppliers') {
             totalCount = await medicalSuppliers.countDocuments(query);
                       result = await medicalSuppliers
                       .find(query)
