@@ -25,6 +25,7 @@ const turf = require("@turf/turf");
 const NodeCache = require('node-cache');
 const medicalFacilities = require('../Model/medicalFacilities');
 const medicalSuppliers = require('../Model/medicalSupliers');
+const physicians = require('../Model/pysicianModel');
 
 const cache = new NodeCache();
 const getCategoryModel = (categoryName) => {
@@ -40,7 +41,9 @@ const getCategoryModel = (categoryName) => {
         case 'Medicare Supplier':
             return medicalSuppliers;
         case 'Medicare Facility':
-            return medicalFacilities
+            return medicalFacilities;
+            case 'physician':
+            return physicians;
         // case "skilled":
         //     return skilledNursingHome
         default:
@@ -825,6 +828,9 @@ const healthCareController = {
         // 'Adult Day Care',
         // 'Care Retirement Communities',
         // 'Geriatic Care Manager',
+        "Medical Facilities",
+        "Medical Suppliers",
+        "Physicians"
       ];
 
       res.status(200).json(categoryName);
@@ -1945,13 +1951,16 @@ const healthCareController = {
       // const groupPracticeDataData= await groupPracticeData.aggregate(pipeline)
       // const independentLivingData= await independentLiving.aggregate(pipeline)
       const memoryCareData=await memoryCare.aggregate(pipeline)
+      const medicalFacilitiesData=await medicalFacilities.aggregate(pipeline)
+      const medicalSuppliersData=await medicalSuppliers.aggregate(pipeline)
+      const physicianData=await physicians.aggregate(pipeline)
       // const homeHealthData=await homeHealthData.aggregate(pipeline)
       // const assistedLivingData=await assistedLiving.aggregate(pipeline)
       // const adultDayCareData=await adultDayCare.aggregate(pipeline)
       // const careRetirementData=await careRetirement.aggregate(pipeline)
       // const geriaticCareManagerData=await geriaticCareManager.aggregate(pipeline)
     
-      const mergedData = [...nursingHomeData, ...memoryCareData, ...inpatientRehabilitationData, ...inHomeCareData];
+      const mergedData = [...nursingHomeData, ...memoryCareData, ...inpatientRehabilitationData, ...inHomeCareData,...medicalSuppliersData,...medicalFacilitiesData,...physicianData];
     
     // Extract unique zip codes using a Set
     const uniqueZipCodes = new Set(mergedData.map((e) => e.zipCode));
@@ -2015,7 +2024,8 @@ const healthCareController = {
       const memoryCareData=await memoryCare.aggregate(pipeline)
       const medicalFacilitiesData=await medicalFacilities.aggregate(pipeline)
       const medicalSuppliersData=await medicalSuppliers.aggregate(pipeline)
-      const mergedData = [...medicalSuppliersData ,...medicalFacilitiesData ,...nursingHomeData, ...inpatientRehabilitationData,...memoryCareData ,...inHomeCareData];
+      const physicianData=await physicians.aggregate(pipeline)
+      const mergedData = [...medicalSuppliersData ,...medicalFacilitiesData ,...nursingHomeData, ...inpatientRehabilitationData,...memoryCareData ,...inHomeCareData,...physicianData];
     
 
       const removeDuplicates = (data) => {
@@ -2682,8 +2692,33 @@ const healthCareController = {
                       .skip(page * limit)
                       .limit(limit);
           }
-         
-      
+          else if (categoryName === 'physician') {
+            totalCount = await physicians.countDocuments(query);
+                      result = await physicians
+                      .find(query)
+                      .select('_id name city state mainCategory fullAddress phoneNumber zipCode photos')
+                      .lean()
+                      .skip(page * limit)
+                      .limit(limit);
+          }
+          else if (categoryName === 'medicalFacilities') {
+            totalCount = await medicalFacilities.countDocuments(query);
+                      result = await medicalFacilities
+                      .find(query)
+                      .select('_id name city state mainCategory fullAddress phoneNumber zipCode photos')
+                      .lean()
+                      .skip(page * limit)
+                      .limit(limit);
+          }
+          else if (categoryName === 'medicareSupplier') {
+            totalCount = await medicalSuppliers.countDocuments(query);
+                      result = await medicalSuppliers
+                      .find(query)
+                      .select('_id name city state mainCategory fullAddress phoneNumber zipCode photos')
+                      .lean()
+                      .skip(page * limit)
+                      .limit(limit);
+          }
           return { result, totalCount };
         };
       
@@ -2804,7 +2839,7 @@ const healthCareController = {
         await Promise.all(promises);
       } else {
         // If no categories are provided, fetch data for all categories
-        const allCategories = ['Nursing Home','Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
+        const allCategories = ['Nursing Home','Inpatient Rehabilitiation', 'In Home Care', 'Memory Care','medicareSupplier','medicalFacilities','physician'];
         const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
         const categoryResults = await Promise.all(promises);
   
@@ -3114,6 +3149,27 @@ const healthCareController = {
             .select('name city state phoneNumber mainCategory zipCode').skip(pages * limit)
             .limit(limit);
         }
+        else if (categoryName === 'medicalFacilities') {
+          result = await medicalFacilities
+            .find()
+            .lean()
+            .select('name city state phoneNumber mainCategory zipCode').skip(pages * limit)
+            .limit(limit);
+        }
+        else if (categoryName === 'physician') {
+          result = await physicians
+            .find()
+            .lean()
+            .select('name city state phoneNumber mainCategory zipCode').skip(pages * limit)
+            .limit(limit);
+        }
+        else if (categoryName === 'medicareSupplier') {
+          result = await medicalSuppliers
+            .find()
+            .lean()
+            .select('name city state phoneNumber mainCategory zipCode').skip(pages * limit)
+            .limit(limit);
+        }
 
         // Format the data for the list format
         return result.map((entry) => ({
@@ -3224,6 +3280,10 @@ const healthCareController = {
           .find()
           .lean()
           .select('state city zipCode -_id'),
+          physicians
+          .find()
+          .lean()
+          .select('state city zipCode -_id'),
       ];
 
       const records = await Promise.all(promises);
@@ -3289,7 +3349,8 @@ const healthCareController = {
                 '-_id city state zipCode'
               )
               .lean();
-          } else if (categoryName === 'Dialysis Facility') {
+          } 
+          else if (categoryName === 'Dialysis Facility') {
             result = await dialysisFacilityData.find(query).select('-_id city state zipCode').lean();
           } else if (categoryName === 'Nursing Home') {
             result = await nursingHome
@@ -3383,6 +3444,30 @@ const healthCareController = {
               .select(
                 '-_id city state zipCode'
               );
+          }
+          else if(categoryName='physician'){
+            result = await physicians
+            .find(query)
+            .lean()
+            .select(
+              '-_id city state zipCode'
+            );
+          }
+          else if(categoryName='medicalFacilities'){
+            result = await medicalFacilities
+            .find(query)
+            .lean()
+            .select(
+              '-_id city state zipCode'
+            );
+          }
+          else if(categoryName='medicareSupplier'){
+            result = await medicalSuppliers
+            .find(query)
+            .lean()
+            .select(
+              '-_id city state zipCode'
+            );
           }
           return result;
         };
@@ -3636,6 +3721,9 @@ const healthCareController = {
           // 'Adult Day Care',
           // 'Care Retirement Communities',
           // 'Geriatic Care Manager',
+          'medicalFacilities',
+          'medicareSupplier',
+          'physician'
         ]
         const scrapeCategory = async (categoryName) => {
           let categoryQuery;
@@ -3649,6 +3737,15 @@ const healthCareController = {
             categoryQuery = inHomeCare;
           } else if (categoryName === 'Memory Care') {
             categoryQuery = memoryCare;
+          }
+          else if (categoryName === 'physician') {
+            categoryQuery = physicians;
+          }
+          else if (categoryName === 'medicalFacilities') {
+            categoryQuery = medicalFacilities;
+          }
+          else if (categoryName === 'medicareSupplier') {
+            categoryQuery = medicalSuppliers;
           }
           // else if(categoryName==="Skilled Nursing Facility"){
           //   categoryQuery=skilledNursingHome
@@ -3685,15 +3782,14 @@ const healthCareController = {
   },
     updateLatLong: async (req, res, next) => {
   try {
-    // const documents = await nursingHome.find();
-    const documents= await nursingHome.find({ location: { $exists: false } });
+    console.log("api")
+      const documents= await medicalSuppliers.find({ location: { $exists: false } });
 
-    // const documents= await nursingHome.find();
+
     
-    // console.log(documents,"documents")  
+    console.log(documents.length, "documents");
+    
     for (const doc of documents) {
-      // console.log(doc.latitude,"latitude")
-      if((doc.latitude && doc.longitude)&&(doc.latitude!=="None" && doc.longitude!=="None")){
       const latitude = parseFloat(doc.latitude);
       const longitude = parseFloat(doc.longitude);
 
@@ -3702,16 +3798,7 @@ const healthCareController = {
         coordinates: [longitude, latitude],
       };
 
-      await nursingHome.findByIdAndUpdate(doc._id, { $set: { location , mainCategory:"nursingHome" } });
-    }
-    else{
-      const location = {
-        type: 'Point',
-        coordinates: [0.000, 0.00],
-      };
-
-      await nursingHome.findByIdAndUpdate(doc._id, { $set: { location , mainCategory:"nursingHome" } });
-    }
+      await medicalSuppliers.findByIdAndUpdate(doc._id, { $set: { location } });
     }
    
     res.status(200).json({ success: true, message: 'Data migration completed.' });
@@ -3826,6 +3913,9 @@ const fetchDataFromDatabase = async () => {
    
     memoryCare.find().lean().select('_id name latitude longitude mainCategory city state zipCode'),
     inHomeCare.find().lean().select('_id name latitude longitude mainCategory city state zipCode'),
+    physicians.find().lean().select('_id name latitude longitude mainCategory city state zipCode'),
+    medicalFacilities.find().lean().select('_id name latitude longitude mainCategory city state zipCode'),
+    medicalSuppliers.find().lean().select('_id name latitude longitude mainCategory city state zipCode'),
     
   ];
 
