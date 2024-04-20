@@ -3278,18 +3278,18 @@ const healthCareController = {
           .find()
           .lean()
           .select('state city zipCode -_id'),
-          medicalSuppliers
-          .find()
-          .lean()
-          .select('state city zipCode -_id'),
-          medicalFacilities
-          .find()
-          .lean()
-          .select('state city zipCode -_id'),
-          physicians
-          .find()
-          .lean()
-          .select('state city zipCode -_id'),
+          // medicalSuppliers
+          // .find()
+          // .lean()
+          // .select('state city zipCode -_id'),
+          // medicalFacilities
+          // .find()
+          // .lean()
+          // .select('state city zipCode -_id'),
+          // physicians
+          // .find()
+          // .lean()
+          // .select('state city zipCode -_id'),
       ];
 
       const records = await Promise.all(promises);
@@ -3796,6 +3796,7 @@ const healthCareController = {
     console.log(documents.length, "documents");
     
     for (const doc of documents) {
+      if(doc.latitude==="None" && doc.longitude==="None"){
       const latitude = parseFloat(doc.latitude);
       const longitude = parseFloat(doc.longitude);
 
@@ -3808,7 +3809,9 @@ const healthCareController = {
     }
    
     res.status(200).json({ success: true, message: 'Data migration completed.' });
-  } catch (error) {
+  }
+}
+   catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Internal server error.' });
   }

@@ -59,8 +59,7 @@ const medicalFacilitySchema = new Schema({
         required: true,
       },
       phoneNumber: {
-        type: Array,
-        required: true,
+        type: String,
       },
       averageRating: {
         type: Number,
