@@ -830,7 +830,7 @@ const healthCareController = {
         // 'Geriatic Care Manager',
         "Medical Facilities",
         "Medical Suppliers",
-        "Physicians"
+        "Physician"
       ];
 
       res.status(200).json(categoryName);
