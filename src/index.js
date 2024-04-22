@@ -10,6 +10,8 @@ const databaseConnection = require('./utils/db');
 const healthCareRoute = require('./routes/healthCareRoute');
 const sendEmailRoute = require('./routes/sendEmailRoutes');
 const professionalRoute = require('./routes/professionalRoute');
+const npiRoute = require('./routes/npiRoute');
+
 // const blockedIp = require('./Model/blockedIpModel');
 
 const errorMiddleware = require('./middleware/error');
@@ -78,6 +80,7 @@ app.use('/api', limiter);
 app.use('/api/healthCareRoute', healthCareRoute);
 app.use('/api/sendEmail', sendEmailRoute);
 
+app.use('/api/npi/',npiRoute)
 //===============Professional Route====================
 app.use('/api/professionalRoute', professionalRoute);
 //=====================================================
