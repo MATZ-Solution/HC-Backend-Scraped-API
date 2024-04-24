@@ -69,25 +69,30 @@ const npiController = {
 
   getNpiDataByCity: async (req, res, next) => {
     try {
-      const { city } = req.query;
+      const { city,state } = req.query;
   
       const pipeline = [
-          { $match: { city: city } },
-          { $unwind: "$taxonomies" },
-          {
-              $group: {
-                  _id: "$taxonomies.name",
-                  count: { $sum: 1 }
-              }
-          },
-          {
-              $project: {
-                  _id: 0,
-                  name: "$_id",
-                  count: 1
-              }
-          }
-      ];
+        { 
+            $match: { 
+                city: city,
+                state:state
+            } 
+        },
+        { $unwind: "$taxonomies" },
+        {
+            $group: {
+                _id: "$taxonomies.name",
+                count: { $sum: 1 }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                name: "$_id",
+                count: 1
+            }
+        }
+    ];
   
       const result = await npiModel.aggregate(pipeline);
   
@@ -103,14 +108,32 @@ const npiController = {
   },
   getNpiDataById: async (req, res, next) => {
     try {
-    const { city, taxonomyName } = req.query;
+    const { city,state } = req.query;
 
-    const query = {
-        "city": city,
-        "taxonomies.name": taxonomyName
-    };
+    const pipeline = [
+      { 
+          $match: { 
+              city: city,
+              state:state
+          } 
+      },
+      { $unwind: "$taxonomies" },
+      {
+          $group: {
+              _id: "$taxonomies.name",
+              count: { $sum: 1 }
+          }
+      },
+      {
+          $project: {
+              _id: 0,
+              name: "$_id",
+              count: 1
+          }
+      }
+  ];
 
-    const result = await npiModel.find(query).exec();
+    const result = await npiModel.aggregate(pipeline);
 
     res.status(200).json({ result });
 } catch (err) {
