@@ -108,37 +108,24 @@ const npiController = {
   },
   getNpiDataById: async (req, res, next) => {
     try {
-    const { city,state } = req.query;
-
-    const pipeline = [
-      { 
-          $match: { 
-              city: city,
-              state:state
-          } 
-      },
-      { $unwind: "$taxonomies" },
-      {
-          $group: {
-              _id: "$taxonomies.name",
-              count: { $sum: 1 }
+      const { city, state, name } = req.query;
+  
+      const pipeline = [
+          { 
+              $match: { 
+                  city: city,
+                  state: state,
+                  "taxonomies.name": name // Match the specified taxonomy name
+              } 
           }
-      },
-      {
-          $project: {
-              _id: 0,
-              name: "$_id",
-              count: 1
-          }
-      }
-  ];
-
-    const result = await npiModel.aggregate(pipeline);
-
-    res.status(200).json({ result });
-} catch (err) {
-    next(err);
-}
+      ];
+  
+      const result = await npiModel.aggregate(pipeline).exec() // Convert cursor to array
+  
+      res.status(200).json({ result });
+  } catch (err) {
+      next(err);
+  }
     
   },
 

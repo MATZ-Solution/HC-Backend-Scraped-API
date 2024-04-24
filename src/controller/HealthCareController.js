@@ -2626,7 +2626,7 @@ const healthCareController = {
           let query = {};
       
           if (state) {
-            query.state = { $regex: new RegExp(state, 'i') };
+            query.state = state;
           }
       
           if (city) {
@@ -3336,7 +3336,7 @@ const healthCareController = {
           let query = {};
 
           if (state) {
-            query.state = { $regex: new RegExp(state, 'i')};
+            query.state = state;
           }
 
           if (city) {
