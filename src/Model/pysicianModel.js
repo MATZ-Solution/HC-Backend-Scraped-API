@@ -116,9 +116,9 @@ const physicianSchema = new Schema({
 });
 physicianSchema.index({ location: '2dsphere' });
 const physicianData = mongoose.model(
-  'physician',
+  'physicians',
   physicianSchema,
-  'physician',
+  'physicians',
 
 );
 // inpatientRehabilitiationData.updateMany({},{

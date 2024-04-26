@@ -2335,7 +2335,8 @@ const healthCareController = {
 
       if (cachedData) {
         res.status(200).json(cachedData);
-      } else {
+      }
+       else {
         const allRecords = await fetchDataFromDatabase();
 
         cache.set(cacheKey, allRecords, 365 * 24 * 60 * 60);

@@ -1,36 +1,47 @@
 const npiModel = require('../Model/npiModel');
+const NodeCache = require('node-cache');
+const cache = new NodeCache();
 
 const npiController = {
  
 
   getNpiData: async (req, res, next) => {
     try {
-
-
-
-        const pipeline = [
-            {
-                $group: {
-                    _id: "$state",
-                    count: { $sum: 1 }
+        const cacheKey = 'cachedDataNpi';
+        let cachedData = cache.get(cacheKey);
+    
+        if (!cachedData) {
+            const pipeline = [
+                {
+                    $group: {
+                        _id: "$state",
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        state: "$_id",
+                        count: 1
+                    }
                 }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    state: "$_id",
-                    count: 1
-                }
-            }
-
-        ];
-        const result = await npiModel.aggregate(pipeline);
-
-        res.status(200).json({result });
- 
-    } catch (err) {
-      next(err);
+            ];
+    
+           
+            const result = await npiModel.aggregate(pipeline).exec();
+    
+           
+            cache.set(cacheKey, result, 365 * 24 * 60 * 60);
+            cachedData = result;
+        }
+    
+      
+        res.status(200).json(cachedData);
+    } 
+    catch (err) {
+        next(err);
     }
+    
   },
   getNpiDataByState: async (req, res, next) => {
     try {
