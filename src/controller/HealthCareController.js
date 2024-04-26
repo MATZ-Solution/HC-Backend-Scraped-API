@@ -3337,7 +3337,7 @@ const healthCareController = {
           let query = {};
 
           if (state) {
-            query.state = state;
+            query.state = { $regex: new RegExp(state, 'i') };
           }
 
           if (city) {
