@@ -65,27 +65,46 @@ const npiController = {
         // await npiModel.dropIndex("city_1");
 
         const pipeline = [
-            { $match: { state: state } }, // Filter documents by the specified state
+            { 
+                $match: { 
+                    state: state // Filter documents by the specified state
+                } 
+            },
+            {
+                $addFields: {
+                    cityType: {
+                        $cond: [
+                            { $regexMatch: { input: "$city", regex: /^[a-zA-Z]/ } }, // Check if city starts with a letter
+                            "alphabetic",
+                            "numeric"
+                        ]
+                    }
+                }
+            },
             {
                 $group: {
-                    _id: "$city",
+                    _id: { city: "$city", type: "$cityType" }, // Group by city and city type
                     count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: {
+                    "_id.type": 1, // Sort by city type (alphabetic first)
+                    "_id.city": 1 // Then sort by city name
                 }
             },
             {
                 $project: {
                     _id: 0,
-                    city: "$_id",
+                    city: "$_id.city",
                     count: 1
-                }
-
-            },
-            {
-                $sort:{
-                    city:1
                 }
             }
         ];
+        
+        
+        
+        
         // const result = await npiModel.find(query).explain("executionStats");
 
         const result = await npiModel.aggregate(pipeline)
