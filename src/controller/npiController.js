@@ -19,12 +19,25 @@ const npiController = {
                     }
                 },
                 {
+                    $match:{
+                        _id:{
+                            $ne:null
+                        }
+                    }
+                },
+                {
                     $project: {
                         _id: 0,
                         state: "$_id",
                         count: 1
                     }
+                },
+                {
+                    $sort:{
+                        state:1 
+                    }
                 }
+
             ];
     
            
@@ -64,6 +77,12 @@ const npiController = {
                     _id: 0,
                     city: "$_id",
                     count: 1
+                }
+
+            },
+            {
+                $sort:{
+                    city:1
                 }
             }
         ];
