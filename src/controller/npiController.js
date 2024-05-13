@@ -59,7 +59,7 @@ const npiController = {
   getNpiDataByState: async (req, res, next) => {
     try {
 
-        const { state } = req.query; 
+        const { state,page, limit } = req.query; 
         const indexes=await npiModel.collection.getIndexes();
         console.log(indexes,"esf")
         // await npiModel.dropIndex("city_1");
