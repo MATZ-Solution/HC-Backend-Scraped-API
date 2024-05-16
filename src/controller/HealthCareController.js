@@ -2322,6 +2322,7 @@ const healthCareController = {
           break;
       }
     } catch (error) {
+      console.log(error,"errrrrr")
       next(error);
     }
   },
