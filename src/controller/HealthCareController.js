@@ -2018,14 +2018,14 @@ const healthCareController = {
       ];
   
       const nursingHomeData = await nursingHome.aggregate(pipeline);
-      const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline);
+      // const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline);
       const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline);
       const inHomeCareData = await inHomeCare.aggregate(pipeline);
       const memoryCareData=await memoryCare.aggregate(pipeline)
-      const medicalFacilitiesData=await medicalFacilities.aggregate(pipeline)
-      const medicalSuppliersData=await medicalSuppliers.aggregate(pipeline)
-      const physicianData=await physicians.aggregate(pipeline)
-      const mergedData = [...medicalSuppliersData ,...medicalFacilitiesData ,...nursingHomeData, ...inpatientRehabilitationData,...memoryCareData ,...inHomeCareData,...physicianData];
+      // const medicalFacilitiesData=await medicalFacilities.aggregate(pipeline)
+      // const medicalSuppliersData=await medicalSuppliers.aggregate(pipeline)
+      // const physicianData=await physicians.aggregate(pipeline)
+      const mergedData = [...nursingHomeData, ...inpatientRehabilitationData,...memoryCareData ,...inHomeCareData];
     
 
       const removeDuplicates = (data) => {
@@ -2847,7 +2847,7 @@ const healthCareController = {
         await Promise.all(promises);
       } else {
         // If no categories are provided, fetch data for all categories
-        const allCategories = ['Nursing Home','Inpatient Rehabilitiation', 'In Home Care', 'Memory Care','medicareSupplier','medicalFacilities','physician'];
+        const allCategories = ['Nursing Home','Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
         const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
         const categoryResults = await Promise.all(promises);
   
@@ -3541,16 +3541,16 @@ const healthCareController = {
       
       const memoryCareResult = await memoryCare.find(query).select('-_id city state zipCode').lean();
       const inHomeCareResult = await inHomeCare.find(query).select('-_id city state zipCode').lean();
-      const medicalFacilitiesResult = await medicalFacilities.find(query).select('-_id city state zipCode')
-      const medicalSuppliersResult = await medicalSuppliers.find(query).select('-_id city state zipCode')
+      // const medicalFacilitiesResult = await medicalFacilities.find(query).select('-_id city state zipCode')
+      // const medicalSuppliersResult = await medicalSuppliers.find(query).select('-_id city state zipCode')
     
       const mergedRecords = [
         ...nursingHomeResult,
         ...inpatientRehabilitiationResult,
         ...memoryCareResult,
         ...inHomeCareResult,
-        ...medicalFacilitiesResult,
-        ...medicalSuppliersResult
+        // ...medicalFacilitiesResult,
+        // ...medicalSuppliersResult
       ];
     
       const citySet = new Set(); // Using a Set to store unique city names
