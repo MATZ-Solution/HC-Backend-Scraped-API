@@ -2621,7 +2621,8 @@ const healthCareController = {
   },
 // getMultiple Categories and Count
   getMultipleCategories: async (req, res, next) => {
-    const { state, city, zipCode,overall_rating, name, page, limit } = req.body;
+    const { state, city, zipCode,overall_rating, name, page, limit ,search} = req.body;
+    console.log(search,name,"search");
     try {
 
       if (typeof name === 'object') {
@@ -2643,6 +2644,20 @@ const healthCareController = {
             const overallRatings = overall_rating.map(Number);
             query.overall_rating = { $in: overallRatings };
         }
+        
+
+        if (search) {
+          const searchQuery = {
+              $or: [
+                  { name: { $regex: new RegExp(search, 'i') } },
+                  { zipCode: { $regex: new RegExp(search, 'i') } },
+                  { state: { $regex: new RegExp(search, 'i') } },
+                  { city: { $regex: new RegExp(search, 'i') } },
+                  { mainCategory: { $regex: new RegExp(search, 'i') } },
+              ]
+          };
+          Object.assign(query, searchQuery);
+      }
       
           let result = [];
           let totalCount = 0;
