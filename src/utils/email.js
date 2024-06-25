@@ -4,14 +4,14 @@ const { google } = require("googleapis");
 
 const createTransporter = async () => {
   const oauth2Client = new google.auth.OAuth2(
-    "314005293340-9eh88g6318enm271d5ti60538lfsr43k.apps.googleusercontent.com",
-    "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",
+    "339736576493-6f2m4bhr51oddu81foqnvqema7a34d0t.apps.googleusercontent.com",
+    "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",
     "https://developers.google.com/oauthplayground"
   );
 
 
   oauth2Client.setCredentials({
-    refresh_token: "1//04Wxi4FWoX8gkCgYIARAAGAQSNwF-L9Irbklu1UNsgBybAnRz5UAtNKLe-p_tRWHBn7kIHow8eRBKhAIv5x9sdhuoaW_rvl1VZRQ",
+    refresh_token: "1//04ZPgPMNGNQdBCgYIARAAGAQSNwF-L9Ir030qDFXi9jl8D4aJIjeiZ3IftGjGxUTQ4MRSpTlBaX0CLEHBUThEcY7ylx9GFUzhMlw",
   });
 
   const accessToken = await new Promise((resolve, reject) => {
@@ -28,13 +28,13 @@ const createTransporter = async () => {
     service: "gmail",
     auth: {
       type: 'OAuth2',
-      user: 'maazurrehman42@gmail.com',
+      user: 'healthcareinfoamerican@gmail.com',
       accessToken,
       clientId:
-        '314005293340-9eh88g6318enm271d5ti60538lfsr43k.apps.googleusercontent.com',
-      clientSecret: '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',
+        '339736576493-6f2m4bhr51oddu81foqnvqema7a34d0t.apps.googleusercontent.com',
+      clientSecret: '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',
       refreshToken:
-        '1//04Wxi4FWoX8gkCgYIARAAGAQSNwF-L9Irbklu1UNsgBybAnRz5UAtNKLe-p_tRWHBn7kIHow8eRBKhAIv5x9sdhuoaW_rvl1VZRQ',
+        '1//04ZPgPMNGNQdBCgYIARAAGAQSNwF-L9Ir030qDFXi9jl8D4aJIjeiZ3IftGjGxUTQ4MRSpTlBaX0CLEHBUThEcY7ylx9GFUzhMlw',
     },
   });
 
@@ -45,7 +45,7 @@ const sendEmail = async ({ to, subject, text, html, res }) => {
   try {
     const emailTransporter = await createTransporter();
     const emailOptions = {
-      from: "maazurrehman42@gmail.com",
+      from: "healthcareinfoamerican@gmail.com",
       to,
       subject,
       text,
