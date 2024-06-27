@@ -50,6 +50,12 @@ const getCategoryModel = (categoryName) => {
             throw new Error(`Invalid category name: ${categoryName}`);
     }
 }
+const createGeoPolygon = (points) => {
+  return {
+      type: "Polygon",
+      coordinates: [points.map(([lat, lng]) => [lng, lat])]
+  };
+};
 const healthCareController = {
   addData: async (req, res, next) => {
     try {
@@ -1981,57 +1987,50 @@ const healthCareController = {
   
   filterZipCode: async (req, res, next) => {
     try {
-        const { zipCode, page, limit, } = req.params;
-        let notFound = false;
+        const { zipCode, page, limit } = req.params;
         const regex = new RegExp(zipCode, 'i');
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+        const parsedLimit = parseInt(limit);
 
-        const pipeline = [
-            {
-                $match: { zipCode: { $regex: regex } }
-            },
-            {
-                $sort: { zipCode: 1 }
-            },
-            {
-                $skip: (parseInt(page) - 1) * parseInt(limit)
-            },
-            {
-                $limit: parseInt(limit)
-            }
+        const createPipeline = (zipRegex) => [
+            { $match: { zipCode: { $regex: zipRegex } } },
+            { $sort: { zipCode: 1 } },
+            { $skip: skip },
+            { $limit: parsedLimit }
         ];
 
-        const nursingHomeData = await nursingHome.aggregate(pipeline);
-        const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline);
-        const inHomeCareData = await inHomeCare.aggregate(pipeline);
-        const memoryCareData = await memoryCare.aggregate(pipeline);
-
-        const mergedData = [...nursingHomeData, ...inpatientRehabilitationData, ...memoryCareData, ...inHomeCareData];
-
-        const removeDuplicates = (data) => {
-            const uniqueRecords = [];
-            data.forEach((record) => {
-                if (!uniqueRecords.some((r) => r.zipCode === record.zipCode && r.city === record.city && r.state === record.state)) {
-                    uniqueRecords.push(record);
-                }
-            });
-            return uniqueRecords;
+        const aggregateData = async (pipeline) => {
+            const [nursingHomeData, inpatientRehabilitationData, inHomeCareData, memoryCareData] = await Promise.all([
+                nursingHome.aggregate(pipeline),
+                inpatientRehabilitiation.aggregate(pipeline),
+                inHomeCare.aggregate(pipeline),
+                memoryCare.aggregate(pipeline)
+            ]);
+            return [...nursingHomeData, ...inpatientRehabilitationData, ...inHomeCareData, ...memoryCareData];
         };
 
-        let result = removeDuplicates(mergedData);
+        const removeDuplicates = (data) => {
+            const uniqueRecords = new Map();
+            data.forEach(record => {
+                const key = `${record.zipCode}-${record.city}-${record.state}`;
+                if (!uniqueRecords.has(key)) uniqueRecords.set(key, record);
+            });
+            return Array.from(uniqueRecords.values());
+        };
 
-        if (result.length === 0) {
-            notFound = true;
+        let mergedData = await aggregateData(createPipeline(regex));
+        let notFound = mergedData.length === 0;
 
+        if (notFound) {
+            const similarZipRegex = new RegExp(`^${zipCode.substring(0, 3)}`, 'i');
             const similarPipeline = [
-                {
-                    $match: { zipCode: { $regex: new RegExp("^" + zipCode.substring(0, 4), 'i') } }
-                },
+                { $match: { zipCode: { $regex: similarZipRegex } } },
                 {
                     $group: {
                         _id: {
                             zipCode: { $toLower: '$zipCode' },
                             city: { $toLower: '$city' },
-                            state: { $toLower: "$state" }
+                            state: { $toLower: '$state' }
                         }
                     }
                 },
@@ -2043,39 +2042,25 @@ const healthCareController = {
                         state: '$_id.state'
                     }
                 },
-                {
-                    $sort: { zipCode: 1 }
-                },
-                {
-                    $skip: (parseInt(page) - 1) * parseInt(limit)
-                },
-                {
-                    $limit: parseInt(limit)
-                }
+                { $sort: { zipCode: 1 } },
+                { $skip: skip },
+                { $limit: parsedLimit }
             ];
 
-            const nursingHomeData = await nursingHome.aggregate(similarPipeline);
-            const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(similarPipeline);
-            const inHomeCareData = await inHomeCare.aggregate(similarPipeline);
-            const memoryCareData = await memoryCare.aggregate(similarPipeline);
-
-            const mergedData = [...nursingHomeData, ...inpatientRehabilitationData, ...memoryCareData, ...inHomeCareData];
-            result = removeDuplicates(mergedData);
-            
+            mergedData = await aggregateData(similarPipeline);
         }
-        const zipCodes = result.map(record => record.zipCode);
-        // rmove duplicates
-        const uniqueZipCodes = new Set(zipCodes);
-        const uniqueZipCodesArray = [...uniqueZipCodes];
+
+        const uniqueZipCodes = Array.from(new Set(mergedData.map(record => record.zipCode)));
 
         res.status(200).json({
-            data: uniqueZipCodesArray,
+            data: uniqueZipCodes,
             notFound: notFound
         });
     } catch (err) {
         next(err);
     }
-},
+}
+,
 
   
   filterZipCodeForApp: async (req, res, next) => {
@@ -2146,7 +2131,7 @@ const healthCareController = {
         // Find zip codes with similar prefix
         const similarPipeline = [
           {
-            $match: { zipCode: { $regex: new RegExp("^" + zipCode.substring(0, 4), 'i') } }
+            $match: { zipCode: { $regex: new RegExp("^" + zipCode.substring(0, 3), 'i') } }
           },
           {
             $group: {
@@ -2783,7 +2768,7 @@ const healthCareController = {
             totalCount = await nursingHome.countDocuments(query);
             result = await nursingHome
               .find(query)
-              .select('_id name city state mainCategory fullAddress phoneNumber zipCode images overall_rating')
+              .select('_id name city state mainCategory fullAddress phoneNumber zipCode images overall_rating longitude latitude')
               .lean()
               .skip(page * limit)
               .limit(limit);
@@ -2792,7 +2777,7 @@ const healthCareController = {
             totalCount = await inpatientRehabilitiation.countDocuments(query);
             result = await inpatientRehabilitiation
               .find(query)
-              .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
+              .select('_id name city state mainCategory fullAddress phoneNumber zipCode longitude latitude')
               .lean()
               .skip(page * limit)
               .limit(limit);
@@ -2800,7 +2785,7 @@ const healthCareController = {
             totalCount = await inHomeCare.countDocuments(query);
             result = await inHomeCare
               .find(query)
-              .select('_id name city state mainCategory fullAddress phoneNumber zipCode photos')
+              .select('_id name city state mainCategory fullAddress phoneNumber zipCode photos longitude latitude')
               .lean()
               .skip(page * limit)
               .limit(limit);
@@ -2809,7 +2794,7 @@ const healthCareController = {
             totalCount = await memoryCare.countDocuments(query);
                       result = await memoryCare
                       .find(query)
-                      .select('_id name city state mainCategory fullAddress phoneNumber zipCode photos')
+                      .select('_id name city state mainCategory fullAddress phoneNumber zipCode photos longitude latitude')
                       .lean()
                       .skip(page * limit)
                       .limit(limit);
@@ -3737,66 +3722,107 @@ const healthCareController = {
     }
   },
   // <----------------maaz work----------------------------------->
-  getAllRecordsCategoryLatLong: async (req, res, next) => {
-    try {
-      const { points } = req.body
-      const capitalizeFirstLetter = (string) => {
-        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-      };
+  // : async (req, res, next) => {
+  //   try {
+  //     console.log('here')
+  //     const { points } = req.body
+  //     const capitalizeFirstLetter = (string) => {
+  //       return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  //     };
 
-      if (!points || !Array.isArray(points) || points.length === 0) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message:
-              "Invalid request body. Expecting an array of latitude and longitude pairs.",
-          });
+  //     if (!points || !Array.isArray(points) || points.length === 0) {
+  //       console.log('Invalid request body. Expecting an array of latitude and longitude pairs.')
+  //       return res
+  //         .status(400)
+  //         .json({
+  //           success: false,
+  //           message:
+  //             "Invalid request body. Expecting an array of latitude and longitude pairs.",
+  //         });
+  //     }
+
+
+
+  //     const allRecords = await fetchDataFromDatabase();
+  //     console.log(allRecords.length, "allRecords")
+  //     const filteredRecords = allRecords.filter((location) => {
+  //       const latitude = parseFloat(location.latitude);
+  //       const longitude = parseFloat(location.longitude);
+  //       return !isNaN(latitude) && !isNaN(longitude);
+  //     });
+
+  //     const features = filteredRecords.map((location) => {
+  //       const latitude = parseFloat(location.latitude);
+  //       const longitude = parseFloat(location.longitude);
+  //       const point = [latitude, longitude];
+  //       return point
+
+  //     });
+
+  //     let ptsWithin = turf.pointsWithinPolygon(turf.points(features), turf.polygon([points]))
+
+
+
+
+
+  //     const coords = ptsWithin.features.map((loc) => loc.geometry.coordinates);
+
+  //     const matchingRecords = allRecords.filter((record) => {
+  //       const latitude = parseFloat(record.latitude);
+  //       const longitude = parseFloat(record.longitude);
+  //       const point = [latitude, longitude];
+  //       return coords.some((coord) => coord[0] === point[0] && coord[1] === point[1]);
+  //     }).map((record) => {
+  //       return {
+  //         ...record,
+  //         city: capitalizeFirstLetter(record.city),
+  //       }
+  //     })
+
+
+  //     // console.log(matchingRecords);
+
+  //     return res.status(200).json(matchingRecords);
+  //   } catch (err) {
+  //     console.log(err)
+  //     next(err);
+  //   }
+  // },
+  getAllRecordsCategoryLatLong:async(req,res,next)=>{
+    try {
+      const { points } = req.body;
+
+      if (!points || points.length === 0) {
+          return res.status(400).json({ error: 'Points array is required' });
       }
 
+      const polygon = createGeoPolygon(points);
 
-      const allRecords = await fetchDataFromDatabase();
-      const filteredRecords = allRecords.filter((location) => {
-        const latitude = parseFloat(location.latitude);
-        const longitude = parseFloat(location.longitude);
-        return !isNaN(latitude) && !isNaN(longitude);
-      });
+      const query = {
+          location: {
+              $geoWithin: {
+                  $geometry: polygon
+              }
+          }
+      };
 
-      const features = filteredRecords.map((location) => {
-        const latitude = parseFloat(location.latitude);
-        const longitude = parseFloat(location.longitude);
-        const point = [latitude, longitude];
-        return point
+      const nursingHomes = await nursingHome.find(query, '_id name city state mainCategory fullAddress phoneNumber zipCode images overall_rating longitude latitude');
+      const inpatientRehabilitations = await inpatientRehabilitiation.find(query, '_id name city state mainCategory fullAddress phoneNumber zipCode longitude latitude');
+      const memoryCares = await memoryCare.find(query, '_id name city state mainCategory fullAddress phoneNumber zipCode photos longitude latitude');
+      const inHomeCares = await inHomeCare.find(query, '_id name city state mainCategory fullAddress phoneNumber zipCode photos longitude latitude');
 
-      });
+      const results = [
+          ...nursingHomes,
+          ...inpatientRehabilitations,
+          ...memoryCares,
+          ...inHomeCares
+      ];
 
-      let ptsWithin = turf.pointsWithinPolygon(turf.points(features), turf.polygon([points]))
-
-
-
-
-
-      const coords = ptsWithin.features.map((loc) => loc.geometry.coordinates);
-
-      const matchingRecords = allRecords.filter((record) => {
-        const latitude = parseFloat(record.latitude);
-        const longitude = parseFloat(record.longitude);
-        const point = [latitude, longitude];
-        return coords.some((coord) => coord[0] === point[0] && coord[1] === point[1]);
-      }).map((record) => {
-        return {
-          ...record,
-          city: capitalizeFirstLetter(record.city),
-        }
-      })
-
-
-      // console.log(matchingRecords);
-
-      return res.status(200).json(matchingRecords);
-    } catch (err) {
-      next(err);
-    }
+      res.status(200).json(results);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
   },
   getAllCategoryDataRecords: async (req, res, next) => {
     try {
@@ -4046,10 +4072,11 @@ const fetchDataFromDatabase = async () => {
 
 
   const records = await Promise.all(promises);
-
+  console.log(records[0].length, "records")
   const mergedNursingHomes=records[0].concat(records[1])
   records[0] = mergedNursingHomes;
   records.splice(1, 1);
+  console.log('here')
   return [].concat(...records);
 };
 
