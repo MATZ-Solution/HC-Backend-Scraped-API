@@ -70,7 +70,25 @@ const verifyTokenAndAdmin = (req, res, next) => {
         }
     });
 };
-
+const verifyCaptcha= (req, res, next) => {
+    const { captcha } = req.body;
+    if (captcha === null || captcha === '' || captcha === undefined) {
+        return res.json({ "success": false, "msg": "Please select captcha" });
+    }
+    const secretKey = process.env.SECRET_KEY ?? '6LcoSwMqAAAAAMO0tpLZqxQnIIRyxb1VQcWYzThj';
+    const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${captcha}&remoteip=${req.connection.remoteAddress}`;
+    fetch(url,{
+        method: 'post',
+        body
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success !== undefined && !data.success) {
+                return res.json({ "success": false, "msg": "Failed captcha verification" });
+            }
+            next();
+        });
+}
 module.exports = {
     verifyToken,
     verifyTokenAndAdmin,

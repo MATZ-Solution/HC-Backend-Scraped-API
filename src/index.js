@@ -27,11 +27,47 @@ app.use(express.json()); // Parse incoming JSON data
 // Connect to the MongoDB database
 databaseConnection.connect();
 
+const BLOCK_DURATION = 3600 * 1000; // 1 hour in milliseconds
+
+// Use a Map to store blocked IPs with their block timestamp
+const blockedIPs = new Map();
+
+// Rate limiter configuration
 const limiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 50,
-  message: 'Too many requests from this IP, please try again later.',
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  handler: (req, res) => {
+    // Add the IP to the blocked list with the current timestamp
+    blockedIPs.set(req.ip, Date.now());
+    return res.status(429).json({
+      status: 429,
+      error: 'Too many requests',
+      message: 'You have exceeded the 100 requests in 15 mins limit and your IP has been temporarily blocked!',
+    });
+  },
 });
+
+app.use((req, res, next) => {
+  const clientIP = req.ip;
+  const blockedAt = blockedIPs.get(clientIP);
+
+  if (blockedAt) {
+    const timeSinceBlocked = Date.now() - blockedAt;
+    if (timeSinceBlocked < BLOCK_DURATION) {
+      return res.status(403).json({
+        status: 403,
+        error: 'Forbidden',
+        message: 'Your IP has been blocked temporarily. Please try again later.'
+      });
+    } else {
+      // Remove IP from blocked list after block duration has passed
+      blockedIPs.delete(clientIP);
+    }
+  }
+
+  next();
+});
+
 
 
 //limit
