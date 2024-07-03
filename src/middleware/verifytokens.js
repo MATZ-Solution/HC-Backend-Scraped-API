@@ -71,15 +71,14 @@ const verifyTokenAndAdmin = (req, res, next) => {
     });
 };
 const verifyCaptcha= (req, res, next) => {
-    const { captcha } = req.body;
-    if (captcha === null || captcha === '' || captcha === undefined) {
-        return res.json({ "success": false, "msg": "Please select captcha" });
+    const { recaptchaToken } = req.body;
+    if (recaptchaToken === null || recaptchaToken === '' || recaptchaToken === undefined) {
+        return res.json({ "success": false, "msg": "Please select recaptchaToken" });
     }
     const secretKey = process.env.SECRET_KEY ?? '6LcoSwMqAAAAAMO0tpLZqxQnIIRyxb1VQcWYzThj';
-    const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${captcha}&remoteip=${req.connection.remoteAddress}`;
+    const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptchaToken}`;
     fetch(url,{
-        method: 'post',
-        body
+        method: 'POST',
     })
         .then(response => response.json())
         .then(data => {
@@ -87,11 +86,14 @@ const verifyCaptcha= (req, res, next) => {
                 return res.json({ "success": false, "msg": "Failed captcha verification" });
             }
             next();
+        }).catch(error => {
+        return res.json({ "success": false, "msg": "Failed captcha verification" });
         });
 }
 module.exports = {
     verifyToken,
     verifyTokenAndAdmin,
     verifyTokenAndCorporate,
-    verifyTokenAndCareGivers,verifyTokenForFav
+    verifyTokenAndCareGivers,verifyTokenForFav,
+    verifyCaptcha
 };
