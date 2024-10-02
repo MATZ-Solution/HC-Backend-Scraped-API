@@ -84,7 +84,7 @@ app.use((req, res, next) => {
 
 
 // limiter middleware to your routes
-app.use('/api', limiter);
+// app.use('/api', limiter);
 
 // app.use('/api', async (req, res, next) => {
 //   // Check if the request exceeded the rate limit
