@@ -52,11 +52,20 @@ const americanFamilyCareSchema = new mongoose.Schema({
   },
   latitude: {
     type: String,
-    required: true,
   },
   longitude: {
     type: String,
-    required: true,
+  },
+  location: {
+    type: {
+      type: String,
+      enum: ['Point'], // Only 'Point' is allowed
+      required: true,
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      required: true,
+    },
   },
   fullAddress: {
     type: String,
@@ -129,7 +138,7 @@ const americanFamilyCareSchema = new mongoose.Schema({
     default: 'hoSpiceData',
   },
 });
-
+americanFamilyCareSchema.index({ location: '2dsphere' });
 const hoSpice = mongoose.model(
   'hospicesNew',
   americanFamilyCareSchema,

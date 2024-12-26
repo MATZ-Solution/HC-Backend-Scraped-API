@@ -38,6 +38,15 @@ const getCategoryModel = (categoryName) => {
             return inHomeCare;
         case 'Memory Care':
             return memoryCare;
+        case 'hoSpiceData':
+            return hoSpiceData;  
+        case 'hospital':
+            return hospital;
+        case 'dialysisFacilityData':
+            return dialysisFacilityData
+        case 'home Health':
+            return homeHealthData
+
         // case 'Medicare Supplier':
         //     return medicalSuppliers;
         // case 'Medicare Facility':
@@ -820,13 +829,13 @@ const healthCareController = {
       const categoryName = [
         'Nursing Home',
         // 'Skilled Nursing Facility',
-        // 'Hospital',
+        'Hospital',
         // 'Long Term Cares',
-        // 'Dialysis Facility',
-        // 'Hospice',
+        'Dialysis Facility',
+        'HoSpice',
         'Inpatient Rehabilitiation',
         // 'Group Practice',
-        // 'Home Health',
+        'Home Health',
         // 'Independent Living',
         'Memory Care',
         'In Home Care',
@@ -1369,12 +1378,12 @@ const healthCareController = {
 
 
           const allData = await Promise.all([
-            // hospital
-            //   .find({ city })
-            //   .lean()
-            //   .select(
-            //     '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
-            //   ),
+            hospital
+              .find({ city })
+              .lean()
+              .select(
+                '_id name city state zipCode county_or_parish latitude longitude phoneNumber  category hospital_ownership emergency_services meets_criteria_for_promoting_interoperability_of_ehrs hospital_overall_rating fullAddress mainCategory'
+              ),
             // longTermCares.find({ city }).lean().select('-quality_reporting'),
             Professional.aggregate([
               {
@@ -1406,14 +1415,14 @@ const healthCareController = {
               .select(
                 'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
               ),
-            // dialysisFacilityData.find({ city }).lean(),
-            // hoSpiceData
-            //   .find({ city })
-            //   .lean()
-            //   .select(
-            //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            //   ),
-            // homeHealthData.find({ city }).lean(),
+            dialysisFacilityData.find({ city }).lean(),
+            hoSpiceData
+              .find({ city })
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+              ),
+            homeHealthData.find({ city }).lean(),
             inpatientRehabilitiation.find({ city }).lean().select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
             ),
@@ -1499,19 +1508,19 @@ const healthCareController = {
         }
         else {
           const allData = await Promise.all([
-            // hospital.find({ city: 'Andalusia' }).lean(),
+            hospital.find({ city: 'Andalusia' }).lean(),
             // longTermCares.find({ city: 'Andalusia' }).lean(),
             nursingHome.find({ city: 'Andalusia' }).lean().select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
             ),
-            // dialysisFacilityData.find({ city: 'Andalusia' }).lean(),
-            // hoSpiceData
-            //   .find({ city: 'Andalusia' })
-            //   .lean()
-            //   .select(
-            //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            //   ),
-            // homeHealthData.find({ city: 'Andalusia' }).lean(),
+            dialysisFacilityData.find({ city: 'Andalusia' }).lean(),
+            hoSpiceData
+              .find({ city: 'Andalusia' })
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+              ),
+            homeHealthData.find({ city: 'Andalusia' }).lean(),
             inpatientRehabilitiation.find({ city: 'Andalusia' }).lean()
             .select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
@@ -1636,14 +1645,14 @@ const healthCareController = {
               .select(
                 'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
               ),
-            // dialysisFacilityData.find({ city }).lean(),
-            // hoSpiceData
-            //   .find({ city })
-            //   .lean()
-            //   .select(
-            //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            //   ),
-            // homeHealthData.find({ city }).lean(),
+            dialysisFacilityData.find({ city }).lean(),
+            hoSpiceData
+              .find({ city })
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+              ),
+            homeHealthData.find({ city }).lean(),
             inpatientRehabilitiation.find({ city }).lean().select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
             ),
@@ -1758,14 +1767,14 @@ const healthCareController = {
             nursingHome.find({ city: 'Andalusia' }).lean().select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
             ),
-            // dialysisFacilityData.find({ city: 'Andalusia' }).lean(),
-            // hoSpiceData
-            //   .find({ city: 'Andalusia' })
-            //   .lean()
-            //   .select(
-            //     'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
-            //   ),
-            // homeHealthData.find({ city: 'Andalusia' }).lean(),
+            dialysisFacilityData.find({ city: 'Andalusia' }).lean(),
+            hoSpiceData
+              .find({ city: 'Andalusia' })
+              .lean()
+              .select(
+                'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about'
+              ),
+            homeHealthData.find({ city: 'Andalusia' }).lean(),
             inpatientRehabilitiation.find({ city: 'Andalusia' }).lean().select(
               'name latitude longitude fullAddress city state zipCode phoneNumber _id scrapedReviews FAQs mainCategory photos about overall_rating'
             ),
@@ -2000,13 +2009,17 @@ const healthCareController = {
         ];
 
         const aggregateData = async (pipeline) => {
-            const [nursingHomeData, inpatientRehabilitationData, inHomeCareData, memoryCareData] = await Promise.all([
+            const [nursingHomeData, inpatientRehabilitationData, inHomeCareData, memoryCareData,hoSpiceDataData,hospitalData,dialysisFacilityDataData,homeHealthDataData] = await Promise.all([
                 nursingHome.aggregate(pipeline),
                 inpatientRehabilitiation.aggregate(pipeline),
                 inHomeCare.aggregate(pipeline),
-                memoryCare.aggregate(pipeline)
+                memoryCare.aggregate(pipeline),
+                hoSpiceData.aggregate(pipeline),
+                hospital.aggregate(pipeline),
+                dialysisFacilityData.aggregate(pipeline),
+                homeHealthData.aggregate(pipeline),
             ]);
-            return [...nursingHomeData, ...inpatientRehabilitationData, ...inHomeCareData, ...memoryCareData];
+            return [...nursingHomeData, ...inpatientRehabilitationData, ...inHomeCareData, ...memoryCareData, ...hoSpiceDataData, ...hospitalData, ...dialysisFacilityDataData, ...homeHealthDataData];
         };
 
         const removeDuplicates = (data) => {
@@ -2705,7 +2718,7 @@ const healthCareController = {
 // getMultiple Categories and Count
   getMultipleCategories: async (req, res, next) => {
     const { state, city, zipCode,overall_rating, name, page, limit ,search} = req.body;
-    console.log(search,name,"search");
+    // console.log(state, city, zipCode,overall_rating, name, page, limit ,search,"search");
     try {
 
       if (typeof name === 'object') {
@@ -2745,25 +2758,6 @@ const healthCareController = {
           let result = [];
           let totalCount = 0;
       
-          // if (categoryName === 'Nursing Home') {
-          //   totalCount = await nursingHome.countDocuments(query);
-          //   // const nursingHomeData = await nursingHome
-          //   //   .find(query)
-          //   //   .select('_id name city state mainCategory fullAddress phoneNumber zipCode overall_rating')
-          //   //   .lean()
-          //   //   .skip(page * limit)
-          //   //   .limit(limit);
-            
-          //   // const skilledNursingHomeData = await skilledNursingHome
-          //   //   .find(query)
-          //   //   .select('_id name city state mainCategory fullAddress phoneNumber zipCode')
-          //   //   .lean()
-          //   //   .skip(page * limit)
-          //   //   .limit(limit);
-  
-          //   //   totalCount = await nursingHome.countDocuments(query) + await skilledNursingHome.countDocuments(query)
-          //   // result = nursingHomeData.concat(skilledNursingHomeData);
-          //  }
            if (categoryName === 'Nursing Home') {
             totalCount = await nursingHome.countDocuments(query);
             result = await nursingHome
@@ -2799,6 +2793,43 @@ const healthCareController = {
                       .skip(page * limit)
                       .limit(limit);
           }
+          else if (categoryName === 'HoSpice') {
+            totalCount = await hoSpiceData.countDocuments(query);
+                      result = await hoSpiceData
+                      .find(query)
+                      .select('_id name city state mainCategory fullAddress phoneNumber zipCode photos longitude latitude')
+                      .lean()
+                      .skip(page * limit)
+                      .limit(limit);
+          }
+          else if (categoryName === 'Home Health') {
+            totalCount = await homeHealthData.countDocuments(query);
+                      result = await homeHealthData
+                      .find(query)
+                      .select('_id name city state mainCategory fullAddress phoneNumber zipCode photos longitude latitude')
+                      .lean()
+                      .skip(page * limit)
+                      .limit(limit);
+          }
+          else if (categoryName === 'Dialysis Facility') {
+            totalCount = await dialysisFacilityData.countDocuments(query);
+                      result = await dialysisFacilityData
+                      .find(query)
+                      .select('_id name city state mainCategory fullAddress phoneNumber zipCode photos longitude latitude')
+                      .lean()
+                      .skip(page * limit)
+                      .limit(limit);
+          }
+          else if (categoryName === 'Hospital') {
+            totalCount = await hospital.countDocuments(query);
+                      result = await hospital
+                      .find(query)
+                      .select('_id name city state mainCategory fullAddress phoneNumber zipCode photos longitude latitude')
+                      .lean()
+                      .skip(page * limit)
+                      .limit(limit);
+          }
+         
           // else if (categoryName === 'Physician') {
           //   totalCount = await physicians.countDocuments(query);
           //             result = await physicians
@@ -2852,6 +2883,41 @@ const healthCareController = {
       next(error);
     }
   },
+
+  // addLocation:async (req,res,next)=>{
+
+  //   try{
+  //     const records = await dialysisFacilityData.find();
+
+  //     // Update each record with the location field
+  //     const updates = records.map((record) => {
+  //       if (record.latitude && record.longitude) {
+  //         return dialysisFacilityData.updateOne(
+  //           { _id: record._id },
+  //           {
+  //             $set: {
+  //               location: {
+  //                 type: 'Point',
+  //                 coordinates: [parseFloat(record.longitude), parseFloat(record.latitude)],
+  //               },
+  //             },
+  //           }
+  //         );
+  //       }
+  //       return Promise.resolve(); // Skip records without latitude and longitude
+  //     });
+  
+  //     // Execute all updates
+  //     await Promise.all(updates);
+  //     return res.status(200).json('Location fields updated successfully');
+  
+  //   } catch (error) {
+
+  //     next(error);
+
+  //   }
+
+  // },
   getMultipleCategoriesApp: async (req, res, next) => {
     const { state, city, zipCode, categoryNames, page, limit, search, overall_rating,longitude, latitude,ascending,descending } = req.query;
     // console.log(req.user,"user")
@@ -3619,6 +3685,8 @@ const healthCareController = {
    
     try {
       const { state } = req.body;
+      
+      console.log(state,"state")
     
       const uniqueRecords = {
         cities: [],
@@ -3636,10 +3704,13 @@ const healthCareController = {
       const inpatientRehabilitiationResult = await inpatientRehabilitiation.find(query).select('-_id city state zipCode').lean();
       
       
-      // console.log(medicalFacilitiesResult,"result")
       
       const memoryCareResult = await memoryCare.find(query).select('-_id city state zipCode').lean();
       const inHomeCareResult = await inHomeCare.find(query).select('-_id city state zipCode').lean();
+      const hospitalCareResult=await hospital.find(query).select('-_id city state zipCode').lean();
+      const dialysisFacilityDataResult=await dialysisFacilityData.find(query).select('-_id city state zipCode').lean();
+      const homeHealthDataResult=await homeHealthData.find(query).select('-_id city state zipCode').lean();
+      const hoSpiceDataResult=await hoSpiceData.find(query).select('-_id city state zipCode').lean();
       // const medicalFacilitiesResult = await medicalFacilities.find(query).select('-_id city state zipCode')
       // const medicalSuppliersResult = await medicalSuppliers.find(query).select('-_id city state zipCode')
     
@@ -3648,6 +3719,10 @@ const healthCareController = {
         ...inpatientRehabilitiationResult,
         ...memoryCareResult,
         ...inHomeCareResult,
+        ...hospitalCareResult,
+        ...dialysisFacilityDataResult,
+        ...homeHealthDataResult,
+        ...hoSpiceDataResult,
         // ...medicalFacilitiesResult,
         // ...medicalSuppliersResult
       ];
@@ -3792,6 +3867,8 @@ const healthCareController = {
     try {
       const { points } = req.body;
 
+      console.log(points)
+
       if (!points || points.length === 0) {
           return res.status(400).json({ error: 'Points array is required' });
       }
@@ -3810,12 +3887,21 @@ const healthCareController = {
       const inpatientRehabilitations = await inpatientRehabilitiation.find(query, '_id name city state mainCategory fullAddress phoneNumber zipCode longitude latitude');
       const memoryCares = await memoryCare.find(query, '_id name city state mainCategory fullAddress phoneNumber zipCode photos longitude latitude');
       const inHomeCares = await inHomeCare.find(query, '_id name city state mainCategory fullAddress phoneNumber zipCode photos longitude latitude');
+      const hostpitCares= await hospital.find(query, '_id name city state mainCategory fullAddress phoneNumber zipCode photos longitude latitude');
+      const dialysisFacilityCares= await dialysisFacilityData.find(query, '_id name city state mainCategory fullAddress phoneNumber zipCode photos longitude latitude');
+      const homeHealthCares= await homeHealthData.find(query, '_id name city state mainCategory fullAddress phoneNumber zipCode photos longitude latitude');
+      const hospiceCares= await hoSpiceData.find(query, '_id name city state mainCategory fullAddress phoneNumber zipCode photos longitude latitude');
 
       const results = [
           ...nursingHomes,
           ...inpatientRehabilitations,
           ...memoryCares,
-          ...inHomeCares
+          ...inHomeCares,
+          ...hostpitCares,
+          ...dialysisFacilityCares,
+          ...homeHealthCares,
+          ...hospiceCares
+
       ];
 
       res.status(200).json(results);
@@ -3855,13 +3941,13 @@ const healthCareController = {
         const categories = [
           'Nursing Home',
           // 'Skilled Nursing Facility',
-          // 'Hospital',
+          'Hospital',
           // 'Long Term Cares',
-          // 'Dialysis Facility',
-          // 'Hospice',
+          'Dialysis Facility',
+          'Hospice',
           'Inpatient Rehabilitiation',
           // 'Group Practice',
-          // 'Home Health',
+          'Home Health',
           // 'Independent Living',
           'Memory Care',
           'In Home Care',

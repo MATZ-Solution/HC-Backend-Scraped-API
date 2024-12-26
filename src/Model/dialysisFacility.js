@@ -30,11 +30,20 @@ const addressSchema = new Schema({
   },
   latitude: {
     type: String,
-    index:true
-  },
-  longitude: {
+},
+longitude: {
     type: String,
-    index:true
+},
+location: {
+    type: {
+      type: String,
+      enum: ['Point'], // Only 'Point' is allowed
+      required: true,
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      required: true,
+    },
   },
   quality_rating: {
     type: String,
@@ -75,7 +84,7 @@ const addressSchema = new Schema({
     },
   ],
 });
-
+addressSchema.index({ location: '2dsphere' });
 const dialysisFacilityData = mongoose.model("dialysisFacility", addressSchema);
 
 module.exports = dialysisFacilityData;

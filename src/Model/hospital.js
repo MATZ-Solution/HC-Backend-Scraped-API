@@ -51,11 +51,20 @@ const addressSchema = new Schema({
   //mohsin scraping
   latitude: {
     type: String,
-    index: true,
   },
   longitude: {
     type: String,
-    index: true,
+  },
+  location: {
+    type: {
+      type: String,
+      enum: ['Point'], // Only 'Point' is allowed
+      required: true,
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      required: true,
+    },
   },
   overall_rating: {
     type: Number,
@@ -96,7 +105,7 @@ const addressSchema = new Schema({
     },
   ],
 });
-
+addressSchema.index({ location: '2dsphere' });
 // const hospitals = mongoose.model('hospitalnew', addressSchema);
 const hospitals = mongoose.model('hospitalnew', addressSchema, 'hospitalnew');
 
