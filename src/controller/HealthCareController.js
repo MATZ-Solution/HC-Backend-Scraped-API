@@ -38,13 +38,13 @@ const getCategoryModel = (categoryName) => {
             return inHomeCare;
         case 'Memory Care':
             return memoryCare;
-        case 'hoSpiceData':
+        case 'HoSpice':
             return hoSpiceData;  
-        case 'hospital':
+        case 'Hospital':
             return hospital;
-        case 'dialysisFacilityData':
+        case 'Dialysis Facility':
             return dialysisFacilityData
-        case 'home Health':
+        case 'Home Health':
             return homeHealthData
 
         // case 'Medicare Supplier':
@@ -2079,6 +2079,7 @@ const healthCareController = {
   filterZipCodeForApp: async (req, res, next) => {
     try {
       const { zipCode, page } = req.query;
+      // console.log(zipCode,"zipCode")
       let notFound=false;
       const regex = new RegExp(zipCode, 'i');
     
@@ -2115,14 +2116,22 @@ const healthCareController = {
       ];
   
       const nursingHomeData = await nursingHome.aggregate(pipeline);
+
       // const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline);
       const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline);
       const inHomeCareData = await inHomeCare.aggregate(pipeline);
       const memoryCareData=await memoryCare.aggregate(pipeline)
+      const homeHealthDataData=await homeHealthData.aggregate(pipeline)
+      const hoSpiceDataData=await hoSpiceData.aggregate(pipeline)
+      const hospitalData=await hospital.aggregate(pipeline)
+      const dialysisFacilityDataData=await dialysisFacilityData.aggregate(pipeline)
+
       // const medicalFacilitiesData=await medicalFacilities.aggregate(pipeline)
       // const medicalSuppliersData=await medicalSuppliers.aggregate(pipeline)
       // const physicianData=await physicians.aggregate(pipeline)
-      const mergedData = [...nursingHomeData, ...inpatientRehabilitationData,...memoryCareData ,...inHomeCareData];
+      const mergedData = [...nursingHomeData, ...inpatientRehabilitationData,...memoryCareData ,...inHomeCareData,
+        ...homeHealthDataData,...hoSpiceDataData,...hospitalData,...dialysisFacilityDataData
+      ];
     
 
       const removeDuplicates = (data) => {
@@ -2920,7 +2929,8 @@ const healthCareController = {
   // },
   getMultipleCategoriesApp: async (req, res, next) => {
     const { state, city, zipCode, categoryNames, page, limit, search, overall_rating,longitude, latitude,ascending,descending } = req.query;
-    // console.log(req.user,"user")
+    
+
     const {isAdmin,_id}=req.user
     if(isAdmin==="patient"){
       // console.log(_id,"id")
@@ -3012,7 +3022,7 @@ const healthCareController = {
         await Promise.all(promises);
       } else {
         // If no categories are provided, fetch data for all categories
-        const allCategories = ['Nursing Home','Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
+        const allCategories = ['Nursing Home','Inpatient Rehabilitiation', 'In Home Care', 'Memory Care','Home Health','HoSpice','Hospital','Dialysis Facility'];
         const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
         const categoryResults = await Promise.all(promises);
   
@@ -3135,7 +3145,7 @@ const healthCareController = {
           await Promise.all(promises);
         } else {
           // If no categories are provided, fetch data for all categories
-          const allCategories = ['Nursing Home','Inpatient Rehabilitiation', 'In Home Care', 'Memory Care'];
+          const allCategories = ['Nursing Home','Inpatient Rehabilitiation', 'In Home Care', 'Memory Care','Home Health','HoSpice','Hospital','Dialysis Facility'];
           const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
           const categoryResults = await Promise.all(promises);
     
@@ -3161,6 +3171,7 @@ const healthCareController = {
     } catch (error) {
       // console.log(error,"error")
         next(error);
+        console.log(error,"error")
     }
     }
     
