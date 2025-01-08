@@ -3409,10 +3409,10 @@ const healthCareController = {
           .find()
           .lean()
           .select('state city zipCode -_id'),
-        skilledNursingHome
-          .find()
-          .lean()
-          .select('state city zipCode'),
+        // skilledNursingHome
+        //   .find()
+        //   .lean()
+        //   .select('state city zipCode'),
         hospital.find().lean().select('state city zipCode -_id'),
         dialysisFacilityData
           .find()
@@ -3430,32 +3430,32 @@ const healthCareController = {
           .find({})
           .lean()
           .select('state city zipCode -_id'),
-        longTermCares
-          .find({})
-          .lean()
-          .select('state city zipCode -_id'),
-        independentLiving
-          .find()
-          .lean()
-          .select('state city zipCode'),
+        // longTermCares
+        //   .find({})
+        //   .lean()
+        //   .select('state city zipCode -_id'),
+        // independentLiving
+        //   .find()
+        //   .lean()
+        //   .select('state city zipCode'),
         memoryCare.find().lean().select('state city zipCode -_id'),
         inHomeCare.find().lean().select('state city zipCode -_id'),
-        assistedLiving
-          .find()
-          .lean()
-          .select('state city zipCode -_id'),
-        adultDayCare
-          .find()
-          .lean()
-          .select('state city zipCode -_id'),
-        careRetirement
-          .find()
-          .lean()
-          .select('state city zipCode -_id'),
-        geriaticCareManager
-          .find()
-          .lean()
-          .select('state city zipCode -_id'),
+        // assistedLiving
+        //   .find()
+        //   .lean()
+        //   .select('state city zipCode -_id'),
+        // adultDayCare
+        //   .find()
+        //   .lean()
+        //   .select('state city zipCode -_id'),
+        // careRetirement
+        //   .find()
+        //   .lean()
+        //   .select('state city zipCode -_id'),
+        // geriaticCareManager
+        //   .find()
+        //   .lean()
+        //   .select('state city zipCode -_id'),
           // medicalSuppliers
           // .find()
           // .lean()
@@ -3544,15 +3544,17 @@ const healthCareController = {
               .select(
                 '-_id city state zipCode'
               );
-          } else if (categoryName === 'Long Term Cares') {
-            result = await longTermCares
-              .find(query)
-              .select()
-              .lean()
-              .select(
-                '-_id city state zipCode'
-              );
-          } else if (categoryName === 'Hospice') {
+          } 
+          // else if (categoryName === 'Long Term Cares') {
+          //   result = await longTermCares
+          //     .find(query)
+          //     .select()
+          //     .lean()
+          //     .select(
+          //       '-_id city state zipCode'
+          //     );
+          // } 
+          else if (categoryName === 'Hospice') {
             result = await hoSpiceData
               .find(query)
               .lean()
@@ -3563,11 +3565,13 @@ const healthCareController = {
             result = await inpatientRehabilitiation.find(query).select(
               '-_id city state zipCode'
             ).lean();
-          } else if (categoryName === 'Group Practice') {
-            result = await groupPracticeData.find(query).select(
-              '-_id city state zipCode'
-            ).lean();
-          } else if (categoryName === 'Home Health') {
+          } 
+          // else if (categoryName === 'Group Practice') {
+          //   result = await groupPracticeData.find(query).select(
+          //     '-_id city state zipCode'
+          //   ).lean();
+          // }
+           else if (categoryName === 'Home Health') {
             result = await homeHealthData.find(query).select(
               '-_id city state zipCode'
             ).lean();
@@ -3593,42 +3597,47 @@ const healthCareController = {
               .select(
                 '-_id city state zipCode'
               );
-          } else if (categoryName === 'Assisted Living') {
-            result = await assistedLiving
-              .find(query)
-              .lean()
-              .select(
-                '-_id city state zipCode'
-              );
-          } else if (categoryName === 'Adult Day Care') {
-            result = await adultDayCare
-              .find(query)
-              .lean()
-              .select(
-                '-_id city state zipCode'
-              );
-          } else if (categoryName === 'Care Retirement Communities') {
-            result = await careRetirement
-              .find(query)
-              .lean()
-              .select(
-                '-_id city state zipCode'
-              );
-          } else if (categoryName === 'Skilled Nursing Facility') {
-            result = await skilledNursingHome
-              .find(query)
-              .lean()
-              .select(
-                '-_id city state zipCode'
-              );
-          } else if (categoryName === 'Geriatic Care Manager') {
-            result = await skilledNursingHome
-              .find(query)
-              .lean()
-              .select(
-                '-_id city state zipCode'
-              );
           }
+          //  else if (categoryName === 'Assisted Living') {
+          //   result = await assistedLiving
+          //     .find(query)
+          //     .lean()
+          //     .select(
+          //       '-_id city state zipCode'
+          //     );
+          // }
+          //  else if (categoryName === 'Adult Day Care') {
+          //   result = await adultDayCare
+          //     .find(query)
+          //     .lean()
+          //     .select(
+          //       '-_id city state zipCode'
+          //     );
+          // }
+          //  else if (categoryName === 'Care Retirement Communities') {
+          //   result = await careRetirement
+          //     .find(query)
+          //     .lean()
+          //     .select(
+          //       '-_id city state zipCode'
+          //     );
+          // }
+          //  else if (categoryName === 'Skilled Nursing Facility') {
+          //   result = await skilledNursingHome
+          //     .find(query)
+          //     .lean()
+          //     .select(
+          //       '-_id city state zipCode'
+          //     );
+          // }
+          //  else if (categoryName === 'Geriatic Care Manager') {
+          //   result = await skilledNursingHome
+          //     .find(query)
+          //     .lean()
+          //     .select(
+          //       '-_id city state zipCode'
+          //     );
+          // }
           // else if(categoryName='physician'){
           //   result = await physicians
           //   .find(query)
@@ -3763,6 +3772,102 @@ const healthCareController = {
     
     
   },
+  getCityAndFacilityCount: async (req, res, next) => {
+    try {
+      const cacheKey = 'cityFacilityCount';
+      const cachedData = cache.get(cacheKey);
+  
+      if (cachedData) {
+        return res.status(200).json(cachedData);
+      }
+  
+      const facilities = [
+        { model: hospital },
+        { model: dialysisFacilityData },
+        { model: nursingHome },
+        { model: hoSpiceData },
+        { model: inpatientRehabilitiation },
+        { model: homeHealthData },
+        { model: memoryCare },
+        { model: inHomeCare },
+      ];
+  
+      
+      const results = await Promise.all(
+        facilities.map(async ({ model }) => {
+          const data = await model.aggregate([
+            {
+              $group: {
+                _id: { city: '$city', state: '$state' }, 
+                count: { $sum: 1 },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                city: '$_id.city',
+                state: '$_id.state',
+                count: 1,
+              },
+            },
+          ]);
+  
+          return data;
+        })
+      );
+  
+     
+      const flattenedResults = results.flat();
+  
+  
+      const groupedByCityState = flattenedResults.reduce((acc, record) => {
+        const cityStateKey = `${record.city.trim().toLowerCase()}, ${record.state.trim().toLowerCase()}`;
+        if (!acc[cityStateKey]) {
+          acc[cityStateKey] = { city: record.city, state: record.state, totalFacilities: 0 };
+        }
+        acc[cityStateKey].totalFacilities += record.count;
+        return acc;
+      }, {});
+  
+  
+      // Predefined cities and states
+      const predefinedCities = [
+        { city: "Albuquerque", state: "New Mexico" },
+        { city: "Alma", state: "Michigan" },
+        { city: "Anaheim", state: "California" },
+        { city: "Atlanta", state: "Georgia" },
+        { city: "Austin", state: "Texas" },
+        { city: "Baltimore", state: "Maryland" },
+        { city: "Boston", state: "Massachusetts" },
+        { city: "Buffalo", state: "New York" },
+        { city: "Chicago", state: "Illinois" },
+        { city: "Los Angeles", state: "California" },
+        { city: "New York", state: "New York" },
+        { city: "Seattle", state: "Washington" },
+      ];
+  
+      // Map predefined cities and states to their facility count
+      const cityFacilityData = predefinedCities.map(({ city, state }) => {
+        const cityStateKey = `${city.trim().toLowerCase()}, ${state.trim().toLowerCase()}`;
+        const facilityData = groupedByCityState[cityStateKey];
+        return {
+          city,
+          state,
+          totalFacilities: facilityData ? facilityData.totalFacilities : 0,
+        };
+      });
+  
+      // Cache the result
+      cache.set(cacheKey, cityFacilityData, 365 * 24 * 60 * 60);
+  
+      // Return the data
+      res.status(200).json(cityFacilityData);
+    } catch (error) {
+      next(error);
+    }
+  },
+  
+  
   getProfessionalCityStateAndZipCode: async (req, res, next) => {
     try {
 
