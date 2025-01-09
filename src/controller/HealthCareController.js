@@ -829,16 +829,19 @@ const healthCareController = {
       const categoryName = [
         'Nursing Home',
         // 'Skilled Nursing Facility',
-        'Hospital',
+        
         // 'Long Term Cares',
-        'Dialysis Facility',
-        'HoSpice',
+        
         'Inpatient Rehabilitiation',
         // 'Group Practice',
-        'Home Health',
+        
         // 'Independent Living',
         'Memory Care',
+        'Home Health',
         'In Home Care',
+        'Dialysis Facility',
+        'HoSpice',
+        'Hospital',
         // 'Assisted Living',
         // 'Adult Day Care',
         // 'Care Retirement Communities',
