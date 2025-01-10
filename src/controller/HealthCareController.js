@@ -3833,7 +3833,6 @@ const healthCareController = {
       }, {});
   
   
-      // Predefined cities and states
       const predefinedCities = [
         { city: "Albuquerque", state: "New Mexico" },
         { city: "Alma", state: "Michigan" },
@@ -3847,7 +3846,21 @@ const healthCareController = {
         { city: "Los Angeles", state: "California" },
         { city: "New York", state: "New York" },
         { city: "Seattle", state: "Washington" },
+        { city: "San Francisco", state: "California" },
+        { city: "San Diego", state: "California" },
+        { city: "Dallas", state: "Texas" },
+        { city: "Houston", state: "Texas" },
+        { city: "Phoenix", state: "Arizona" },
+        { city: "Philadelphia", state: "Pennsylvania" },
+        // Adding new records
+        { city: "Miami", state: "Florida" },
+        { city: "Orlando", state: "Florida" },
+        { city: "Denver", state: "Colorado" },
+        { city: "Salt Lake City", state: "Utah" },
+        { city: "Portland", state: "Oregon" },
+        { city: "Las Vegas", state: "Nevada" },
       ];
+      
   
       // Map predefined cities and states to their facility count
       const cityFacilityData = predefinedCities.map(({ city, state }) => {
