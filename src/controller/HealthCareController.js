@@ -2932,7 +2932,8 @@ const healthCareController = {
   // },
   getMultipleCategoriesApp: async (req, res, next) => {
     const { state, city, zipCode, categoryNames, page, limit, search, overall_rating,longitude, latitude,ascending,descending } = req.query;
-    
+   
+    console.log(req.query)
 
     const {isAdmin,_id}=req.user
     if(isAdmin==="patient"){
@@ -3791,6 +3792,114 @@ const healthCareController = {
         { model: hoSpiceData },
         { model: inpatientRehabilitiation },
         { model: homeHealthData },
+        { model: memoryCare },
+        { model: inHomeCare },
+      ];
+  
+      
+      const results = await Promise.all(
+        facilities.map(async ({ model }) => {
+          const data = await model.aggregate([
+            {
+              $group: {
+                _id: { city: '$city', state: '$state' }, 
+                count: { $sum: 1 },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                city: '$_id.city',
+                state: '$_id.state',
+                count: 1,
+              },
+            },
+          ]);
+  
+          return data;
+        })
+      );
+  
+     
+      const flattenedResults = results.flat();
+  
+  
+      const groupedByCityState = flattenedResults.reduce((acc, record) => {
+        const cityStateKey = `${record.city.trim().toLowerCase()}, ${record.state.trim().toLowerCase()}`;
+        if (!acc[cityStateKey]) {
+          acc[cityStateKey] = { city: record.city, state: record.state, totalFacilities: 0 };
+        }
+        acc[cityStateKey].totalFacilities += record.count;
+        return acc;
+      }, {});
+  
+  
+      const predefinedCities = [
+        { city: "Albuquerque", state: "New Mexico" },
+        { city: "Alma", state: "Michigan" },
+        { city: "Anaheim", state: "California" },
+        { city: "Atlanta", state: "Georgia" },
+        { city: "Austin", state: "Texas" },
+        { city: "Baltimore", state: "Maryland" },
+        { city: "Boston", state: "Massachusetts" },
+        { city: "Buffalo", state: "New York" },
+        { city: "Chicago", state: "Illinois" },
+        { city: "Los Angeles", state: "California" },
+        { city: "New York", state: "New York" },
+        { city: "Seattle", state: "Washington" },
+        { city: "San Francisco", state: "California" },
+        { city: "San Diego", state: "California" },
+        { city: "Dallas", state: "Texas" },
+        { city: "Houston", state: "Texas" },
+        { city: "Phoenix", state: "Arizona" },
+        { city: "Philadelphia", state: "Pennsylvania" },
+        // Adding new records
+        { city: "Miami", state: "Florida" },
+        { city: "Orlando", state: "Florida" },
+        { city: "Denver", state: "Colorado" },
+        { city: "Salt Lake City", state: "Utah" },
+        { city: "Portland", state: "Oregon" },
+        { city: "Las Vegas", state: "Nevada" },
+      ];
+      
+  
+      // Map predefined cities and states to their facility count
+      const cityFacilityData = predefinedCities.map(({ city, state }) => {
+        const cityStateKey = `${city.trim().toLowerCase()}, ${state.trim().toLowerCase()}`;
+        const facilityData = groupedByCityState[cityStateKey];
+        return {
+          city,
+          state,
+          totalFacilities: facilityData ? facilityData.totalFacilities : 0,
+        };
+      });
+  
+      // Cache the result
+      cache.set(cacheKey, cityFacilityData, 365 * 24 * 60 * 60);
+  
+      // Return the data
+      res.status(200).json(cityFacilityData);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  getCityAndFacilityCountApp: async (req, res, next) => {
+    try {
+      const cacheKey = 'cityFacilityCount';
+      const cachedData = cache.get(cacheKey);
+  
+      if (cachedData) {
+        return res.status(200).json(cachedData);
+      }
+  
+      const facilities = [
+        // { model: hospital },
+        // { model: dialysisFacilityData },
+        { model: nursingHome },
+        // { model: hoSpiceData },
+        { model: inpatientRehabilitiation },
+        // { model: homeHealthData },
         { model: memoryCare },
         { model: inHomeCare },
       ];

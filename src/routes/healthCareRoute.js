@@ -102,6 +102,8 @@ router.post('/getMutilpleCategories', healthCare.getMultipleCategoryData)
 router.get('/getStateCityAndZipCode', healthCare.getStateCityAndZipCode)
 
 router.get('/getCityFacility', healthCare.getCityAndFacilityCount)
+router.get('/getCityFacilityApp', healthCare.getCityAndFacilityCountApp)
+
 
 
 // <-------------------GET CITY AND ZIPCODE USING ON THE BASIS OF STATE----------->
