@@ -3123,9 +3123,9 @@ const healthCareController = {
                 $or: [
                     { name: { $regex: new RegExp(search, 'i') } },
                     // { zipCode: { $regex: new RegExp(search, 'i') } },
-                    // { state: { $regex: new RegExp(search, 'i') } },
-                    // { city: { $regex: new RegExp(search, 'i') } },
-                    { mainCategory: { $regex: new RegExp(search, 'i') } },
+                    { state: { $regex: new RegExp(search, 'i') } },
+                    { city: { $regex: new RegExp(search, 'i') } },
+                    // { mainCategory: { $regex: new RegExp(search, 'i') } },
                 ]
             };
             Object.assign(query, searchQuery);
