@@ -62,7 +62,7 @@ router.get('/getProfessionalCategory', healthCare.getProfessionalCategory);
 router.get('/countAllCatRecords', healthCare.countAllCatRecords);
 
 //get Record Using Category
-router.get('/getRecordsUsingCat/:cat', healthCare.getRecordsUsingCat);
+router.get('/getRecordsUsingCat/:cat/:page', healthCare.getRecordsUsingCat);
 
 //fetch new Nursing Home Records
 router.get(
@@ -126,5 +126,8 @@ router.get('/searchByZipCodeApp',healthCare.filterZipCodeForApp)
 router.post('/searchIngRecords',healthCare.getRecordsbySearch)
 
 // router.get('/addlocation',healthCare.addLocation)
+
+
+router.post('/getAllProviders',healthCare.getAllProviders)
 
 module.exports = router;

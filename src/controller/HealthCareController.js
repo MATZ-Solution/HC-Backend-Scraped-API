@@ -17,6 +17,8 @@ const adultDayCare = require('../Model/adultDayCareModel');
 const careRetirement = require('../Model/careRetirementCommunities');
 const skilledNursingHome = require('../Model/skilledNursingFacilityModel');
 const geriaticCareManager = require('../Model/geriatorCareManagerModel');
+const providerData=require('../Model/Providers');
+
 const Otp = require('../Model/Otp');
 const axios = require('axios');
 const turf = require("@turf/turf");
@@ -2677,6 +2679,10 @@ const healthCareController = {
         careRetirement.countDocuments().lean(),
         skilledNursingHome.countDocuments().lean(),
         geriaticCareManager.countDocuments().lean(),
+        physicians.countDocuments().lean(),
+        medicalFacilities.countDocuments().lean(),
+        medicalSuppliers.countDocuments().lean(),
+
       ];
 
       const cachedData = cache.get('countsOfAllCat');
@@ -2702,6 +2708,9 @@ const healthCareController = {
         careRetirementCount,
         skilledNursingFacilityCount,
         geriaticCareManagerCount,
+        physiciansCount,
+        medicalFacilitiesCount,
+        medicalSuppliersCount,
       ] = await Promise.all(countPromises);
 
       cache.set(
@@ -2724,6 +2733,10 @@ const healthCareController = {
           careRetirement: careRetirementCount,
           skilledNursingFacility: skilledNursingFacilityCount,
           geriaticCareManager: geriaticCareManagerCount,
+          physicians: physiciansCount,
+          medicalFacilities: medicalFacilitiesCount,
+          medicalSuppliers: medicalSuppliersCount,
+
         },
         365 * 24 * 60 * 60 * 1000
       );
@@ -2746,154 +2759,302 @@ const healthCareController = {
         careRetirement: careRetirementCount,
         skilledNursingFacility: skilledNursingFacilityCount,
         geriaticCareManager: geriaticCareManagerCount,
+        physicians: physiciansCount,
+        medicalFacilities: medicalFacilitiesCount,
+        medicalSuppliers: medicalSuppliersCount,
       });
     } catch (error) {
       next(error);
     }
   },
-  //get records on the basis of categories
+  // //get records on the basis of categories
+  // getRecordsUsingCat: async (req, res, next) => {
+  //   try {
+  //     const { cat } = req.params;
+  //     const cachedData = cache.get(cat);
+
+  //     if (cachedData) {
+  //       return res.status(200).json(cachedData);
+  //     }
+
+  //     let data;
+
+  //     switch (cat) {
+  //       case 'dialysisFacilityData':
+  //         data = await dialysisFacilityData
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+  //         break;
+  //       case 'hospital':
+  //         data = await hospital
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+  //       case 'longTermCares':
+  //         data = await longTermCares
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+  //       case 'nursingHome':
+  //         data = await nursingHome
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+  //       case 'inpatientRehabilitiation':
+  //         data = await inpatientRehabilitiation
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+  //       case 'hoSpiceData':
+  //         data = await hoSpiceData
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+  //       case 'groupPracticeData':
+  //         data = await groupPracticeData
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+  //       case 'homeHealthData':
+  //         data = await homeHealthData
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+  //       case 'professional':
+  //         data = await Professional.find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+  //       case 'Independent Living':
+  //         data = await independentLiving
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+  //       case 'Memory Care':
+  //         data = await memoryCare
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+  //       case 'In Home Care':
+  //         data = await inHomeCare
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+  //       case 'Assisted Living':
+  //         data = await inHomeCare
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+  //       case 'Adult Day Care':
+  //         data = await adultDayCare
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+  //       case 'Care Retirement Communities':
+  //         data = await careRetirement
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+  //       case 'Skilled Nursing Facility':
+  //         data = await skilledNursingHome
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+  //       case 'Geriatic Care Manager':
+  //         data = await geriaticCareManager
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+        
+  //       case 'medicalFacilities':
+  //         data = await medicalFacilities
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+
+  //       case 'medicalSuppliers':
+  //         data = await medicalSuppliers
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+
+  //         break;
+
+  //       case 'physician':
+  //         data = await physicians
+  //           .find()
+  //           .lean()
+  //           .select('name fullAddress state city zipCode phoneNumber');
+  //         break;
+  //       default:
+  //         data = 'Invalid Category';
+  //         break;
+  //     }
+
+  //     // Cache the data for future requests
+  //     cache.set(cat, data);
+
+  //     return res.status(200).json(data);
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // },
+
+
   getRecordsUsingCat: async (req, res, next) => {
     try {
-      const { cat } = req.params;
-      const cachedData = cache.get(cat);
-
-      if (cachedData) {
-        return res.status(200).json(cachedData);
-      }
-
-      let data;
-
+      const { cat,page } = req.params;
+      // const page = parseInt(req.query.page) || 1;
+      const limit =  10;
+      const skip = (page - 1) * limit;
+  
+      let model;
       switch (cat) {
         case 'dialysisFacilityData':
-          data = await dialysisFacilityData
-            .find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
+          model = dialysisFacilityData;
           break;
         case 'hospital':
-          data = await hospital
-            .find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
-
+          model = hospital;
           break;
         case 'longTermCares':
-          data = await longTermCares
-            .find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
-
+          model = longTermCares;
           break;
         case 'nursingHome':
-          data = await nursingHome
-            .find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
-
+          model = nursingHome;
           break;
         case 'inpatientRehabilitiation':
-          data = await inpatientRehabilitiation
-            .find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
-
+          model = inpatientRehabilitiation;
           break;
         case 'hoSpiceData':
-          data = await hoSpiceData
-            .find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
-
+          model = hoSpiceData;
           break;
         case 'groupPracticeData':
-          data = await groupPracticeData
-            .find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
-
+          model = groupPracticeData;
           break;
         case 'homeHealthData':
-          data = await homeHealthData
-            .find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
-
+          model = homeHealthData;
           break;
         case 'professional':
-          data = await Professional.find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
-
+          model = Professional;
           break;
         case 'Independent Living':
-          data = await independentLiving
-            .find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
-
+          model = independentLiving;
           break;
         case 'Memory Care':
-          data = await memoryCare
-            .find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
-
+          model = memoryCare;
           break;
         case 'In Home Care':
-          data = await inHomeCare
-            .find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
-
-          break;
         case 'Assisted Living':
-          data = await inHomeCare
-            .find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
-
+          model = inHomeCare;
           break;
         case 'Adult Day Care':
-          data = await adultDayCare
-            .find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
-
+          model = adultDayCare;
           break;
         case 'Care Retirement Communities':
-          data = await careRetirement
-            .find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
-
+          model = careRetirement;
           break;
         case 'Skilled Nursing Facility':
-          data = await skilledNursingHome
-            .find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
-
+          model = skilledNursingHome;
           break;
         case 'Geriatic Care Manager':
-          data = await geriaticCareManager
-            .find()
-            .lean()
-            .select('name fullAddress state city zipCode phoneNumber');
-
+          model = geriaticCareManager;
+          break;
+        case 'medicalFacilities':
+          model = medicalFacilities;
+          break;
+        case 'medicalSuppliers':
+          model = medicalSuppliers;
+          break;
+        case 'physician':
+          model = physicians;
           break;
         default:
-          data = 'Invalid Category';
-          break;
+          return res.status(400).json({ message: 'Invalid Category' });
       }
-
-      // Cache the data for future requests
-      cache.set(cat, data);
-
-      return res.status(200).json(data);
+  
+      const [data, total] = await Promise.all([
+        model.aggregate([
+          {
+            $addFields: {
+              nameStartsWithLetter: {
+                $cond: [
+                  { $regexMatch: { input: "$name", regex: /^[A-Za-z]/ } },
+                  1,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            $sort: {
+              nameStartsWithLetter: -1, // 1s (A-Z) come first
+              name: 1                   // then sort A-Z within group
+            }
+          },
+          { $skip: skip },
+          { $limit: limit },
+          {
+            $project: {
+              name: 1,
+              fullAddress: 1,
+              state: 1,
+              city: 1,
+              zipCode: 1,
+              phoneNumber: 1
+            }
+          }
+        ]),
+        model.countDocuments()
+      ]);
+  
+      const totalPages = Math.ceil(total / limit);
+  
+      return res.status(200).json({
+        data,
+        currentPage: page,
+        totalPages,
+        totalRecords: total
+      });
     } catch (error) {
       next(error);
     }
   },
+  
+  
   fetchNewNursingHomeRecords: async (req, res, next) => {
     try {
       const nursingHomeRecords = await nursingHomeNew.find();
@@ -2905,12 +3066,14 @@ const healthCareController = {
 // getMultiple Categories and Count
   getMultipleCategories: async (req, res, next) => {
     const { state, city, zipCode,overall_rating, name, page, limit ,search} = req.body;
+    console.log(req.body)
     // console.log(state, city, zipCode,overall_rating, name, page, limit ,search,"search");
     try {
 
       if (typeof name === 'object') {
         const scrapeCategory = async (categoryName) => {
           let query = {};
+          console.log(query)
       
           if (state) {
             query.state = {$regex: new RegExp(state, 'i')};
@@ -4460,6 +4623,88 @@ const healthCareController = {
     res.status(500).json({ success: false, message: 'Internal server error.' });
   }
 },
+ getAllProviders: async (req, res, next) => {
+  try {
+    const { state, city, zipCode,overall_rating, name, page, limit ,search} = req.body;
+    // console.log(req.body)
+    // console.log(state, city, zipCode,overall_rating, name, page, limit ,search,"search");
+
+      if (typeof name === 'object') {
+        const scrapeCategory = async (categoryName) => {
+          let query = {};
+          console.log(query)
+      
+          if (state) {
+            query.state = {$regex: new RegExp(state, 'i')};
+          }
+                          
+          if (city) {
+            query.city = { $regex: new RegExp(city, 'i') };
+          }
+      
+          if (zipCode) {
+            query.zipCode = zipCode;
+          }
+          if (overall_rating) {
+            const overallRatings = overall_rating.map(Number);
+            query.overall_rating = { $in: overallRatings };
+        }
+        
+
+        if (search) {
+          const searchQuery = {
+              $or: [
+                  { name: { $regex: new RegExp(search, 'i') } },
+                  { zipCode: { $regex: new RegExp(search, 'i') } },
+                  { state: { $regex: new RegExp(search, 'i') } },
+                  { city: { $regex: new RegExp(search, 'i') } },
+                  { mainCategory: { $regex: new RegExp(search, 'i') } },
+              ]
+          };
+          Object.assign(query, searchQuery);
+      }
+      
+          let result = [];
+          let totalCount = 0;
+      
+           if (categoryName === 'Doctor') {
+            totalCount = await providerData.countDocuments(query);
+            result = await providerData
+              .find(query)
+              .select('_id name specialty experience city state mainCategory fullAddress phoneNumber zipCode images overall_ratings bio overall_rating')
+              .lean()
+              .skip(page * limit)
+              .limit(limit);
+          } 
+           
+          return { result, totalCount };
+        };
+      
+        const scrapeAllCategories = async (categories) => {
+          const promises = categories.map((categoryName) => scrapeCategory(categoryName));
+          const results = await Promise.all(promises);
+          return results;
+        };
+      
+        try {
+          const scrapedData = await scrapeAllCategories(name);
+      
+          const totalCount = scrapedData.reduce((acc, curr) => acc + curr.totalCount, 0);
+          const flatResults = scrapedData.flatMap((data) => data.result);
+      
+          res.status(200).json({ totalCount, data: flatResults });        
+
+        } catch (err) {
+          next(err);
+        }
+      }
+     
+    } catch (error) {
+      next(error);
+    }
+}
+
+
   
  
   
