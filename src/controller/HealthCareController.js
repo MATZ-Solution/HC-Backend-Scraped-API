@@ -17,7 +17,7 @@ const adultDayCare = require('../Model/adultDayCareModel');
 const careRetirement = require('../Model/careRetirementCommunities');
 const skilledNursingHome = require('../Model/skilledNursingFacilityModel');
 const geriaticCareManager = require('../Model/geriatorCareManagerModel');
-const providerData=require('../Model/Providers');
+const providerDataMichigan=require('../Model/Providers');
 
 const Otp = require('../Model/Otp');
 const axios = require('axios');
@@ -4593,6 +4593,7 @@ const healthCareController = {
       next(error);
     }
   },
+  
     updateLatLong: async (req, res, next) => {
   try {
     console.log("api")
@@ -4625,7 +4626,7 @@ const healthCareController = {
 },
  getAllProviders: async (req, res, next) => {
   try {
-    const { state, city, zipCode,overall_rating, name, page, limit ,search} = req.body;
+    const { state, city, specialty, zipCode,overall_rating, name, page, limit ,search} = req.body;
     // console.log(req.body)
     // console.log(state, city, zipCode,overall_rating, name, page, limit ,search,"search");
 
@@ -4641,6 +4642,10 @@ const healthCareController = {
           if (city) {
             query.city = { $regex: new RegExp(city, 'i') };
           }
+
+          if(specialty){
+            query.specialty =  { $regex: new RegExp(specialty, 'i') };
+          }
       
           if (zipCode) {
             query.zipCode = zipCode;
@@ -4655,10 +4660,10 @@ const healthCareController = {
           const searchQuery = {
               $or: [
                   { name: { $regex: new RegExp(search, 'i') } },
-                  { zipCode: { $regex: new RegExp(search, 'i') } },
-                  { state: { $regex: new RegExp(search, 'i') } },
-                  { city: { $regex: new RegExp(search, 'i') } },
-                  { mainCategory: { $regex: new RegExp(search, 'i') } },
+                  // { zipCode: { $regex: new RegExp(search, 'i') } },
+                  // { state: { $regex: new RegExp(search, 'i') } },
+                  // { city: { $regex: new RegExp(search, 'i') } },
+                  // { mainCategory: { $regex: new RegExp(search, 'i') } },
               ]
           };
           Object.assign(query, searchQuery);
@@ -4667,9 +4672,9 @@ const healthCareController = {
           let result = [];
           let totalCount = 0;
       
-           if (categoryName === 'Doctor') {
-            totalCount = await providerData.countDocuments(query);
-            result = await providerData
+           if (categoryName === 'Provider') {
+            totalCount = await providerDataMichigan.countDocuments(query);
+            result = await providerDataMichigan
               .find(query)
               .select('_id name specialty experience city state mainCategory fullAddress phoneNumber zipCode images overall_ratings bio overall_rating')
               .lean()

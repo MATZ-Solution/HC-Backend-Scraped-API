@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const providerSchema = new Schema({
+const providerSchemaMichigan = new Schema({
   name: {
     type: String,
   },
@@ -58,8 +58,7 @@ const providerSchema = new Schema({
     type: Number,
   },
 });
-providerSchema.index({ location: '2dsphere' });
-// const hospitals = mongoose.model('hospitalnew', addressSchema);
-const providerData = mongoose.model('michigan', providerSchema, 'michigan');
+providerSchemaMichigan.index({ location: '2dsphere' });
+const providerDataMichigan = mongoose.model('michigan', providerSchemaMichigan, 'michigan');
 
-module.exports = providerData;
+module.exports = providerDataMichigan;

@@ -125,6 +125,7 @@ router.get('/searchByZipCodeApp',healthCare.filterZipCodeForApp)
 
 router.post('/searchIngRecords',healthCare.getRecordsbySearch)
 
+
 // router.get('/addlocation',healthCare.addLocation)
 
 
