@@ -2514,10 +2514,10 @@ const healthCareController = {
           break;
 
         case 'Provider':
-          const providerData = await providerData.findOne({
+          const providerDatas = await providerData.findOne({
             _id: mongoDbID,
           });
-          res.status(200).json(providerData);
+          res.status(200).json(providerDatas);
 
         case 'inpatientRehabilitiation':
           const rehabData = await inpatientRehabilitiation.findOne({
@@ -4663,8 +4663,8 @@ const healthCareController = {
  getAllProviders: async (req, res, next) => {
   try {
     const { state, city, specialty, zipCode,overall_rating, name, page, limit ,search} = req.body;
-    // console.log(req.body)
-    // console.log(state, city, zipCode,overall_rating, name, page, limit ,search,"search");
+    console.log(req.body)
+    console.log(state, city, zipCode,overall_rating, name, page, limit ,search,"search");
 
       if (typeof name === 'object') {
         const scrapeCategory = async (categoryName) => {
@@ -4736,6 +4736,7 @@ const healthCareController = {
           res.status(200).json({ totalCount, data: flatResults });        
 
         } catch (err) {
+          console.log(err)
           next(err);
         }
       }
