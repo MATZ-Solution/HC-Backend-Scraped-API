@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const providerSchemaMichigan = new Schema({
+const providerSchema = new Schema({
   name: {
     type: String,
   },
@@ -58,7 +58,7 @@ const providerSchemaMichigan = new Schema({
     type: Number,
   },
 });
-providerSchemaMichigan.index({ location: '2dsphere' });
-const providerDataMichigan = mongoose.model('michigan', providerSchemaMichigan, 'michigan');
+providerSchema.index({ location: '2dsphere' });
+const providerData = mongoose.model('providers', providerSchema, 'providers');
 
-module.exports = providerDataMichigan;
+module.exports = providerData;

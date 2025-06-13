@@ -86,6 +86,7 @@ router.get(
 );
 
 router.get('/getDataUsingZipCode/:zipCode', healthCare.getDataUsingZipCode);
+router.get('/getProvdersUsingZipCode/:zipCode', healthCare.getProviderDataUsingZipCode);
 
 router.get(
   '/getProfessionalsUsingZipCode/:zipCode',

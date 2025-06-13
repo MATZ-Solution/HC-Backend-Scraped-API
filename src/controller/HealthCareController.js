@@ -17,7 +17,7 @@ const adultDayCare = require('../Model/adultDayCareModel');
 const careRetirement = require('../Model/careRetirementCommunities');
 const skilledNursingHome = require('../Model/skilledNursingFacilityModel');
 const geriaticCareManager = require('../Model/geriatorCareManagerModel');
-const providerDataMichigan=require('../Model/Providers');
+const providerData=require('../Model/Providers');
 
 const Otp = require('../Model/Otp');
 const axios = require('axios');
@@ -1895,6 +1895,36 @@ const healthCareController = {
       next(err);
     }
   },
+   getProviderDataUsingZipCode: async (req, res, next) => {
+    try {
+      const { zipCode } = req.params;
+
+      if (zipCode) {
+        const allData = await Promise.all([
+          providerData.find({ zipCode }).lean().select('_id name  mainCategory city state zipCode fullAddress phoneNumber overall_rating images'),
+          // nursingHome.find({ zipCode }).lean().select('_id name  mainCategory city state zipCode fullAddress phoneNumber latitude longitude overall_rating'),
+          // skilledNursingHome.find({ zipCode }).lean().select('_id name  mainCategory city state zipCode fullAddress phoneNumber latitude longitude'),
+          // hospital.find({ zipCode }).lean(),
+          // longTermCares.find({ zipCode }).lean(),
+          // dialysisFacilityData.find({ zipCode }).lean(),
+          // hoSpiceData.find({ zipCode }).lean(),
+          // homeHealthData.find({ zipCode }).lean(),
+          // inpatientRehabilitiation.find({ zipCode }).lean().select('_id name  mainCategory city state zipCode fullAddress phoneNumber latitude longitude'),
+          // groupPracticeData.find({ zipCode }).lean(),
+          // independentLiving.find({ zipCode }).lean(),
+          // memoryCare.find({ zipCode }).lean().select('_id name  mainCategory city state zipCode fullAddress phoneNumber latitude longitude'),
+          // inHomeCare.find({ zipCode }).lean().select('_id name  mainCategory city state zipCode fullAddress phoneNumber latitude longitude'),
+          // assistedLiving.find({ zipCode }).lean(),
+          // adultDayCare.find({ zipCode }).lean(),
+          // careRetirement.find({ zipCode }).lean(),
+          // geriaticCareManager.find({ zipCode }).lean(),
+        ]);
+        res.status(200).json(allData.flat());
+      }
+    } catch (err) {
+      next(err);
+    }
+  },
   // filterZipCode:async(req,res)=>{
   //   try{ 
 
@@ -2482,6 +2512,12 @@ const healthCareController = {
 
           res.status(200).json(hospitalData);
           break;
+
+        case 'Provider':
+          const providerData = await providerData.findOne({
+            _id: mongoDbID,
+          });
+          res.status(200).json(providerData);
 
         case 'inpatientRehabilitiation':
           const rehabData = await inpatientRehabilitiation.findOne({
@@ -4673,8 +4709,8 @@ const healthCareController = {
           let totalCount = 0;
       
            if (categoryName === 'Provider') {
-            totalCount = await providerDataMichigan.countDocuments(query);
-            result = await providerDataMichigan
+            totalCount = await providerData.countDocuments(query);
+            result = await providerData
               .find(query)
               .select('_id name specialty experience city state mainCategory fullAddress phoneNumber zipCode images overall_ratings bio overall_rating')
               .lean()
