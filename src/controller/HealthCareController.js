@@ -4662,9 +4662,9 @@ const healthCareController = {
 },
  getAllProviders: async (req, res, next) => {
   try {
-    const { state, city, specialty, zipCode,overall_rating, name, page, limit ,search} = req.body;
-    console.log(req.body)
-    console.log(state, city, zipCode,overall_rating, name, page, limit ,search,"search");
+    const { state, city, specialty,experience, zipCode,overall_rating, name, page, limit=10 ,search} = req.body;
+    // console.log(req.body)
+    // console.log(state, city, zipCode,overall_rating, name, page, limit ,search,"search");
 
       if (typeof name === 'object') {
         const scrapeCategory = async (categoryName) => {
@@ -4674,6 +4674,7 @@ const healthCareController = {
           if (state) {
             query.state = {$regex: new RegExp(state, 'i')};
           }
+
                           
           if (city) {
             query.city = { $regex: new RegExp(city, 'i') };
@@ -4690,6 +4691,15 @@ const healthCareController = {
             const overallRatings = overall_rating.map(Number);
             query.overall_rating = { $in: overallRatings };
         }
+
+        if (experience && Array.isArray(experience)) {
+  const [minExp, maxExp] = experience;
+
+  query.experience = {
+    $gte: minExp,
+    $lte: maxExp
+  };
+}
         
 
         if (search) {
