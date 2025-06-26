@@ -4763,7 +4763,7 @@ const healthCareController = {
       overall_rating,
       name,
       page ,
-      limit=6 ,
+      limit ,
       search
     } = req.body;
 
