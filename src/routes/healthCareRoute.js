@@ -131,5 +131,6 @@ router.post('/searchIngRecords',healthCare.getRecordsbySearch)
 
 
 router.post('/getAllProviders',healthCare.getAllProviders)
+// router.post('/getAllProvider',healthCare.getAllProvider)
 
 module.exports = router;

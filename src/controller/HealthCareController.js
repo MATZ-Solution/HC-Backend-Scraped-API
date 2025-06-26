@@ -4660,104 +4660,156 @@ const healthCareController = {
     res.status(500).json({ success: false, message: 'Internal server error.' });
   }
 },
- getAllProviders: async (req, res, next) => {
-  try {
-    const { state, city, specialty,experience, zipCode,overall_rating, name, page, limit=10 ,search} = req.body;
-    // console.log(req.body)
-    // console.log(state, city, zipCode,overall_rating, name, page, limit ,search,"search");
+//  getAllProviders: async (req, res, next) => {
+//   try {
+//     const { state, city, specialty,experience, zipCode,overall_rating, name, page, limit=6 ,search} = req.body;
+//     // console.log(req.body)
+//     // console.log(state, city, zipCode,overall_rating, name, page, limit ,search,"search");
 
-      if (typeof name === 'object') {
-        const scrapeCategory = async (categoryName) => {
-          let query = {};
-          console.log(query)
+//       if (typeof name === 'object') {
+//         const scrapeCategory = async (categoryName) => {
+//           let query = {};
+//           console.log(query)
       
-          if (state) {
-            query.state = {$regex: new RegExp(state, 'i')};
-          }
+//           if (state) {
+//             query.state =state
+//           }
 
                           
-          if (city) {
-            query.city = { $regex: new RegExp(city, 'i') };
-          }
+//           if (city) {
+//             query.city = city
+//           }
 
-          if(specialty){
-            query.specialty =  { $regex: new RegExp(specialty, 'i') };
-          }
+//           if(specialty){
+//             query.specialty = specialty
+//           }
       
-          if (zipCode) {
-            query.zipCode = zipCode;
-          }
-          if (overall_rating) {
-            const overallRatings = overall_rating.map(Number);
-            query.overall_rating = { $in: overallRatings };
-        }
+//           if (zipCode) {
+//             query.zipCode = zipCode;
+//           }
+//           if (overall_rating) {
+//             const overallRatings = overall_rating.map(Number);
+//             query.overall_rating = { $in: overallRatings };
+//         }
 
-        if (experience && Array.isArray(experience)) {
-  const [minExp, maxExp] = experience;
+//             if (experience && Array.isArray(experience)) {
+//       const [minExp, maxExp] = experience;
 
-  query.experience = {
-    $gte: minExp,
-    $lte: maxExp
-  };
-}
+//       query.experience = {
+//         $gte: minExp,
+//         $lte: maxExp
+//       };
+//     }
         
 
-        if (search) {
-          const searchQuery = {
-              $or: [
-                  { name: { $regex: new RegExp(search, 'i') } },
-                  // { zipCode: { $regex: new RegExp(search, 'i') } },
-                  // { state: { $regex: new RegExp(search, 'i') } },
-                  // { city: { $regex: new RegExp(search, 'i') } },
-                  // { mainCategory: { $regex: new RegExp(search, 'i') } },
-              ]
-          };
-          Object.assign(query, searchQuery);
-      }
+//         if (search) {
+//           const searchQuery = {
+//               $or: [
+//                   { name: { $regex: new RegExp(search, 'i') } },
+             
+//               ]
+//           };
+//           Object.assign(query, searchQuery);
+//       }
       
-          let result = [];
-          let totalCount = 0;
+//           let result = [];
+//           let totalCount = 0;
       
-           if (categoryName === 'Provider') {
-            totalCount = await providerData.countDocuments(query);
-            result = await providerData
-              .find(query)
-              .select('_id name specialty experience city state mainCategory fullAddress phoneNumber zipCode images overall_ratings bio overall_rating')
-              .lean()
-              .skip(page * limit)
-              .limit(limit);
-          } 
+//            if (categoryName === 'Provider') {
+//             totalCount = await providerData.countDocuments(query);
+//             result = await providerData
+//               .find(query)
+//               .select('_id name specialty experience city state mainCategory fullAddress phoneNumber zipCode images overall_ratings bio overall_rating')
+//               .lean()
+//               .skip(page * limit)
+//               .limit(limit);
+//           } 
            
-          return { result, totalCount };
-        };
+//           return { result, totalCount };
+//         };
       
-        const scrapeAllCategories = async (categories) => {
-          const promises = categories.map((categoryName) => scrapeCategory(categoryName));
-          const results = await Promise.all(promises);
-          return results;
-        };
+//         const scrapeAllCategories = async (categories) => {
+//           const promises = categories.map((categoryName) => scrapeCategory(categoryName));
+//           const results = await Promise.all(promises);
+//           return results;
+//         };
       
-        try {
-          const scrapedData = await scrapeAllCategories(name);
+//         try {
+//           const scrapedData = await scrapeAllCategories(name);
       
-          const totalCount = scrapedData.reduce((acc, curr) => acc + curr.totalCount, 0);
-          const flatResults = scrapedData.flatMap((data) => data.result);
+//           const totalCount = scrapedData.reduce((acc, curr) => acc + curr.totalCount, 0);
+//           const flatResults = scrapedData.flatMap((data) => data.result);
       
-          res.status(200).json({ totalCount, data: flatResults });        
+//           res.status(200).json({ totalCount, data: flatResults });        
 
-        } catch (err) {
-          console.log(err)
-          next(err);
-        }
-      }
+//         } catch (err) {
+//           console.log(err)
+//           next(err);
+//         }
+//       }
      
-    } catch (error) {
-      next(error);
+//     } catch (error) {
+//       next(error);
+//     }
+// },
+ getAllProviders: async (req, res, next) => {
+  try {
+    const {
+      state,
+      city,
+      specialty,
+      experience,
+      zipCode,
+      overall_rating,
+      name,
+      page ,
+      limit=6 ,
+      search
+    } = req.body;
+
+    // Build query
+    // console.log(req.body)
+    const query = {};
+    console.log(query)
+
+    if (state) query.state = state;
+    if (city) query.city = city;
+    if (zipCode) query.zipCode = zipCode;
+    if (specialty) query.specialty = specialty;
+    if (Array.isArray(name)) query.mainCategory = { $in: name };
+
+    if (overall_rating && Array.isArray(overall_rating)) {
+      query.overall_rating = { $in: overall_rating.map(Number) };
     }
-}
 
+    if (experience && Array.isArray(experience)) {
+      const [min, max] = experience;
+      query.experience = { $gte: min, $lte: max };
+    }
 
-  
+    if (search) {
+      query.name = { $regex: new RegExp(search, 'i') }; // Prefix search
+    }
+
+    // Count total matching documents
+    const totalCount = await providerData.countDocuments(query);
+
+    // Fetch paginated results
+    const result = await providerData
+      .find(query)
+      .select(
+        '_id name specialty experience city state mainCategory fullAddress phoneNumber zipCode images overall_ratings bio overall_rating'
+      )
+      .skip(page * limit)
+      .limit(limit)
+      .lean();
+
+    res.status(200).json({ totalCount, data: result });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+},  
  
   
 

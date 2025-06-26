@@ -59,6 +59,9 @@ const providerSchema = new Schema({
   },
 });
 providerSchema.index({ location: '2dsphere' });
+providerSchema.index(
+  
+)
 const providerData = mongoose.model('providers', providerSchema, 'providers');
 
 module.exports = providerData;
