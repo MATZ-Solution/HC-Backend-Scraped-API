@@ -4660,7 +4660,7 @@ const healthCareController = {
     res.status(500).json({ success: false, message: 'Internal server error.' });
   }
 },
-//  getAllProviders: async (req, res, next) => {
+//  getAllProvider: async (req, res, next) => {
 //   try {
 //     const { state, city, specialty,experience, zipCode,overall_rating, name, page, limit=6 ,search} = req.body;
 //     // console.log(req.body)
@@ -4752,7 +4752,8 @@ const healthCareController = {
 //       next(error);
 //     }
 // },
- getAllProviders: async (req, res, next) => {
+
+getAllProviders: async (req, res, next) => {
   try {
     const {
       state,
@@ -4763,38 +4764,41 @@ const healthCareController = {
       overall_rating,
       name,
       page ,
-      limit ,
+      limit,
       search
     } = req.body;
 
-    // Build query
-    // console.log(req.body)
     const query = {};
-    console.log(query)
-
     if (state) query.state = state;
     if (city) query.city = city;
     if (zipCode) query.zipCode = zipCode;
     if (specialty) query.specialty = specialty;
     if (Array.isArray(name)) query.mainCategory = { $in: name };
-
     if (overall_rating && Array.isArray(overall_rating)) {
       query.overall_rating = { $in: overall_rating.map(Number) };
     }
-
     if (experience && Array.isArray(experience)) {
       const [min, max] = experience;
       query.experience = { $gte: min, $lte: max };
     }
-
     if (search) {
-      query.name = { $regex: new RegExp(search, 'i') }; // Prefix search
+      query.name = { $regex: new RegExp(search, 'i') };
     }
 
-    // Count total matching documents
-    const totalCount = await providerData.countDocuments(query);
+    const isCacheable = Array.isArray(name) && name.length === 1 && name[0] === 'Provider';
 
-    // Fetch paginated results
+    // 🔑 Define cache key only if eligible
+    const cacheKey = isCacheable ? `provider_${JSON.stringify(query)}_${page}_${limit}` : null;
+
+    // ✅ Check cache only if cacheable
+    if (isCacheable) {
+      const cached = cache.get(cacheKey);
+      if (cached) {
+        return res.status(200).json(cached);
+      }
+    }
+
+    const totalCount = await providerData.countDocuments(query);
     const result = await providerData
       .find(query)
       .select(
@@ -4804,18 +4808,21 @@ const healthCareController = {
       .limit(limit)
       .lean();
 
-    res.status(200).json({ totalCount, data: result });
+    const response = { totalCount, data: result };
+
+    // 🧠 Save to cache only if it's name === ['Provider']
+    if (isCacheable) {
+      cache.set(cacheKey, response);
+    }
+
+    res.status(200).json(response);
   } catch (error) {
     console.error(error);
     next(error);
   }
-},  
- 
-  
+},
 
 };
-
-
 
 // Function to fetch data from the database
 // const fetchDataFromDatabase = async () => {
