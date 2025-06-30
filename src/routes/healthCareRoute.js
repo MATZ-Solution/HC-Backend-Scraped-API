@@ -79,6 +79,8 @@ router.get(
   healthCare.getProfessionalEachSpecialityRecords
 );
 
+// router.put('/normalize-cities', healthCare.normalizeCities);
+
 //<-------------------get Records Using Professional Speciality -------------------------->
 router.get(
   '/getRecordsUsingProfessionalspeciality/:speciality',
@@ -101,6 +103,9 @@ router.post('/getMutilpleCategories', healthCare.getMultipleCategoryData)
 
 //<------------------------getStateCityAndZipCode-------------------------------->
 router.get('/getStateCityAndZipCode', healthCare.getStateCityAndZipCode)
+// router.get('/getStateCityAndZipCodes',healthCare.getStateCityAndZipCodes)
+router.get('/getAllState',healthCare.getAllState)
+router.post('/getCitiesByState',healthCare.getCitiesByState)
 
 router.get('/getCityFacility', healthCare.getCityAndFacilityCount)
 router.get('/getCityFacilityApp', healthCare.getCityAndFacilityCountApp)
@@ -120,9 +125,11 @@ router.post('/getAllRecordsCategoryOnLatLong', healthCare.getAllRecordsCategoryL
 
 router.get('/getAllCategoryRecords', healthCare.getAllCategoryDataRecords)
 
-router.get('/searchByZipCode/:page?/:limit?/:zipCode?',healthCare.filterZipCode)
+router.get('/searchByZipCode/:page?/:limit?/:zipCode?',healthCare.filterZipCodessss)
 
 router.get('/searchByZipCodeApp',healthCare.filterZipCodeForApp)
+router.get('/getStateCityAndZipCodess',healthCare.getStateCityAndZipCodesss)
+router.get('/searchByZipCodeApps',healthCare.filterZipCode)
 
 router.post('/searchIngRecords',healthCare.getRecordsbySearch)
 
@@ -131,5 +138,6 @@ router.post('/searchIngRecords',healthCare.getRecordsbySearch)
 
 
 router.post('/getAllProviders',healthCare.getAllProviders)
+// router.post('/getAllProvider',healthCare.getAllProvider)
 
 module.exports = router;
