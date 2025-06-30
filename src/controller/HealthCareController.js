@@ -1967,68 +1967,113 @@ const healthCareController = {
   //     next(err)
   //   }
   // },
-  searchByZipCode:async(req,res,next)=>{
-    try {
-      const { zipCode, page , limit } = req.params;
-      // console.log(zipCode,"data")
-      const regex = new RegExp(zipCode, 'i');
+  // searchByZipCode:async(req,res,next)=>{
+  //   try {
+  //     const { zipCode, page , limit } = req.params;
+  //     // console.log(zipCode,"data")
+  //     const regex = new RegExp(zipCode, 'i');
     
-      const pipeline = [
-        {
-          $match: { zipCode: { $regex: regex } }
-        },
-        {
-          $sort: { zipCode: 1 } 
-        },
-        {
-          $skip: (parseInt(page ) - 1) * parseInt(limit) 
-        },
-        {
-          $limit: parseInt(limit) 
-        }
-      ];
+  //     const pipeline = [
+  //       {
+  //         $match: { zipCode: { $regex: regex } }
+  //       },
+  //       {
+  //         $sort: { zipCode: 1 } 
+  //       },
+  //       {
+  //         $skip: (parseInt(page ) - 1) * parseInt(limit) 
+  //       },
+  //       {
+  //         $limit: parseInt(limit) 
+  //       }
+  //     ];
     
-      const nursingHomeData = await nursingHome.aggregate(pipeline)
+  //     const nursingHomeData = await nursingHome.aggregate(pipeline)
     
-      // const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline)
-      // const hospitaleData = await hospital.aggregate(pipeline)
-      // const longTermCaresData = await longTermCares.aggregate(pipeline)
-      // const dialysisFacilityDataData = await dialysisFacilityData.aggregate(pipeline)
-      // const hoSpiceDataData = await hoSpiceData.aggregate(pipeline)
-      // const homeHealthDataData = await homeHealthData.aggregate(pipeline)
+  //     // const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline)
+  //     // const hospitaleData = await hospital.aggregate(pipeline)
+  //     // const longTermCaresData = await longTermCares.aggregate(pipeline)
+  //     // const dialysisFacilityDataData = await dialysisFacilityData.aggregate(pipeline)
+  //     // const hoSpiceDataData = await hoSpiceData.aggregate(pipeline)
+  //     // const homeHealthDataData = await homeHealthData.aggregate(pipeline)
       
-      const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline)
-      const inHomeCareData = await inHomeCare.aggregate(pipeline)
-      // const groupPracticeDataData= await groupPracticeData.aggregate(pipeline)
-      // const independentLivingData= await independentLiving.aggregate(pipeline)
-      const memoryCareData=await memoryCare.aggregate(pipeline)
-      // const medicalFacilitiesData=await medicalFacilities.aggregate(pipeline)
-      // const medicalSuppliersData=await medicalSuppliers.aggregate(pipeline)
-      // const physicianData=await physicians.aggregate(pipeline)
-      // const homeHealthData=await homeHealthData.aggregate(pipeline)
-      // const assistedLivingData=await assistedLiving.aggregate(pipeline)
-      // const adultDayCareData=await adultDayCare.aggregate(pipeline)
-      // const careRetirementData=await careRetirement.aggregate(pipeline)
-      // const geriaticCareManagerData=await geriaticCareManager.aggregate(pipeline)
+  //     const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline)
+  //     const inHomeCareData = await inHomeCare.aggregate(pipeline)
+  //     // const groupPracticeDataData= await groupPracticeData.aggregate(pipeline)
+  //     // const independentLivingData= await independentLiving.aggregate(pipeline)
+  //     const memoryCareData=await memoryCare.aggregate(pipeline)
+  //     // const medicalFacilitiesData=await medicalFacilities.aggregate(pipeline)
+  //     // const medicalSuppliersData=await medicalSuppliers.aggregate(pipeline)
+  //     // const physicianData=await physicians.aggregate(pipeline)
+  //     // const homeHealthData=await homeHealthData.aggregate(pipeline)
+  //     // const assistedLivingData=await assistedLiving.aggregate(pipeline)
+  //     // const adultDayCareData=await adultDayCare.aggregate(pipeline)
+  //     // const careRetirementData=await careRetirement.aggregate(pipeline)
+  //     // const geriaticCareManagerData=await geriaticCareManager.aggregate(pipeline)
     
-      // const mergedData = [...nursingHomeData, ...memoryCareData, ...inpatientRehabilitationData, ...inHomeCareData,...medicalSuppliersData,...medicalFacilitiesData,...physicianData];
-      const mergedData = [...nursingHomeData, ...memoryCareData, ...inpatientRehabilitationData, ...inHomeCareData];
+  //     // const mergedData = [...nursingHomeData, ...memoryCareData, ...inpatientRehabilitationData, ...inHomeCareData,...medicalSuppliersData,...medicalFacilitiesData,...physicianData];
+  //     const mergedData = [...nursingHomeData, ...memoryCareData, ...inpatientRehabilitationData, ...inHomeCareData];
     
-    // Extract unique zip codes using a Set
-    const uniqueZipCodes = new Set(mergedData.map((e) => e.zipCode));
+  //   // Extract unique zip codes using a Set
+  //   const uniqueZipCodes = new Set(mergedData.map((e) => e.zipCode));
 
-    // Convert the Set back to an array
-    const uniqueZipCodesArray = [...uniqueZipCodes];
+  //   // Convert the Set back to an array
+  //   const uniqueZipCodesArray = [...uniqueZipCodes];
 
-    // Sort the array if needed
-    const sortedData = uniqueZipCodesArray.sort();
+  //   // Sort the array if needed
+  //   const sortedData = uniqueZipCodesArray.sort();
 
-    res.status(200).json(sortedData);
-    } catch (err) {
-      next(err);
+  //   res.status(200).json(sortedData);
+  //   } catch (err) {
+  //     console.log(err)
+  //     next(err);
+  //   }
+    
+  // },
+
+  searchByZipCode: async (req, res, next) => {
+  try {
+    const { zipCode = '', page , limit  } = req.query;
+
+    const parsedPage = parseInt(page);
+    const parsedLimit = parseInt(limit);
+
+    if (isNaN(parsedPage) || isNaN(parsedLimit) || parsedPage < 1 || parsedLimit < 1) {
+      return res.status(400).json({ message: 'Invalid page or limit value' });
     }
-    
-  },
+
+    const skip = (parsedPage - 1) * parsedLimit;
+    const regex = new RegExp(zipCode, 'i');
+
+    const pipeline = [
+      { $match: { zipCode: { $regex: regex } } },
+      { $sort: { zipCode: 1 } },
+      { $skip: skip },
+      { $limit: parsedLimit }
+    ];
+
+    const nursingHomeData = await nursingHome.aggregate(pipeline);
+    const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline);
+    const inHomeCareData = await inHomeCare.aggregate(pipeline);
+    const memoryCareData = await memoryCare.aggregate(pipeline);
+
+    const mergedData = [
+      ...nursingHomeData,
+      ...memoryCareData,
+      ...inpatientRehabilitationData,
+      ...inHomeCareData
+    ];
+
+    const uniqueZipCodes = new Set(mergedData.map((e) => e.zipCode));
+    const uniqueZipCodesArray = [...uniqueZipCodes].sort();
+
+    res.status(200).json(uniqueZipCodesArray);
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+},
+
   
   filterZipCode: async (req, res, next) => {
    try {
