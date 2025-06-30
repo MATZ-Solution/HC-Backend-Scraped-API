@@ -1967,70 +1967,70 @@ const healthCareController = {
   //     next(err)
   //   }
   // },
-  // filterZipCode:async(req,res,next)=>{
-  //   try {
-  //     const { zipCode, page , limit } = req.params;
-  //     // console.log(zipCode,"data")
-  //     const regex = new RegExp(zipCode, 'i');
+  filterZipCodes:async(req,res,next)=>{
+    try {
+      const { zipCode, page , limit } = req.params;
+      // console.log(zipCode,"data")
+      const regex = new RegExp(zipCode, 'i');
     
-  //     const pipeline = [
-  //       {
-  //         $match: { zipCode: { $regex: regex } }
-  //       },
-  //       {
-  //         $sort: { zipCode: 1 } 
-  //       },
-  //       {
-  //         $skip: (parseInt(page ) - 1) * parseInt(limit) 
-  //       },
-  //       {
-  //         $limit: parseInt(limit) 
-  //       }
-  //     ];
+      const pipeline = [
+        {
+          $match: { zipCode: { $regex: regex } }
+        },
+        {
+          $sort: { zipCode: 1 } 
+        },
+        {
+          $skip: (parseInt(page ) - 1) * parseInt(limit) 
+        },
+        {
+          $limit: parseInt(limit) 
+        }
+      ];
     
-  //     const nursingHomeData = await nursingHome.aggregate(pipeline)
+      const nursingHomeData = await nursingHome.aggregate(pipeline)
     
-  //     // const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline)
-  //     // const hospitaleData = await hospital.aggregate(pipeline)
-  //     // const longTermCaresData = await longTermCares.aggregate(pipeline)
-  //     // const dialysisFacilityDataData = await dialysisFacilityData.aggregate(pipeline)
-  //     // const hoSpiceDataData = await hoSpiceData.aggregate(pipeline)
-  //     // const homeHealthDataData = await homeHealthData.aggregate(pipeline)
+      // const skilledNursingHomeData = await skilledNursingHome.aggregate(pipeline)
+      // const hospitaleData = await hospital.aggregate(pipeline)
+      // const longTermCaresData = await longTermCares.aggregate(pipeline)
+      // const dialysisFacilityDataData = await dialysisFacilityData.aggregate(pipeline)
+      // const hoSpiceDataData = await hoSpiceData.aggregate(pipeline)
+      // const homeHealthDataData = await homeHealthData.aggregate(pipeline)
       
-  //     const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline)
-  //     const inHomeCareData = await inHomeCare.aggregate(pipeline)
-  //     // const groupPracticeDataData= await groupPracticeData.aggregate(pipeline)
-  //     // const independentLivingData= await independentLiving.aggregate(pipeline)
-  //     const memoryCareData=await memoryCare.aggregate(pipeline)
-  //     // const medicalFacilitiesData=await medicalFacilities.aggregate(pipeline)
-  //     // const medicalSuppliersData=await medicalSuppliers.aggregate(pipeline)
-  //     // const physicianData=await physicians.aggregate(pipeline)
-  //     // const homeHealthData=await homeHealthData.aggregate(pipeline)
-  //     // const assistedLivingData=await assistedLiving.aggregate(pipeline)
-  //     // const adultDayCareData=await adultDayCare.aggregate(pipeline)
-  //     // const careRetirementData=await careRetirement.aggregate(pipeline)
-  //     // const geriaticCareManagerData=await geriaticCareManager.aggregate(pipeline)
+      const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline)
+      const inHomeCareData = await inHomeCare.aggregate(pipeline)
+      // const groupPracticeDataData= await groupPracticeData.aggregate(pipeline)
+      // const independentLivingData= await independentLiving.aggregate(pipeline)
+      const memoryCareData=await memoryCare.aggregate(pipeline)
+      // const medicalFacilitiesData=await medicalFacilities.aggregate(pipeline)
+      // const medicalSuppliersData=await medicalSuppliers.aggregate(pipeline)
+      // const physicianData=await physicians.aggregate(pipeline)
+      // const homeHealthData=await homeHealthData.aggregate(pipeline)
+      // const assistedLivingData=await assistedLiving.aggregate(pipeline)
+      // const adultDayCareData=await adultDayCare.aggregate(pipeline)
+      // const careRetirementData=await careRetirement.aggregate(pipeline)
+      // const geriaticCareManagerData=await geriaticCareManager.aggregate(pipeline)
     
-  //     // const mergedData = [...nursingHomeData, ...memoryCareData, ...inpatientRehabilitationData, ...inHomeCareData,...medicalSuppliersData,...medicalFacilitiesData,...physicianData];
-  //     const mergedData = [...nursingHomeData, ...memoryCareData, ...inpatientRehabilitationData, ...inHomeCareData];
+      // const mergedData = [...nursingHomeData, ...memoryCareData, ...inpatientRehabilitationData, ...inHomeCareData,...medicalSuppliersData,...medicalFacilitiesData,...physicianData];
+      const mergedData = [...nursingHomeData, ...memoryCareData, ...inpatientRehabilitationData, ...inHomeCareData];
     
-  //   // Extract unique zip codes using a Set
-  //   const uniqueZipCodes = new Set(mergedData.map((e) => e.zipCode));
+    // Extract unique zip codes using a Set
+    const uniqueZipCodes = new Set(mergedData.map((e) => e.zipCode));
 
-  //   // Convert the Set back to an array
-  //   const uniqueZipCodesArray = [...uniqueZipCodes];
+    // Convert the Set back to an array
+    const uniqueZipCodesArray = [...uniqueZipCodes];
 
-  //   // Sort the array if needed
-  //   const sortedData = uniqueZipCodesArray.sort();
+    // Sort the array if needed
+    const sortedData = uniqueZipCodesArray.sort();
 
-  //   res.status(200).json(sortedData);
-  //   } catch (err) {
-  //     next(err);
-  //   }
+    res.status(200).json(sortedData);
+    } catch (err) {
+      next(err);
+    }
     
-  // },
+  },
   
-  filterZipCode: async (req, res, next) => {
+  searchByZipCode: async (req, res, next) => {
    try {
     const { zipCode = '', page = 1, limit = 20 } = req.query;
     const regex = new RegExp(`^${zipCode}`, 'i');
@@ -2071,68 +2071,68 @@ const healthCareController = {
 }
 ,
 
-getStateCityAndZipCodesss: async (req, res, next) => {
-  try {
-    const cacheKey = 'uniqueStateCityZipRecords';
+// getStateCityAndZipCodesss: async (req, res, next) => {
+//   try {
+//     const cacheKey = 'uniqueStateCityZipRecords';
 
-    const cachedData = cache.get(cacheKey);
-    if (cachedData) {
-      return res.status(200).json(cachedData);
-    }
+//     const cachedData = cache.get(cacheKey);
+//     if (cachedData) {
+//       return res.status(200).json(cachedData);
+//     }
 
-    const promises = [
-      nursingHome.find().lean().select('state city zipCode -_id'),
-      hospital.find().lean().select('state city zipCode -_id'),
-      dialysisFacilityData.find().lean().select('state city zipCode -_id'),
-      homeHealthData.find().lean().select('state city zipCode -_id'),
-      hoSpiceData.find().lean().select('state city zipCode -_id'),
-      inpatientRehabilitiation.find().lean().select('state city zipCode -_id'),
-      memoryCare.find().lean().select('state city zipCode -_id'),
-      inHomeCare.find().lean().select('state city zipCode -_id'),
-    ];
+//     const promises = [
+//       nursingHome.find().lean().select('state city zipCode -_id'),
+//       hospital.find().lean().select('state city zipCode -_id'),
+//       dialysisFacilityData.find().lean().select('state city zipCode -_id'),
+//       homeHealthData.find().lean().select('state city zipCode -_id'),
+//       hoSpiceData.find().lean().select('state city zipCode -_id'),
+//       inpatientRehabilitiation.find().lean().select('state city zipCode -_id'),
+//       memoryCare.find().lean().select('state city zipCode -_id'),
+//       inHomeCare.find().lean().select('state city zipCode -_id'),
+//     ];
 
-    const allData = (await Promise.all(promises)).flat();
+//     const allData = (await Promise.all(promises)).flat();
 
-    const uniqueSet = new Set();
-    const uniqueStateCityZipList = [];
+//     const uniqueSet = new Set();
+//     const uniqueStateCityZipList = [];
 
-    for (const item of allData) {
-      const state = item.state?.trim();
-      const city = item.city?.trim();
-      const zipCode = item.zipCode?.toString().trim();
+//     for (const item of allData) {
+//       const state = item.state?.trim();
+//       const city = item.city?.trim();
+//       const zipCode = item.zipCode?.toString().trim();
 
-      if (!state || !city || !zipCode) continue;
+//       if (!state || !city || !zipCode) continue;
 
-      const cityFormatted = capitalizeFirstLetter(city);
-      const uniqueKey = `${state.toLowerCase()}::${cityFormatted.toLowerCase()}::${zipCode}`;
+//       const cityFormatted = capitalizeFirstLetter(city);
+//       const uniqueKey = `${state.toLowerCase()}::${cityFormatted.toLowerCase()}::${zipCode}`;
 
-      if (!uniqueSet.has(uniqueKey)) {
-        uniqueSet.add(uniqueKey);
-        uniqueStateCityZipList.push({
-          state,
-          city: cityFormatted,
-          zipCode,
-        });
-      }
-    }
+//       if (!uniqueSet.has(uniqueKey)) {
+//         uniqueSet.add(uniqueKey);
+//         uniqueStateCityZipList.push({
+//           state,
+//           city: cityFormatted,
+//           zipCode,
+//         });
+//       }
+//     }
 
-    // Optional sorting
-    uniqueStateCityZipList.sort((a, b) => {
-      if (a.state === b.state) {
-        if (a.city === b.city) {
-          return a.zipCode.localeCompare(b.zipCode);
-        }
-        return a.city.localeCompare(b.city);
-      }
-      return a.state.localeCompare(b.state);
-    });
+//     // Optional sorting
+//     uniqueStateCityZipList.sort((a, b) => {
+//       if (a.state === b.state) {
+//         if (a.city === b.city) {
+//           return a.zipCode.localeCompare(b.zipCode);
+//         }
+//         return a.city.localeCompare(b.city);
+//       }
+//       return a.state.localeCompare(b.state);
+//     });
 
-    cache.set(cacheKey, uniqueStateCityZipList);
-    return res.status(200).json(uniqueStateCityZipList);
-  } catch (error) {
-    next(error);
-  }
-},
+//     cache.set(cacheKey, uniqueStateCityZipList);
+//     return res.status(200).json(uniqueStateCityZipList);
+//   } catch (error) {
+//     next(error);
+//   }
+// },
 
 
   
@@ -4259,77 +4259,77 @@ filterZipCode : async (req, res) => {
       next(error)
     }
   },
-  getCityAndZipCodeOnSTATEApp: async (req, res, next) => {
+  // getCityAndZipCodeOnSTATEApp: async (req, res, next) => {
    
-    try {
-      const { state } = req.body;
+  //   try {
+  //     const { state } = req.body;
       
-      console.log(state,"state")
+  //     console.log(state,"state")
     
-      const uniqueRecords = {
-        cities: [],
-      };
+  //     const uniqueRecords = {
+  //       cities: [],
+  //     };
     
-      let query = {};
+  //     let query = {};
     
-      if (state) {
-        query.state = { $regex: new RegExp(state, 'i') };
-      }
+  //     if (state) {
+  //       query.state = { $regex: new RegExp(state, 'i') };
+  //     }
 
       
     
-      const nursingHomeResult = await nursingHome.find(query).select('-_id city state zipCode').lean();
-      const inpatientRehabilitiationResult = await inpatientRehabilitiation.find(query).select('-_id city state zipCode').lean();
+  //     const nursingHomeResult = await nursingHome.find(query).select('-_id city state zipCode').lean();
+  //     const inpatientRehabilitiationResult = await inpatientRehabilitiation.find(query).select('-_id city state zipCode').lean();
       
       
       
-      const memoryCareResult = await memoryCare.find(query).select('-_id city state zipCode').lean();
-      const inHomeCareResult = await inHomeCare.find(query).select('-_id city state zipCode').lean();
-      const hospitalCareResult=await hospital.find(query).select('-_id city state zipCode').lean();
-      const dialysisFacilityDataResult=await dialysisFacilityData.find(query).select('-_id city state zipCode').lean();
-      const homeHealthDataResult=await homeHealthData.find(query).select('-_id city state zipCode').lean();
-      const hoSpiceDataResult=await hoSpiceData.find(query).select('-_id city state zipCode').lean();
-      // const medicalFacilitiesResult = await medicalFacilities.find(query).select('-_id city state zipCode')
-      // const medicalSuppliersResult = await medicalSuppliers.find(query).select('-_id city state zipCode')
+  //     const memoryCareResult = await memoryCare.find(query).select('-_id city state zipCode').lean();
+  //     const inHomeCareResult = await inHomeCare.find(query).select('-_id city state zipCode').lean();
+  //     const hospitalCareResult=await hospital.find(query).select('-_id city state zipCode').lean();
+  //     const dialysisFacilityDataResult=await dialysisFacilityData.find(query).select('-_id city state zipCode').lean();
+  //     const homeHealthDataResult=await homeHealthData.find(query).select('-_id city state zipCode').lean();
+  //     const hoSpiceDataResult=await hoSpiceData.find(query).select('-_id city state zipCode').lean();
+  //     // const medicalFacilitiesResult = await medicalFacilities.find(query).select('-_id city state zipCode')
+  //     // const medicalSuppliersResult = await medicalSuppliers.find(query).select('-_id city state zipCode')
     
-      const mergedRecords = [
-        ...nursingHomeResult,
-        ...inpatientRehabilitiationResult,
-        ...memoryCareResult,
-        ...inHomeCareResult,
-        ...hospitalCareResult,
-        ...dialysisFacilityDataResult,
-        ...homeHealthDataResult,
-        ...hoSpiceDataResult,
-        // ...medicalFacilitiesResult,
-        // ...medicalSuppliersResult
-      ];
+  //     const mergedRecords = [
+  //       ...nursingHomeResult,
+  //       ...inpatientRehabilitiationResult,
+  //       ...memoryCareResult,
+  //       ...inHomeCareResult,
+  //       ...hospitalCareResult,
+  //       ...dialysisFacilityDataResult,
+  //       ...homeHealthDataResult,
+  //       ...hoSpiceDataResult,
+  //       // ...medicalFacilitiesResult,
+  //       // ...medicalSuppliersResult
+  //     ];
     
-      const citySet = new Set(); // Using a Set to store unique city names
+  //     const citySet = new Set(); // Using a Set to store unique city names
     
-      const capitalizeFirstLetter = (str) => {
-        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-      };
+  //     const capitalizeFirstLetter = (str) => {
+  //       return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  //     };
     
-      mergedRecords.forEach(record => {
-        const formattedCity = capitalizeFirstLetter(record.city); 
-        if (!citySet.has(formattedCity)) {
-          citySet.add(formattedCity);
-          uniqueRecords.cities.push(formattedCity);
-        }
-      });
+  //     mergedRecords.forEach(record => {
+  //       const formattedCity = capitalizeFirstLetter(record.city); 
+  //       if (!citySet.has(formattedCity)) {
+  //         citySet.add(formattedCity);
+  //         uniqueRecords.cities.push(formattedCity);
+  //       }
+  //     });
     
-      uniqueRecords.cities.sort();
+  //     uniqueRecords.cities.sort();
     
-      res.status(200).json(uniqueRecords);
-    } catch (error) {
-      next(error);
-    }
-    
-    
+  //     res.status(200).json(uniqueRecords);
+  //   } catch (error) {
+  //     next(error);
+  //   }
     
     
-  },
+    
+    
+  // },
 
   getCitiesByState: async (req, res, next) => {
   try {

@@ -114,7 +114,7 @@ router.get('/getCityFacilityApp', healthCare.getCityAndFacilityCountApp)
 
 // <-------------------GET CITY AND ZIPCODE USING ON THE BASIS OF STATE----------->
 router.post('/getCityAndZipCodeOnSTATE', healthCare.getCityAndZipCodeOnSTATE)
-router.post('/getCityAndZipCodeOnSTATEApp', healthCare.getCityAndZipCodeOnSTATEApp)
+// router.post('/getCityAndZipCodeOnSTATEApp', healthCare.getCityAndZipCodeOnSTATEApp)
 
 //<--------------------Get Professional City state and ZipCode
 router.get('/getProfessionalCityStateAndZipCode', healthCare.getProfessionalCityStateAndZipCode)
@@ -125,10 +125,10 @@ router.post('/getAllRecordsCategoryOnLatLong', healthCare.getAllRecordsCategoryL
 
 router.get('/getAllCategoryRecords', healthCare.getAllCategoryDataRecords)
 
-router.get('/searchByZipCode/:page?/:limit?/:zipCode?',healthCare.filterZipCode)
+router.get('/searchByZipCode/:page?/:limit?/:zipCode?',healthCare.searchByZipCode)
 
 router.get('/searchByZipCodeApp',healthCare.filterZipCodeForApp)
-router.get('/getStateCityAndZipCodess',healthCare.getStateCityAndZipCodesss)
+// router.get('/getStateCityAndZipCodess',healthCare.getStateCityAndZipCodesss)
 router.get('/searchByZipCodeApps',healthCare.filterZipCode)
 
 router.post('/searchIngRecords',healthCare.getRecordsbySearch)
