@@ -1967,7 +1967,7 @@ const healthCareController = {
   //     next(err)
   //   }
   // },
-  filterZipCodes:async(req,res,next)=>{
+  searchByZipCode:async(req,res,next)=>{
     try {
       const { zipCode, page , limit } = req.params;
       // console.log(zipCode,"data")
@@ -2030,7 +2030,7 @@ const healthCareController = {
     
   },
   
-  searchByZipCode: async (req, res, next) => {
+  filterZipCode: async (req, res, next) => {
    try {
     const { zipCode = '', page = 1, limit = 20 } = req.query;
     const regex = new RegExp(`^${zipCode}`, 'i');
