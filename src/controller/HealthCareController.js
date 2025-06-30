@@ -2450,70 +2450,88 @@ getStateCityAndZipCodesss: async (req, res, next) => {
 
   
 
-  filterZipCodessss : async (req, res) => {
- try {
-    const { zipCode = '', page = 1, limit=10  } = req.query;
+   filterZipCodessss: async (req, res, next) => {
+    try {
+        const { zipCode, page, limit } = req.params;
+        const regex = new RegExp(zipCode, 'i');
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+        const parsedLimit = parseInt(limit);
 
-    const parsedPage = parseInt(page);
-    const parsedLimit = parseInt(limit);
-    const skip = (parsedPage - 1) * parsedLimit;
+        const createPipeline = (zipRegex) => [
+            { $match: { zipCode: { $regex: zipRegex } } },
+            { $sort: { zipCode: 1 } },
+            { $skip: skip },
+            { $limit: parsedLimit }
+        ];
 
-    let notFound = false;
-    let regex = new RegExp(`^${zipCode}`, 'i');
+        const aggregateData = async (pipeline) => {
+            const [nursingHomeData, inpatientRehabilitationData, inHomeCareData, memoryCareData,hoSpiceDataData,hospitalData,dialysisFacilityDataData,homeHealthDataData] = await Promise.all([
+                nursingHome.aggregate(pipeline),
+                inpatientRehabilitiation.aggregate(pipeline),
+                inHomeCare.aggregate(pipeline),
+                memoryCare.aggregate(pipeline),
+                hoSpiceData.aggregate(pipeline),
+                hospital.aggregate(pipeline),
+                dialysisFacilityData.aggregate(pipeline),
+                homeHealthData.aggregate(pipeline),
+            ]);
+            return [...nursingHomeData, ...inpatientRehabilitationData, ...inHomeCareData, ...memoryCareData, ...hoSpiceDataData, ...hospitalData, ...dialysisFacilityDataData, ...homeHealthDataData];
+        };
 
-    // Step 1: Check if exact match (only when input is 5 digits)
-    if (zipCode.length === 5) {
-      const exactMatch = await allZipCode.findOne({
-        zipCode: { $regex: new RegExp(`^${zipCode}$`, 'i') }
-      });
+        const removeDuplicates = (data) => {
+            const uniqueRecords = new Map();
+            data.forEach(record => {
+                const key = `${record.zipCode}-${record.city}-${record.state}`;
+                if (!uniqueRecords.has(key)) uniqueRecords.set(key, record);
+            });
+            return Array.from(uniqueRecords.values());
+        };
 
-      if (!exactMatch) {
-        notFound = true;
-        regex = new RegExp(`^${zipCode.substring(0, 3)}`, 'i'); // fallback similar
-      }
-    }
+        let mergedData = await aggregateData(createPipeline(regex));
+        let notFound = mergedData.length === 0;
 
-    // Step 2: Fetch data (exact or fallback)
-    const results = await allZipCode.aggregate([
-      { $match: { zipCode: { $regex: regex } } },
-      {
-        $group: {
-          _id: {
-            zipCode: { $toLower: '$zipCode' },
-            city: { $toLower: '$city' },
-            state: { $toLower: '$state' }
-          }
+        if (notFound) {
+            const similarZipRegex = new RegExp(`^${zipCode.substring(0, 3)}`, 'i');
+            const similarPipeline = [
+                { $match: { zipCode: { $regex: similarZipRegex } } },
+                {
+                    $group: {
+                        _id: {
+                            zipCode: { $toLower: '$zipCode' },
+                            city: { $toLower: '$city' },
+                            state: { $toLower: '$state' }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        zipCode: '$_id.zipCode',
+                        city: '$_id.city',
+                        state: '$_id.state'
+                    }
+                },
+                { $sort: { zipCode: 1 } },
+                { $skip: skip },
+                { $limit: parsedLimit }
+            ];
+
+            mergedData = await aggregateData(similarPipeline);
         }
-      },
-      {
-        $project: {
-          _id: 0,
-          zipCode: '$_id.zipCode',
-          city: '$_id.city',
-          state: '$_id.state'
-        }
-      },
-      { $sort: { zipCode: 1 } },
-      { $skip: skip },
-      { $limit: parsedLimit }
-    ]);
 
-    // Step 3: Handle no results (even for partial input)
-    if (results.length === 0) {
-      notFound = true;
+        const uniqueZipCodes = Array.from(new Set(mergedData.map(record => record.zipCode)));
+
+        res.status(200).json({
+            data: uniqueZipCodes,
+            notFound: notFound
+        });
+    } catch (err) {
+        next(err);
     }
+}
+,
 
-    res.status(200).json({
-      data: results,
-      notFound
-    });
-
-  } catch (error) {
-    console.error('Error in searchByZipCodeApps:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-
-},
+ 
   
 filterZipCode : async (req, res) => {
  try {
