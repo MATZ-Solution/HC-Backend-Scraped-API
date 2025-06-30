@@ -79,8 +79,6 @@ router.get(
   healthCare.getProfessionalEachSpecialityRecords
 );
 
-// router.put('/normalize-cities', healthCare.normalizeCities);
-
 //<-------------------get Records Using Professional Speciality -------------------------->
 router.get(
   '/getRecordsUsingProfessionalspeciality/:speciality',
@@ -103,9 +101,6 @@ router.post('/getMutilpleCategories', healthCare.getMultipleCategoryData)
 
 //<------------------------getStateCityAndZipCode-------------------------------->
 router.get('/getStateCityAndZipCode', healthCare.getStateCityAndZipCode)
-// router.get('/getStateCityAndZipCodes',healthCare.getStateCityAndZipCodes)
-router.get('/getAllState',healthCare.getAllState)
-router.post('/getCitiesByState',healthCare.getCitiesByState)
 
 router.get('/getCityFacility', healthCare.getCityAndFacilityCount)
 router.get('/getCityFacilityApp', healthCare.getCityAndFacilityCountApp)
@@ -114,7 +109,7 @@ router.get('/getCityFacilityApp', healthCare.getCityAndFacilityCountApp)
 
 // <-------------------GET CITY AND ZIPCODE USING ON THE BASIS OF STATE----------->
 router.post('/getCityAndZipCodeOnSTATE', healthCare.getCityAndZipCodeOnSTATE)
-// router.post('/getCityAndZipCodeOnSTATEApp', healthCare.getCityAndZipCodeOnSTATEApp)
+router.post('/getCityAndZipCodeOnSTATEApp', healthCare.getCityAndZipCodeOnSTATEApp)
 
 //<--------------------Get Professional City state and ZipCode
 router.get('/getProfessionalCityStateAndZipCode', healthCare.getProfessionalCityStateAndZipCode)
@@ -125,11 +120,9 @@ router.post('/getAllRecordsCategoryOnLatLong', healthCare.getAllRecordsCategoryL
 
 router.get('/getAllCategoryRecords', healthCare.getAllCategoryDataRecords)
 
-router.get('/searchByZipCode/:page?/:limit?/:zipCode?',healthCare.searchByZipCode)
+router.get('/searchByZipCode/:page?/:limit?/:zipCode?',healthCare.filterZipCode)
 
 router.get('/searchByZipCodeApp',healthCare.filterZipCodeForApp)
-// router.get('/getStateCityAndZipCodess',healthCare.getStateCityAndZipCodesss)
-router.get('/searchByZipCodeApps',healthCare.filterZipCode)
 
 router.post('/searchIngRecords',healthCare.getRecordsbySearch)
 
@@ -138,6 +131,5 @@ router.post('/searchIngRecords',healthCare.getRecordsbySearch)
 
 
 router.post('/getAllProviders',healthCare.getAllProviders)
-// router.post('/getAllProvider',healthCare.getAllProvider)
 
 module.exports = router;
