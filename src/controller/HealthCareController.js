@@ -2033,7 +2033,7 @@ const healthCareController = {
 
   searchByZipCode: async (req, res, next) => {
   try {
-    const { zipCode = '', page , limit  } = req.query;
+    const { zipCode = '', page = '1', limit = '10' } = req.query;
 
     const parsedPage = parseInt(page);
     const parsedLimit = parseInt(limit);
