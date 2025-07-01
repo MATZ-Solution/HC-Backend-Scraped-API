@@ -2031,108 +2031,174 @@ const healthCareController = {
   // },
   
   filterZipCode: async (req, res, next) => {
+    console.log(req,"rq")
    try {
-    const { zipCode = '', page = 1, limit = 20 } = req.query;
-    const regex = new RegExp(`^${zipCode}`, 'i');
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-    const result = [];
+  const { zipCode ="" , page = 1 } = req.query;
+  console.log(zipCode,"query")
+  const limit = 5;
+  const skip = (parseInt(page) - 1) * limit;
+  let notFound = false;
 
-    const allStates = await StateZipMap.find().lean();
-    console.log(`Total states: ${allStates.length}`);
+  const pipeline = [];
 
-    for (const stateObj of allStates) {
-      const state = stateObj.state?.toLowerCase() || '';
-
-      for (const cityObj of stateObj.cities || []) {
-        const city = cityObj.name?.toLowerCase() || '';
-
-        for (const zip of cityObj.zipCodes || []) {
-          if (regex.test(zip)) {
-            result.push({
-              zipCode: zip,
-              city,
-              state,
-            });
-          }
-        }
-      }
-    }
-
-    const paginated = result.slice(skip, skip + parseInt(limit));
-
-    res.json({
-      data: paginated,
-      notFound: paginated.length === 0,
+  // Match search query against zipCode, city, or state
+  if (zipCode) {
+    console.log("dsd")
+    const regex = new RegExp(zipCode, 'i'); // <-- Fix: use zipCode here
+    // const regex = new RegExp(search, 'i');
+    pipeline.push({
+      $match: {
+        $or: [
+          { zipCode: { $regex: regex } },
+          { state: { $regex: regex } },
+          { city: { $regex: regex } },
+        ],
+      },
     });
-  } catch (error) {
-    console.error('Error in searchByZipCodeApps:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
   }
+
+  // Group by zipCode + city + state to avoid duplicates
+  pipeline.push({
+    $group: {
+      _id: {
+        zipCode: { $toLower: '$zipCode' },
+        city: { $toLower: '$city' },
+        state: { $toLower: '$state' },
+      },
+    },
+  });
+
+  // Project required fields
+  pipeline.push({
+    $project: {
+      _id: 0,
+      zipCode: '$_id.zipCode',
+      city: '$_id.city',
+      state: '$_id.state',
+    },
+  });
+
+  // Sort by zipCode
+  pipeline.push({ $sort: { zipCode: 1 } });
+
+  // Pagination
+  pipeline.push({ $skip: skip }, { $limit: limit });
+
+  // Query from allZipCodeUs collection
+  let result = await allZipCode.aggregate(pipeline);
+  console.log(result,"result")
+
+  if (result.length === 0) {
+    notFound = true;
+
+    // Try partial match using first 3 chars of zipCode if it's a full 5-digit zip
+    if (/^\d{5}$/.test(zipCode)) {
+      const similarPipeline = [
+        {
+          $match: {
+            zipCode: { $regex: new RegExp('^' + zipCode.substring(0, 3), 'i') },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              zipCode: { $toLower: '$zipCode' },
+              city: { $toLower: '$city' },
+              state: { $toLower: '$state' },
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            zipCode: '$_id.zipCode',
+            city: '$_id.city',
+            state: '$_id.state',
+          },
+        },
+        { $sort: { zipCode: 1 } },
+        { $skip: skip },
+        { $limit: limit },
+      ];
+
+      result = await allZipCode.aggregate(similarPipeline);
+    }
+  }
+
+  res.status(200).json({
+    data: result,
+    notFound,
+  });
+} catch (err) {
+  console.error('Error in filterZipCodeForApp:', err);
+  next(err);
 }
-,
 
-getStateCityAndZipCodesss: async (req, res, next) => {
-  try {
-    const cacheKey = 'uniqueStateCityZipRecords';
-
-    const cachedData = cache.get(cacheKey);
-    if (cachedData) {
-      return res.status(200).json(cachedData);
-    }
-
-    const promises = [
-      nursingHome.find().lean().select('state city zipCode -_id'),
-      hospital.find().lean().select('state city zipCode -_id'),
-      dialysisFacilityData.find().lean().select('state city zipCode -_id'),
-      homeHealthData.find().lean().select('state city zipCode -_id'),
-      hoSpiceData.find().lean().select('state city zipCode -_id'),
-      inpatientRehabilitiation.find().lean().select('state city zipCode -_id'),
-      memoryCare.find().lean().select('state city zipCode -_id'),
-      inHomeCare.find().lean().select('state city zipCode -_id'),
-    ];
-
-    const allData = (await Promise.all(promises)).flat();
-
-    const uniqueSet = new Set();
-    const uniqueStateCityZipList = [];
-
-    for (const item of allData) {
-      const state = item.state?.trim();
-      const city = item.city?.trim();
-      const zipCode = item.zipCode?.toString().trim();
-
-      if (!state || !city || !zipCode) continue;
-
-      const cityFormatted = capitalizeFirstLetter(city);
-      const uniqueKey = `${state.toLowerCase()}::${cityFormatted.toLowerCase()}::${zipCode}`;
-
-      if (!uniqueSet.has(uniqueKey)) {
-        uniqueSet.add(uniqueKey);
-        uniqueStateCityZipList.push({
-          state,
-          city: cityFormatted,
-          zipCode,
-        });
-      }
-    }
-
-    // Optional sorting
-    uniqueStateCityZipList.sort((a, b) => {
-      if (a.state === b.state) {
-        if (a.city === b.city) {
-          return a.zipCode.localeCompare(b.zipCode);
-        }
-        return a.city.localeCompare(b.city);
-      }
-      return a.state.localeCompare(b.state);
-    });
-
-    cache.set(cacheKey, uniqueStateCityZipList);
-    return res.status(200).json(uniqueStateCityZipList);
-  } catch (error) {
-    next(error);
-  }
 },
+
+
+// getStateCityAndZipCodesss: async (req, res, next) => {
+//   try {
+//     const cacheKey = 'uniqueStateCityZipRecords';
+
+//     const cachedData = cache.get(cacheKey);
+//     if (cachedData) {
+//       return res.status(200).json(cachedData);
+//     }
+
+//     const promises = [
+//       nursingHome.find().lean().select('state city zipCode -_id'),
+//       hospital.find().lean().select('state city zipCode -_id'),
+//       dialysisFacilityData.find().lean().select('state city zipCode -_id'),
+//       homeHealthData.find().lean().select('state city zipCode -_id'),
+//       hoSpiceData.find().lean().select('state city zipCode -_id'),
+//       inpatientRehabilitiation.find().lean().select('state city zipCode -_id'),
+//       memoryCare.find().lean().select('state city zipCode -_id'),
+//       inHomeCare.find().lean().select('state city zipCode -_id'),
+//     ];
+
+//     const allData = (await Promise.all(promises)).flat();
+
+//     const uniqueSet = new Set();
+//     const uniqueStateCityZipList = [];
+
+//     for (const item of allData) {
+//       const state = item.state?.trim();
+//       const city = item.city?.trim();
+//       const zipCode = item.zipCode?.toString().trim();
+
+//       if (!state || !city || !zipCode) continue;
+
+//       const cityFormatted = capitalizeFirstLetter(city);
+//       const uniqueKey = `${state.toLowerCase()}::${cityFormatted.toLowerCase()}::${zipCode}`;
+
+//       if (!uniqueSet.has(uniqueKey)) {
+//         uniqueSet.add(uniqueKey);
+//         uniqueStateCityZipList.push({
+//           state,
+//           city: cityFormatted,
+//           zipCode,
+//         });
+//       }
+//     }
+
+//     // Optional sorting
+//     uniqueStateCityZipList.sort((a, b) => {
+//       if (a.state === b.state) {
+//         if (a.city === b.city) {
+//           return a.zipCode.localeCompare(b.zipCode);
+//         }
+//         return a.city.localeCompare(b.city);
+//       }
+//       return a.state.localeCompare(b.state);
+//     });
+
+//     cache.set(cacheKey, uniqueStateCityZipList);
+//     return res.status(200).json(uniqueStateCityZipList);
+//   } catch (error) {
+//     next(error);
+//   }
+// },
 
 
   
@@ -2450,7 +2516,7 @@ getStateCityAndZipCodesss: async (req, res, next) => {
 
   
 
-   filterZipCodessss: async (req, res, next) => {
+   filterZipCodeForWeb: async (req, res, next) => {
     try {
         const { zipCode, page, limit } = req.params;
         const regex = new RegExp(zipCode, 'i');
@@ -2533,68 +2599,105 @@ getStateCityAndZipCodesss: async (req, res, next) => {
 
  
   
-filterZipCode : async (req, res) => {
+filterZipCodeNewAppForApp : async (req, res) => {
  try {
-    const { zipCode = '', page = 1, limit=10  } = req.query;
+  const { zipCode , page = 1 } = req.query;
+  const limit = 10;
+  const skip = (parseInt(page) - 1) * limit;
+  let notFound = false;
 
-    const parsedPage = parseInt(page);
-    const parsedLimit = parseInt(limit);
-    const skip = (parsedPage - 1) * parsedLimit;
+  const pipeline = [];
 
-    let notFound = false;
-    let regex = new RegExp(`^${zipCode}`, 'i');
-
-    // Step 1: Check if exact match (only when input is 5 digits)
-    if (zipCode.length === 5) {
-      const exactMatch = await allZipCode.findOne({
-        zipCode: { $regex: new RegExp(`^${zipCode}$`, 'i') }
-      });
-
-      if (!exactMatch) {
-        notFound = true;
-        regex = new RegExp(`^${zipCode.substring(0, 3)}`, 'i'); // fallback similar
-      }
-    }
-
-    // Step 2: Fetch data (exact or fallback)
-    const results = await allZipCode.aggregate([
-      { $match: { zipCode: { $regex: regex } } },
-      {
-        $group: {
-          _id: {
-            zipCode: { $toLower: '$zipCode' },
-            city: { $toLower: '$city' },
-            state: { $toLower: '$state' }
-          }
-        }
+  // Match search query against zipCode, city, or state
+  if (zipCode) {
+    const regex = new RegExp(zipCode, 'i'); // <-- Fix: use zipCode here
+    pipeline.push({
+      $match: {
+        $or: [
+          { zipCode: { $regex: regex } },
+          { state: { $regex: regex } },
+          { city: { $regex: regex } },
+        ],
       },
-      {
-        $project: {
-          _id: 0,
-          zipCode: '$_id.zipCode',
-          city: '$_id.city',
-          state: '$_id.state'
-        }
-      },
-      { $sort: { zipCode: 1 } },
-      { $skip: skip },
-      { $limit: parsedLimit }
-    ]);
-
-    // Step 3: Handle no results (even for partial input)
-    if (results.length === 0) {
-      notFound = true;
-    }
-
-    res.status(200).json({
-      data: results,
-      notFound
     });
-
-  } catch (error) {
-    console.error('Error in searchByZipCodeApps:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
   }
+
+  // Group by zipCode + city + state to avoid duplicates
+  pipeline.push({
+    $group: {
+      _id: {
+        zipCode: { $toLower: '$zipCode' },
+        city: { $toLower: '$city' },
+        state: { $toLower: '$state' },
+      },
+    },
+  });
+
+  // Project required fields
+  pipeline.push({
+    $project: {
+      _id: 0,
+      zipCode: '$_id.zipCode',
+      city: '$_id.city',
+      state: '$_id.state',
+    },
+  });
+
+  // Sort by zipCode
+  pipeline.push({ $sort: { zipCode: 1 } });
+
+  // Pagination
+  pipeline.push({ $skip: skip }, { $limit: limit });
+
+  // Query from allZipCodeUs collection
+  let result = await allZipCode.aggregate(pipeline);
+
+  if (result.length === 0) {
+    notFound = true;
+
+    // Try partial match using first 3 chars of zipCode if it's a full 5-digit zip
+    if (/^\d{5}$/.test(zipCode)) {
+      const similarPipeline = [
+        {
+          $match: {
+            zipCode: { $regex: new RegExp('^' + zipCode.substring(0, 3), 'i') },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              zipCode: { $toLower: '$zipCode' },
+              city: { $toLower: '$city' },
+              state: { $toLower: '$state' },
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            zipCode: '$_id.zipCode',
+            city: '$_id.city',
+            state: '$_id.state',
+          },
+        },
+        { $sort: { zipCode: 1 } },
+        { $skip: skip },
+        { $limit: limit },
+      ];
+
+      result = await allZipCode.aggregate(similarPipeline);
+    }
+  }
+
+  res.status(200).json({
+    data: result,
+    notFound,
+  });
+}
+catch (err) {
+  console.error('Error in filterZipCodeForApp:', err);
+  next(err);
+}
 
 },
 
@@ -5073,7 +5176,7 @@ getAllProviders: async (req, res, next) => {
       query.experience = { $gte: min, $lte: max };
     }
     if (search) {
-      query.name = { $regex: new RegExp(search, 'i') };
+      query.name = { $regex: `^${search}`, $options: 'i' };
     }
 
     const isCacheable = Array.isArray(name) && name.length === 1 && name[0] === 'Provider';
