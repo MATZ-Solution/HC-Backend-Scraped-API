@@ -5158,7 +5158,7 @@ getAllProviders: async (req, res, next) => {
       overall_rating,
       name,
       page ,
-      limit,
+      limit=6,
       search
     } = req.body;
 
@@ -5166,7 +5166,7 @@ getAllProviders: async (req, res, next) => {
     if (state) query.state = state;
     if (city) query.city = city;
     if (zipCode) query.zipCode = zipCode;
-    if (specialty) query.specialty = specialty;
+    if (specialty)  query.specialty = { $regex: specialty, $options: 'i' };
     if (Array.isArray(name)) query.mainCategory = { $in: name };
     if (overall_rating && Array.isArray(overall_rating)) {
       query.overall_rating = { $in: overall_rating.map(Number) };
@@ -5176,7 +5176,7 @@ getAllProviders: async (req, res, next) => {
       query.experience = { $gte: min, $lte: max };
     }
     if (search) {
-      query.name = { $regex: `^${search}`, $options: 'i' };
+      query.name = {$regex: search, $options: 'i' };
     }
 
     const isCacheable = Array.isArray(name) && name.length === 1 && name[0] === 'Provider';
