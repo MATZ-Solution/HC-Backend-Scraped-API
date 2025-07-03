@@ -5176,15 +5176,18 @@ getAllProviders: async (req, res, next) => {
       query.experience = { $gte: min, $lte: max };
     }
     if (search) {
-      query.name = {$regex: search, $options: 'i' };
-    }
+  query.name = { $regex: search, $options: 'i' };
+} else {
+  // If not searching, ensure names start with A-Z
+  query.name = { $regex: '^[A-Za-z]', $options: 'i' };
+}
 
     const isCacheable = Array.isArray(name) && name.length === 1 && name[0] === 'Provider';
 
-    // 🔑 Define cache key only if eligible
+    
     const cacheKey = isCacheable ? `provider_${JSON.stringify(query)}_${page}_${limit}` : null;
 
-    // ✅ Check cache only if cacheable
+    
     if (isCacheable) {
       const cached = cache.get(cacheKey);
       if (cached) {
@@ -5197,14 +5200,14 @@ getAllProviders: async (req, res, next) => {
       .find(query)
       .select(
         '_id name specialty experience city state mainCategory fullAddress phoneNumber zipCode images overall_ratings bio overall_rating'
-      )
-      .skip(page * limit)
+      ).sort({ name: 1 }).
+      skip(page * limit)
       .limit(limit)
       .lean();
 
     const response = { totalCount, data: result };
 
-    // 🧠 Save to cache only if it's name === ['Provider']
+    
     if (isCacheable) {
       cache.set(cacheKey, response);
     }
