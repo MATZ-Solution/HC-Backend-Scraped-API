@@ -5158,7 +5158,7 @@ getAllProviders: async (req, res, next) => {
       overall_rating,
       name,
       page ,
-      limit=6,
+      limit,
       search
     } = req.body;
 
@@ -5176,11 +5176,8 @@ getAllProviders: async (req, res, next) => {
       query.experience = { $gte: min, $lte: max };
     }
     if (search) {
-  query.name = { $regex: search, $options: 'i' };
-} else {
-  // If not searching, ensure names start with A-Z
-  query.name = { $regex: '^[A-Za-z]', $options: 'i' };
-}
+      query.name = {$regex: search, $options: 'i' };
+    }
 
     const isCacheable = Array.isArray(name) && name.length === 1 && name[0] === 'Provider';
 
@@ -5200,8 +5197,8 @@ getAllProviders: async (req, res, next) => {
       .find(query)
       .select(
         '_id name specialty experience city state mainCategory fullAddress phoneNumber zipCode images overall_ratings bio overall_rating'
-      ).sort({ name: 1 }).
-      skip(page * limit)
+      )
+      .skip(page * limit)
       .limit(limit)
       .lean();
 
