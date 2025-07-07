@@ -5166,7 +5166,7 @@ getAllProviders: async (req, res, next) => {
     if (state) query.state = state;
     if (city) query.city = city;
     if (zipCode) query.zipCode = zipCode;
-    if (specialty)  query.specialty = { $regex: specialty, $options: 'i' };
+    if (specialty)  query.specialty = specialty
     if (Array.isArray(name)) query.mainCategory = { $in: name };
     if (overall_rating && Array.isArray(overall_rating)) {
       query.overall_rating = { $in: overall_rating.map(Number) };
