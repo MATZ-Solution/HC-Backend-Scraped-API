@@ -5217,6 +5217,49 @@ getAllProviders: async (req, res, next) => {
 },
 
 
+// change_into_ary: async (req,res,next)=>{
+//  try {
+//     const result = await providerData.updateMany(
+//   { },
+//   [
+//     {
+//       $set: {
+//         specialty: {
+//           $cond: [
+//             { $eq: [ { $type: "$specialty" }, "string" ] },
+//             {
+//               $map: {
+//                 input: { $split: ["$specialty", ","] },
+//                 as: "item",
+//                 in: { $trim: { input: "$$item" } }
+//               }
+//             },
+//             "$specialty" // leave unchanged if not a string
+//           ]
+//         }
+//       }
+//     }
+//   ]
+// );
+
+
+//     res.status(200).json({
+//       success: true,
+//       message: 'Converted specialty strings to arrays (only if not already arrays).',
+//       matchedCount: result.matchedCount,
+//       modifiedCount: result.modifiedCount
+//     });
+//   } catch (error) {
+//     console.error('Error converting specialty field:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error',
+//       error: error.message
+//     });
+//   }
+// }
+
+
 // normalizeCities: async (req, res) => {
 //   try {
 //     const records = await hospital.find({ city: { $exists: true } }).select('city');

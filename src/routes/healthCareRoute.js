@@ -138,6 +138,7 @@ router.post('/searchIngRecords',healthCare.getRecordsbySearch)
 
 
 router.post('/getAllProviders',healthCare.getAllProviders)
+// router.post('/convert-specialty', healthCare.change_into_ary)
 // router.post('/getAllProvider',healthCare.getAllProvider)
 
 module.exports = router;
