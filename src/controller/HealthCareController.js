@@ -4662,12 +4662,12 @@ catch (err) {
       }
   
       const facilities = [
-        // { model: hospital },
-        // { model: dialysisFacilityData },
+        { model: hospital },
+        { model: dialysisFacilityData },
         { model: nursingHome },
-        // { model: hoSpiceData },
+        { model: hoSpiceData },
         { model: inpatientRehabilitiation },
-        // { model: homeHealthData },
+        { model: homeHealthData },
         { model: memoryCare },
         { model: inHomeCare },
       ];
