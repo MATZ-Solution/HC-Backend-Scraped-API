@@ -5158,8 +5158,8 @@ getAllProviders: async (req, res, next) => {
       zipCode,
       overall_rating,
       name,
-      page ,
-      limit,
+      page = 0,
+      limit = 10,
       search
     } = req.body;
 
@@ -5167,7 +5167,7 @@ getAllProviders: async (req, res, next) => {
     if (state) query.state = state;
     if (city) query.city = city;
     if (zipCode) query.zipCode = zipCode;
-    if (specialty)  query.specialty = specialty
+    if (specialty) query.specialty = specialty;
     if (Array.isArray(name)) query.mainCategory = { $in: name };
     if (overall_rating && Array.isArray(overall_rating)) {
       query.overall_rating = { $in: overall_rating.map(Number) };
@@ -5177,15 +5177,12 @@ getAllProviders: async (req, res, next) => {
       query.experience = { $gte: min, $lte: max };
     }
     if (search) {
-      query.name = {$regex: search, $options: 'i' };
+      query.$text = { $search: search };
     }
 
     const isCacheable = Array.isArray(name) && name.length === 1 && name[0] === 'Provider';
-
-    
     const cacheKey = isCacheable ? `provider_${JSON.stringify(query)}_${page}_${limit}` : null;
 
-    
     if (isCacheable) {
       const cached = cache.get(cacheKey);
       if (cached) {
@@ -5199,13 +5196,13 @@ getAllProviders: async (req, res, next) => {
       .select(
         '_id name specialty experience city state mainCategory fullAddress phoneNumber zipCode images overall_ratings bio overall_rating'
       )
+      .sort(search ? { score: { $meta: "textScore" } } : {}) // Sort by score internally, but don't return it
       .skip(page * limit)
       .limit(limit)
       .lean();
 
     const response = { totalCount, data: result };
 
-    
     if (isCacheable) {
       cache.set(cacheKey, response);
     }
@@ -5216,6 +5213,7 @@ getAllProviders: async (req, res, next) => {
     next(error);
   }
 },
+
 
 
 // change_into_ary: async (req,res,next)=>{
