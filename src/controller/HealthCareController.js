@@ -3382,7 +3382,7 @@ catch (err) {
 // getMultiple Categories and Count
   getMultipleCategories: async (req, res, next) => {
     const { state, city, zipCode,overall_rating, name, page, limit ,search} = req.body;
-    console.log(req.body)
+    // console.log(req.body)
     // console.log(state, city, zipCode,overall_rating, name, page, limit ,search,"search");
     try {
 
@@ -3587,7 +3587,7 @@ catch (err) {
   getMultipleCategoriesApp: async (req, res, next) => {
     const { state, city, zipCode, categoryNames, page, limit, search, overall_rating,longitude, latitude,ascending,descending } = req.query;
    
-    // console.log(req.query)
+    console.log(req.query)
 
     const {isAdmin,_id}=req.user
     if(isAdmin==="patient"){
@@ -3711,6 +3711,7 @@ catch (err) {
         res.status(200).json({ totalCount, data: result });
     } catch (error) {
         next(error);
+      
     }
     }
     else if(req.user==="notLogin"){
