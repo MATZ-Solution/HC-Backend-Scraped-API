@@ -35,20 +35,20 @@ const getCategoryModel = (categoryName) => {
     switch (categoryName) {
         case 'Nursing Home':
             return nursingHome;
-        case 'Inpatient Rehabilitiation':
-            return inpatientRehabilitiation;
-        case 'In Home Care':
-            return inHomeCare;
-        case 'Memory Care':
-            return memoryCare;
-        case 'HoSpice':
-            return hoSpiceData;  
-        case 'Hospital':
-            return hospital;
-        case 'Dialysis Facility':
-            return dialysisFacilityData
-        case 'Home Health':
-            return homeHealthData
+        // case 'Inpatient Rehabilitiation':
+        //     return inpatientRehabilitiation;
+        // case 'In Home Care':
+        //     return inHomeCare;
+        // case 'Memory Care':
+        //     return memoryCare;
+        // case 'HoSpice':
+        //     return hoSpiceData;  
+        // case 'Hospital':
+        //     return hospital;
+        // case 'Dialysis Facility':
+        //     return dialysisFacilityData
+        // case 'Home Health':
+        //     return homeHealthData
 
         // case 'Medicare Supplier':
         //     return medicalSuppliers;
@@ -3693,127 +3693,127 @@ searchCenterByName: async (req, res, next) => {
     const {isAdmin,_id}=req.user
     if(isAdmin==="patient"){
       // console.log(_id,"id")
-      try {
-        const query = {};
-        if (state) query.state = state;
-        if (city) query.city = city;
-        if (zipCode) query.zipCode = zipCode;
-        if (search) {
-            const searchQuery = {
-                $or: [
-                    { name: { $regex: new RegExp(search, 'i') } },
-                    // { zipCode: { $regex: new RegExp(search, 'i') } },
-                    { state: { $regex: new RegExp(search, 'i') } },
-                    { city: { $regex: new RegExp(search, 'i') } },
-                    // { mainCategory: { $regex: new RegExp(search, 'i') } },
-                ]
-            };
-            Object.assign(query, searchQuery);
-        }
-        if (overall_rating) {
-            const overallRatings = overall_rating.map(Number);
-            query.overall_rating = { $in: overallRatings };
-        }
-        let aggregationPipeline = [];
-        if (longitude && latitude) {
-          // If longitude and latitude are provided, add $geoNear stage to sort by distance
-          aggregationPipeline.push({
-            $geoNear: {
-              near: {
-                type: 'Point',
-                coordinates: [parseFloat(longitude), parseFloat(latitude)],
-              },
-              distanceField: 'distance',
-              spherical: true,
-            },
-          });
-        }
-            const getResultsAndCount = async (model) => {
-        const count = await model.countDocuments(query);
-        const pipeline = [...aggregationPipeline]; // Copy the pipeline to avoid modification across iterations
-        if (ascending === 'true') {
-          pipeline.push({ $sort: { name: 1 } }); // Sort in ascending order by name (you can change 'name' to the field you want to sort by)
-        } else if (descending === 'true') {
-          pipeline.push({ $sort: { name: -1 } }); // Sort in descending order by name (you can change 'name' to the field you want to sort by)
-        }
-        pipeline.push(
-          {
-            $match: query,
-          },
-          {
-            $project: {
-              _id: 1,
-              name: 1,
-              city: 1,
-              state: 1,
-              mainCategory: 1,
-              fullAddress: 1,
-              phoneNumber: 1,
-              zipCode: 1,
-              overall_rating: 1,
-              latitude: 1,
-              longitude: 1,
-            },
-          },
-          {
-            $skip: page * parseInt(limit),
-          },
-          {
-            $limit: parseInt(limit),
+        try {
+          const query = {};
+          if (state) query.state = state;
+          if (city) query.city = city;
+          if (zipCode) query.zipCode = zipCode;
+          if (search) {
+              const searchQuery = {
+                  $or: [
+                      { name: { $regex: new RegExp(search, 'i') } },
+                      // { zipCode: { $regex: new RegExp(search, 'i') } },
+                      { state: { $regex: new RegExp(search, 'i') } },
+                      { city: { $regex: new RegExp(search, 'i') } },
+                      // { mainCategory: { $regex: new RegExp(search, 'i') } },
+                  ]
+              };
+              Object.assign(query, searchQuery);
           }
-        );
-        const data = await model.aggregate(pipeline).allowDiskUse(true).exec();
-        return { count, data };
-      };
-  
-      let totalCount = 0;
-      let result = [];
-  
-      if (categoryNames && categoryNames.length > 0) {
-        const promises = categoryNames.map((categoryName) => {
-          const categoryModel = getCategoryModel(categoryName);
-          return getResultsAndCount(categoryModel).then(({ count, data }) => {
-            totalCount += count;
-            result = result.concat(data);
+          if (overall_rating) {
+              const overallRatings = overall_rating.map(Number);
+              query.overall_rating = { $in: overallRatings };
+          }
+          let aggregationPipeline = [];
+          if (longitude && latitude) {
+            // If longitude and latitude are provided, add $geoNear stage to sort by distance
+            aggregationPipeline.push({
+              $geoNear: {
+                near: {
+                  type: 'Point',
+                  coordinates: [parseFloat(longitude), parseFloat(latitude)],
+                },
+                distanceField: 'distance',
+                spherical: true,
+              },
+            });
+          }
+              const getResultsAndCount = async (model) => {
+          const count = await model.countDocuments(query);
+          const pipeline = [...aggregationPipeline]; // Copy the pipeline to avoid modification across iterations
+          if (ascending === 'true') {
+            pipeline.push({ $sort: { name: 1 } }); // Sort in ascending order by name (you can change 'name' to the field you want to sort by)
+          } else if (descending === 'true') {
+            pipeline.push({ $sort: { name: -1 } }); // Sort in descending order by name (you can change 'name' to the field you want to sort by)
+          }
+          pipeline.push(
+            {
+              $match: query,
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                city: 1,
+                state: 1,
+                mainCategory: 1,
+                fullAddress: 1,
+                phoneNumber: 1,
+                zipCode: 1,
+                overall_rating: 1,
+                latitude: 1,
+                longitude: 1,
+              },
+            },
+            {
+              $skip: page * parseInt(limit),
+            },
+            {
+              $limit: parseInt(limit),
+            }
+          );
+          const data = await model.aggregate(pipeline).allowDiskUse(true).exec();
+          return { count, data };
+        };
+    
+        let totalCount = 0;
+        let result = [];
+    
+        if (categoryNames && categoryNames.length > 0) {
+          const promises = categoryNames.map((categoryName) => {
+            const categoryModel = getCategoryModel(categoryName);
+            return getResultsAndCount(categoryModel).then(({ count, data }) => {
+              totalCount += count;
+              result = result.concat(data);
+            });
           });
+    
+          await Promise.all(promises);
+        } else {
+          // If no categories are provided, fetch data for all categories
+          const allCategories = ['Nursing Home'];
+          const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
+          const categoryResults = await Promise.all(promises);
+    
+          totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
+          result = categoryResults.flatMap((data) => data.data);
+        }
+
+          // Update to include favorite field
+          const getFavourateWithResponse = await axios.get(process.env.favApiUrl, {});
+          const responseData = getFavourateWithResponse.data;
+          // console.log(responseData,"data")
+        
+
+          const matchDataById = responseData.filter((item) => {
+            return item.patId === _id; // Keep only items where patId matches _id
         });
-  
-        await Promise.all(promises);
-      } else {
-        // If no categories are provided, fetch data for all categories
-        const allCategories = ['Nursing Home','Inpatient Rehabilitiation', 'In Home Care', 'Memory Care','Home Health','HoSpice','Hospital','Dialysis Facility'];
-        const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
-        const categoryResults = await Promise.all(promises);
-  
-        totalCount = categoryResults.reduce((acc, curr) => acc + curr.count, 0);
-        result = categoryResults.flatMap((data) => data.data);
+        
+        result.forEach((item) => {
+            const isFavorite = matchDataById.some((fav) => {
+                // console.log(fav, "favorite"); // Log inside the some() callback
+                return fav.scrapeObjectId === item._id.toString();
+            });
+            item.favorite = isFavorite;
+        });
+      
+      
+
+          res.status(200).json({ totalCount, data: result });
+      } catch (error) {
+          next(error);
+        
       }
-
-        // Update to include favorite field
-        const getFavourateWithResponse = await axios.get(process.env.favApiUrl, {});
-        const responseData = getFavourateWithResponse.data;
-        // console.log(responseData,"data")
-       
-
-        const matchDataById = responseData.filter((item) => {
-          return item.patId === _id; // Keep only items where patId matches _id
-      });
-      
-      result.forEach((item) => {
-          const isFavorite = matchDataById.some((fav) => {
-              // console.log(fav, "favorite"); // Log inside the some() callback
-              return fav.scrapeObjectId === item._id.toString();
-          });
-          item.favorite = isFavorite;
-      });
-    
-    
-
-        res.status(200).json({ totalCount, data: result });
-    } catch (error) {
-        next(error);
-      
-    }
     }
     else if(req.user==="notLogin"){
       try {
@@ -3905,7 +3905,8 @@ searchCenterByName: async (req, res, next) => {
           await Promise.all(promises);
         } else {
           // If no categories are provided, fetch data for all categories
-          const allCategories = ['Nursing Home','Inpatient Rehabilitiation', 'In Home Care', 'Memory Care','Home Health','HoSpice','Hospital','Dialysis Facility'];
+          console.log("all")
+          const allCategories = ['Nursing Home',];
           const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
           const categoryResults = await Promise.all(promises);
     
