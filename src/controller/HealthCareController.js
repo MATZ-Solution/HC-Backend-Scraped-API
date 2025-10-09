@@ -2499,7 +2499,7 @@ getAllUniqueCenterNamesByZipCode: async (req, res, next) => {
       if (cacheKey === 'noZip') {
         const cachedData = cache.get(cacheKey);
         if (cachedData) {
-          console.log("✅ Returning data from cache");
+          console.log("✅ Returning data from cacheeee");
           return res.status(200).json({ data: cachedData });
         }
       }
