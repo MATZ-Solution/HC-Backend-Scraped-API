@@ -7,5 +7,5 @@ const zipCodeSchema = new mongoose.Schema({
   zipCode: String,
 });
 
-module.exports = mongoose.model('allZipCodeUs', zipCodeSchema, 'allZipCodeUs'); 
+module.exports = mongoose.model('allZipCodes', zipCodeSchema, 'allZipCodeUs'); 
 // Explicit collection name

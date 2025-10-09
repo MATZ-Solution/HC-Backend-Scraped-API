@@ -131,6 +131,12 @@ router.get('/searchByZipCodeApp',healthCare.filterZipCodeForApp)
 // router.get('/getStateCityAndZipCodess',healthCare.getStateCityAndZipCodesss)
 router.get('/searchByZipCodeApps',healthCare.filterZipCodeNewAppForApp)
 
+// searching records on the basis of name
+router.get('/searchByCenterNameApp',healthCare.searchCenterByName)
+
+// get all unique center names
+router.get('/getAllUniqueCenterNames',healthCare.getAllUniqueCenterNamesByZipCode)
+
 router.post('/searchIngRecords',healthCare.getRecordsbySearch)
 
 

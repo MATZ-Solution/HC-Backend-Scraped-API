@@ -2340,179 +2340,212 @@ const healthCareController = {
   //   }
   // },
   
-  filterZipCodeForApp: async (req, res, next) => {
-    try {
-      const { zipCode, page } = req.query;
-      console.log(req.query)
-      let notFound = false;
-  
-      const pipeline = [];
-  
-      // Match searchQuery against zipCode, state, or city
+ filterZipCodeForApp: async (req, res, next) => {
+  try {
+    const { zipCode, page } = req.query;
+    console.log(req.query);
+    let notFound = false;
+
+    const pipeline = [];
+
+    // ✅ Match searchQuery against zipCode, state, or city
+    if (zipCode) {
+      const regex = new RegExp(zipCode, "i");
+      pipeline.push({
+        $match: {
+          $or: [
+            { zipCode: { $regex: regex } },
+            { state: { $regex: regex } },
+            { city: { $regex: regex } },
+          ],
+        },
+      });
+    }
+
+    // ✅ Group by zipCode, city, and state, collect facility names
+    pipeline.push({
+      $group: {
+        _id: {
+          zipCode: { $toLower: "$zipCode" },
+          city: { $toLower: "$city" },
+          state: { $toLower: "$state" },
+        },
+        names: { $addToSet: "$name" },
+      },
+    });
+
+    // ✅ Project the required fields
+    pipeline.push({
+      $project: {
+        _id: 0,
+        zipCode: "$_id.zipCode",
+        city: "$_id.city",
+        state: "$_id.state",
+        names: 1, // include facility names
+      },
+    });
+
+    // ✅ Sort and paginate
+    pipeline.push({ $sort: { zipCode: 1 } });
+
+    const limit = 5;
+    pipeline.push(
+      { $skip: (parseInt(page) - 1) * limit },
+      { $limit: limit }
+    );
+
+    // ✅ Aggregate data from all collections
+    const nursingHomeData = await nursingHome.aggregate(pipeline);
+    // const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline);
+    // const inHomeCareData = await inHomeCare.aggregate(pipeline);
+    // const memoryCareData = await memoryCare.aggregate(pipeline);
+
+    const mergedData = [
+      ...nursingHomeData,
+      // ...inpatientRehabilitationData,
+      // ...memoryCareData,
+      // ...inHomeCareData,
+    ];
+
+    // ✅ Remove duplicates
+    const removeDuplicates = (data) => {
+      const uniqueRecords = [];
+      data.forEach((record) => {
+        if (
+          !uniqueRecords.some(
+            (r) =>
+              r.zipCode === record.zipCode &&
+              r.city === record.city &&
+              r.state === record.state
+          )
+        ) {
+          uniqueRecords.push(record);
+        }
+      });
+      return uniqueRecords;
+    };
+
+    let result = removeDuplicates(mergedData);
+
+    // ✅ Handle no exact matches → try partial matches
+    if (result.length === 0) {
+      notFound = true;
+
       if (zipCode) {
-        const regex = new RegExp(zipCode, 'i');
-        pipeline.push({
-          $match: {
-            $or: [
-              { zipCode: { $regex: regex } },
-              { state: { $regex: regex } },
-              { city: { $regex: regex } },
-            ],
+        const similarPipeline = [
+          {
+            $match: {
+              zipCode: { $regex: new RegExp("^" + zipCode.substring(0, 3), "i") },
+            },
           },
-        });
+          {
+            $group: {
+              _id: {
+                zipCode: { $toLower: "$zipCode" },
+                city: { $toLower: "$city" },
+                state: { $toLower: "$state" },
+              },
+              names: { $addToSet: "$name" },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              zipCode: "$_id.zipCode",
+              city: "$_id.city",
+              state: "$_id.state",
+              names: 1,
+            },
+          },
+          { $sort: { zipCode: 1 } },
+          { $skip: (parseInt(page) - 1) * limit },
+          { $limit: limit },
+        ];
+
+        const similarNursingHomeData = await nursingHome.aggregate(similarPipeline);
+        const similarInpatientRehabilitationData = await inpatientRehabilitiation.aggregate(similarPipeline);
+        const similarInHomeCareData = await inHomeCare.aggregate(similarPipeline);
+        const similarMemoryCareData = await memoryCare.aggregate(similarPipeline);
+
+        const similarMergedData = [
+          ...similarNursingHomeData,
+          ...similarInpatientRehabilitationData,
+          ...similarInHomeCareData,
+          ...similarMemoryCareData,
+        ];
+
+        result = removeDuplicates(similarMergedData);
       }
-  
-      // Group by zipCode, city, and state to remove duplicates
-      pipeline.push({
-        $group: {
-          _id: {
-            zipCode: { $toLower: '$zipCode' },
-            city: { $toLower: '$city' },
-            state: { $toLower: '$state' },
-          },
-        },
-      });
-  
-      // Project the required fields
-      pipeline.push({
-        $project: {
-          _id: 0,
-          zipCode: '$_id.zipCode',
-          city: '$_id.city',
-          state: '$_id.state',
-        },
-      });
-  
-      // Sort by zipCode
-      pipeline.push({
-        $sort: { zipCode: 1 },
-      });
-  
-      // Pagination
-      const limit = 5; // Adjust this as needed
-      pipeline.push(
-        {
-          $skip: (parseInt(page) - 1) * limit,
-        },
-        {
-          $limit: limit,
+    }
+
+    res.status(200).json({
+      data: result,
+      notFound,
+    });
+  } catch (err) {
+    next(err);
+  }
+},
+
+// all Unique center Name
+getAllUniqueCenterNamesByZipCode: async (req, res, next) => {
+  try {
+      const { zipCode } = req.query;
+
+      // Key for caching (e.g. "noZip" for empty query)
+      const cacheKey = zipCode && zipCode.trim() !== '' ? `zip_${zipCode}` : 'noZip';
+
+      // ✅ Return from cache if available and no zipCode
+      if (cacheKey === 'noZip') {
+        const cachedData = cache.get(cacheKey);
+        if (cachedData) {
+          console.log("✅ Returning data from cache");
+          return res.status(200).json({ data: cachedData });
         }
-      );
-  
-      // Aggregate the data from all collections
-      const nursingHomeData = await nursingHome.aggregate(pipeline);
-      const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline);
-      const inHomeCareData = await inHomeCare.aggregate(pipeline);
-      const memoryCareData = await memoryCare.aggregate(pipeline);
-      // const homeHealthDataData = await homeHealthData.aggregate(pipeline);
-      // const hoSpiceDataData = await hoSpiceData.aggregate(pipeline);
-      // const hospitalData = await hospital.aggregate(pipeline);
-      // const dialysisFacilityDataData = await dialysisFacilityData.aggregate(pipeline);
-  
-      const mergedData = [
-        ...nursingHomeData,
-        ...inpatientRehabilitationData,
-        ...memoryCareData,
-        ...inHomeCareData,
-        // ...homeHealthDataData,
-        // ...hoSpiceDataData,
-        // ...hospitalData,
-        // ...dialysisFacilityDataData,
-      ];
-  
-      // Remove duplicates
-      const removeDuplicates = (data) => {
-        const uniqueRecords = [];
-        data.forEach((record) => {
-          if (
-            !uniqueRecords.some(
-              (r) =>
-                r.zipCode === record.zipCode &&
-                r.city === record.city &&
-                r.state === record.state
-            )
-          ) {
-            uniqueRecords.push(record);
-          }
-        });
-        return uniqueRecords;
+      }
+
+      const collections = {
+        'Nursing Home': nursingHome,
+        // 'In Home Care': inHomeCare,
+        // 'Memory Care': memoryCare,
+        // 'Hospice': hoSpiceData,
+        // 'Hospital': hospital,
+        // 'Dialysis Facility': dialysisFacilityData,
+        // 'Home Health': homeHealthData,
+        // 'Inpatient Rehabilitation': inpatientRehabilitation,
       };
-  
-      let result = removeDuplicates(mergedData);
-  
-      // Handle no exact matches
-      if (result.length === 0) {
-        notFound = true;
-  
-        if (zipCode) {
-          // Create a partial match pipeline based on the first three characters of zipCode
-          const similarPipeline = [
-            {
-              $match: {
-                zipCode: { $regex: new RegExp('^' + zipCode.substring(0, 3), 'i') },
-              },
-            },
-            {
-              $group: {
-                _id: {
-                  zipCode: { $toLower: '$zipCode' },
-                  city: { $toLower: '$city' },
-                  state: { $toLower: '$state' },
-                },
-              },
-            },
-            {
-              $project: {
-                _id: 0,
-                zipCode: '$_id.zipCode',
-                city: '$_id.city',
-                state: '$_id.state',
-              },
-            },
-            {
-              $sort: { zipCode: 1 },
-            },
-            {
-              $skip: (parseInt(page) - 1) * limit,
-            },
-            {
-              $limit: limit,
-            },
-          ];
-  
-          // Aggregate the data for partial matches
-          const similarNursingHomeData = await nursingHome.aggregate(similarPipeline);
-          const similarInpatientRehabilitationData = await inpatientRehabilitiation.aggregate(similarPipeline);
-          const similarInHomeCareData = await inHomeCare.aggregate(similarPipeline);
-          const similarMemoryCareData = await memoryCare.aggregate(similarPipeline);
-          // const similarHomeHealthDataData = await homeHealthData.aggregate(similarPipeline);
-          // const similarHoSpiceDataData = await hoSpiceData.aggregate(similarPipeline);
-          // const similarHospitalData = await hospital.aggregate(similarPipeline);
-          // const similarDialysisFacilityDataData = await dialysisFacilityData.aggregate(similarPipeline);
-  
-          const similarMergedData = [
-            ...similarNursingHomeData,
-            ...similarInpatientRehabilitationData,
-            ...similarInHomeCareData,
-            ...similarMemoryCareData,
-            // ...similarHomeHealthDataData,
-            // ...similarHoSpiceDataData,
-            // ...similarHospitalData,
-            // ...similarDialysisFacilityDataData,
-          ];
-  
-          result = removeDuplicates(similarMergedData);
-        }
+
+      // Helper function to fetch names from a collection
+      const fetchNames = async (model) => {
+        const query = {};
+        if (zipCode && zipCode.trim() !== '') query.zipCode = zipCode;
+        const data = await model.find(query, { name: 1, _id: 0 }).lean();
+        return data.map((item) => item.name);
+      };
+
+      // Fetch all names from all collections
+      const resultsArray = await Promise.all(
+        Object.keys(collections).map((key) => fetchNames(collections[key]))
+      );
+
+      // Flatten and get unique names
+      const allNames = [...new Set(resultsArray.flat())];
+
+      // ✅ Store in cache if no zipCode
+      if (cacheKey === 'noZip') {
+        cache.set(cacheKey, allNames);
+        console.log("🗄️ Data cached for noZip");
       }
-  
-      res.status(200).json({
-        data: result,
-        notFound,
-      });
+
+      res.status(200).json({ data: allNames });
     } catch (err) {
-      next(err);
+      console.error("Error in getAllUniqueCenterNames:", err);
+      res.status(500).json({ success: false, message: "Server error" });
     }
   },
+
+
+
 
   
 
@@ -2596,6 +2629,7 @@ const healthCareController = {
     }
 }
 ,
+
 
  
   
@@ -2700,6 +2734,74 @@ catch (err) {
 }
 
 },
+
+
+// search By center name
+
+
+searchCenterByName: async (req, res, next) => {
+  console.log('Incoming query:', req.query);
+
+  try {
+    const { search = '', categoryNames = ['Nursing Home'], zipCode = '', page, limit = 9 } = req.query;
+    const regex = new RegExp(search, 'i');
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const parsedLimit = parseInt(limit);
+
+    const collections = {
+      'Nursing Home': nursingHome,
+      // 'Inpatient Rehabilitation': inpatientRehabilitation,
+      // 'In Home Care': inHomeCare,
+      // 'Memory Care': memoryCare,
+      // 'Hospice': hoSpiceData,
+      // 'Hospital': hospital,
+      // 'Dialysis Facility': dialysisFacilityData,
+      // 'Home Health': homeHealthData,
+    };
+
+    // ✅ Helper: search model with optional zip filter
+    const searchModel = async (model) => {
+      const query = {
+        name: { $regex: regex },
+      };
+
+      // ✅ Apply zip filter if zipCode is provided
+      if (zipCode && zipCode.trim() !== '') {
+        query.zipCode = zipCode; // 👈 Make sure your schema field is `zip` or change it accordingly (zipCode / postalCode)
+      }
+
+      console.log(query,"query" )
+
+      return await model
+        .find(query, { name: 1,  _id: 0 })
+        .skip(skip)
+        .limit(parsedLimit)
+        .lean();
+    };
+
+    // ✅ Determine which categories to search
+    let selectedCategories = Array.isArray(categoryNames)
+      ? categoryNames.filter((cat) => collections[cat])
+      : Object.keys(collections);
+
+    // ✅ Execute search for all relevant collections
+    const resultsArray = await Promise.all(
+      selectedCategories.map((cat) => searchModel(collections[cat]))
+    );
+
+    const results = resultsArray.flat();
+
+    res.status(200).json({
+      data: results,
+      notFound: results.length === 0,
+    });
+
+  } catch (err) {
+    console.error('Error in searchCenterByName:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+},
+
 
 
 
