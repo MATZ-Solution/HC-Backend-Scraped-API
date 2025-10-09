@@ -2499,7 +2499,7 @@ getAllUniqueCenterNamesByZipCode: async (req, res, next) => {
       if (cacheKey === 'noZip') {
         const cachedData = cache.get(cacheKey);
         if (cachedData) {
-          console.log("✅ Returning data from cacheeee");
+          console.log("✅ Returning data from cac");
           return res.status(200).json({ data: cachedData });
         }
       }
@@ -2740,7 +2740,6 @@ catch (err) {
 
 
 searchCenterByName: async (req, res, next) => {
-  console.log('Incoming query:', req.query);
 
   try {
     const { search = '', categoryNames = ['Nursing Home'], zipCode = '', page, limit = 9 } = req.query;
