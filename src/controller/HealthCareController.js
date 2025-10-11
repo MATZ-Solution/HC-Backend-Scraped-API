@@ -3685,7 +3685,7 @@ searchCenterByName: async (req, res, next) => {
   //   }
 
   // },
-  getMultipleCategoriesApp: async (req, res, next) => {
+  getMultipleCategoriesApp: async (req, res, next) => { 
     const { state, city, zipCode, categoryNames, page, limit, search, overall_rating,longitude, latitude,ascending,descending } = req.query;
    
     console.log(req.query)
@@ -4765,14 +4765,14 @@ searchCenterByName: async (req, res, next) => {
       }
   
       const facilities = [
-        { model: hospital },
-        { model: dialysisFacilityData },
+        // { model: hospital },
+        // { model: dialysisFacilityData },
         { model: nursingHome },
-        { model: hoSpiceData },
-        { model: inpatientRehabilitiation },
-        { model: homeHealthData },
-        { model: memoryCare },
-        { model: inHomeCare },
+        // { model: hoSpiceData },
+        // { model: inpatientRehabilitiation },
+        // { model: homeHealthData },
+        // { model: memoryCare },
+        // { model: inHomeCare },
       ];
   
       
