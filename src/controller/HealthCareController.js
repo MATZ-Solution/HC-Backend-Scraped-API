@@ -2388,7 +2388,7 @@ const healthCareController = {
     // ✅ Sort and paginate
     pipeline.push({ $sort: { zipCode: 1 } });
 
-    const limit = 5;
+    const limit = 15;
     pipeline.push(
       { $skip: (parseInt(page) - 1) * limit },
       { $limit: limit }
