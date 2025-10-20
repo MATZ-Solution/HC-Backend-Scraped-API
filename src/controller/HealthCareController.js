@@ -2463,15 +2463,15 @@ const healthCareController = {
         ];
 
         const similarNursingHomeData = await nursingHome.aggregate(similarPipeline);
-        const similarInpatientRehabilitationData = await inpatientRehabilitiation.aggregate(similarPipeline);
-        const similarInHomeCareData = await inHomeCare.aggregate(similarPipeline);
-        const similarMemoryCareData = await memoryCare.aggregate(similarPipeline);
+        // const similarInpatientRehabilitationData = await inpatientRehabilitiation.aggregate(similarPipeline);
+        // const similarInHomeCareData = await inHomeCare.aggregate(similarPipeline);
+        // const similarMemoryCareData = await memoryCare.aggregate(similarPipeline);
 
         const similarMergedData = [
           ...similarNursingHomeData,
-          ...similarInpatientRehabilitationData,
-          ...similarInHomeCareData,
-          ...similarMemoryCareData,
+          // ...similarInpatientRehabilitationData,
+          // ...similarInHomeCareData,
+          // ...similarMemoryCareData,
         ];
 
         result = removeDuplicates(similarMergedData);
