@@ -101,8 +101,13 @@ router.post('/getMutilpleCategories', healthCare.getMultipleCategoryData)
 
 // router.get('/testapi',healthCare.testApi)
 
-//<------------------------getStateCityAndZipCode-------------------------------->
+//<------------------------getStateCityAndZipCode For Website-------------------------------->
 router.get('/getStateCityAndZipCode', healthCare.getStateCityAndZipCode)
+
+
+//<------------------------getStateCityAndZipCode For App-------------------------------->
+
+router.get('/getStateCityAndZipCodeApp', healthCare.getStateCityAndZipCodeApp)
 // router.get('/getStateCityAndZipCodes',healthCare.getStateCityAndZipCodes)
 router.get('/getAllState',healthCare.getAllState)
 router.post('/getCitiesByState',healthCare.getCitiesByState)

@@ -2396,15 +2396,15 @@ const healthCareController = {
 
     // ✅ Aggregate data from all collections
     const nursingHomeData = await nursingHome.aggregate(pipeline);
-    // const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline);
-    // const inHomeCareData = await inHomeCare.aggregate(pipeline);
-    // const memoryCareData = await memoryCare.aggregate(pipeline);
+    const inpatientRehabilitationData = await inpatientRehabilitiation.aggregate(pipeline);
+    const inHomeCareData = await inHomeCare.aggregate(pipeline);
+    const memoryCareData = await memoryCare.aggregate(pipeline);
 
     const mergedData = [
       ...nursingHomeData,
-      // ...inpatientRehabilitationData,
-      // ...memoryCareData,
-      // ...inHomeCareData,
+      ...inpatientRehabilitationData,
+      ...memoryCareData,
+      ...inHomeCareData,
     ];
 
     // ✅ Remove duplicates
@@ -2463,15 +2463,15 @@ const healthCareController = {
         ];
 
         const similarNursingHomeData = await nursingHome.aggregate(similarPipeline);
-        // const similarInpatientRehabilitationData = await inpatientRehabilitiation.aggregate(similarPipeline);
-        // const similarInHomeCareData = await inHomeCare.aggregate(similarPipeline);
-        // const similarMemoryCareData = await memoryCare.aggregate(similarPipeline);
+        const similarInpatientRehabilitationData = await inpatientRehabilitiation.aggregate(similarPipeline);
+        const similarInHomeCareData = await inHomeCare.aggregate(similarPipeline);
+        const similarMemoryCareData = await memoryCare.aggregate(similarPipeline);
 
         const similarMergedData = [
           ...similarNursingHomeData,
-          // ...similarInpatientRehabilitationData,
-          // ...similarInHomeCareData,
-          // ...similarMemoryCareData,
+          ...similarInpatientRehabilitationData,
+          ...similarInHomeCareData,
+          ...similarMemoryCareData,
         ];
 
         result = removeDuplicates(similarMergedData);
@@ -2506,13 +2506,13 @@ getAllUniqueCenterNamesByZipCode: async (req, res, next) => {
 
       const collections = {
         'Nursing Home': nursingHome,
-        // 'In Home Care': inHomeCare,
-        // 'Memory Care': memoryCare,
+        'In Home Care': inHomeCare,
+        'Memory Care': memoryCare,
         // 'Hospice': hoSpiceData,
         // 'Hospital': hospital,
         // 'Dialysis Facility': dialysisFacilityData,
         // 'Home Health': homeHealthData,
-        // 'Inpatient Rehabilitation': inpatientRehabilitation,
+        'Inpatient Rehabilitation': inpatientRehabilitiation,
       };
 
       // Helper function to fetch names from a collection
@@ -2742,16 +2742,16 @@ catch (err) {
 searchCenterByName: async (req, res, next) => {
 
   try {
-    const { search = '', categoryNames = ['Nursing Home'], zipCode = '', page, limit = 9 } = req.query;
+    const { search = '', categoryNames = [], zipCode = '', page, limit = 9 } = req.query;
     const regex = new RegExp(search, 'i');
     const skip = (parseInt(page) - 1) * parseInt(limit);
     const parsedLimit = parseInt(limit);
 
     const collections = {
       'Nursing Home': nursingHome,
-      // 'Inpatient Rehabilitation': inpatientRehabilitation,
-      // 'In Home Care': inHomeCare,
-      // 'Memory Care': memoryCare,
+      'Inpatient Rehabilitation': inpatientRehabilitiation,
+      'In Home Care': inHomeCare,
+      'Memory Care': memoryCare,
       // 'Hospice': hoSpiceData,
       // 'Hospital': hospital,
       // 'Dialysis Facility': dialysisFacilityData,
@@ -3781,7 +3781,7 @@ searchCenterByName: async (req, res, next) => {
           await Promise.all(promises);
         } else {
           // If no categories are provided, fetch data for all categories
-          const allCategories = ['Nursing Home'];
+          const allCategories = ['Nursing Home','Inpatient Rehabilitiation','In Home Care','Memory Care',];
           const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
           const categoryResults = await Promise.all(promises);
     
@@ -3906,7 +3906,7 @@ searchCenterByName: async (req, res, next) => {
         } else {
           // If no categories are provided, fetch data for all categories
           console.log("all")
-          const allCategories = ['Nursing Home',];
+          const allCategories = ['Nursing Home','Inpatient Rehabilitiation','In Home Care','Memory Care',];
           const promises = allCategories.map((category) => getResultsAndCount(getCategoryModel(category)));
           const categoryResults = await Promise.all(promises);
     
@@ -4148,7 +4148,7 @@ searchCenterByName: async (req, res, next) => {
       next(err)
     }
   },
-
+// for Website
   getStateCityAndZipCode: async (req, res, next) => {
     try {
 
@@ -4187,6 +4187,118 @@ searchCenterByName: async (req, res, next) => {
           .find({})
           .lean()
           .select('state city zipCode -_id'),
+        inpatientRehabilitiation
+          .find({})
+          .lean()
+          .select('state city zipCode -_id'),
+        // longTermCares
+        //   .find({})
+        //   .lean()
+        //   .select('state city zipCode -_id'),
+        // independentLiving
+        //   .find()
+        //   .lean()
+        //   .select('state city zipCode'),
+        memoryCare.find().lean().select('state city zipCode -_id'),
+        inHomeCare.find().lean().select('state city zipCode -_id'),
+        // assistedLiving
+        //   .find()
+        //   .lean()
+        //   .select('state city zipCode -_id'),
+        // adultDayCare
+        //   .find()
+        //   .lean()
+        //   .select('state city zipCode -_id'),
+        // careRetirement
+        //   .find()
+        //   .lean()
+        //   .select('state city zipCode -_id'),
+        // geriaticCareManager
+        //   .find()
+        //   .lean()
+        //   .select('state city zipCode -_id'),
+          // medicalSuppliers
+          // .find()
+          // .lean()
+          // .select('state city zipCode -_id'),
+          // medicalFacilities
+          // .find()
+          // .lean()
+          // .select('state city zipCode -_id'),
+          // physicians
+          // .find()
+          // .lean()
+          // .select('state city zipCode -_id'),
+      ];
+
+      const records = await Promise.all(promises);
+
+      // console.log(records.flat().length,"records")
+
+
+      const mergedRecords = [].concat(...records);
+
+      // console.log(mergedRecords,"merge")
+      for (let i = 0; i < mergedRecords.length; i++) {
+        if (!uniqureRecords.state.includes(mergedRecords[i].state)) {
+          uniqureRecords.state.push(mergedRecords[i].state);
+        }
+        if (!uniqureRecords.cities.includes(capitalizeFirstLetter(mergedRecords[i].city))) {
+          const capitalizedCity = capitalizeFirstLetter(mergedRecords[i].city);
+          uniqureRecords.cities.push(capitalizedCity);
+        }
+        if (!uniqureRecords.zipCode.includes(mergedRecords[i].zipCode)) {
+          uniqureRecords.zipCode.push(mergedRecords[i].zipCode);
+        }
+      }
+      uniqureRecords.state.sort();
+      cache.set(cacheRecords, uniqureRecords);
+      return res.status(200).json(uniqureRecords);
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  // for App
+
+    getStateCityAndZipCodeApp: async (req, res, next) => {
+    try {
+
+      let cacheRecords = 'records';
+
+      const uniqureRecords = {
+        cities: [],
+        state: [],
+        zipCode: []
+      }
+
+      const cachedData = cache.get(cacheRecords);
+      if (cachedData) {
+        return res.status(200).json(cachedData);
+      }
+
+      const promises = [
+        nursingHome
+          .find()
+          .lean()
+          .select('state city zipCode -_id'),
+        // skilledNursingHome
+        //   .find()
+        //   .lean()
+        //   .select('state city zipCode'),
+        // hospital.find().lean().select('state city zipCode -_id'),
+        // dialysisFacilityData
+        //   .find()
+        //   .lean()
+        //   .select('state city zipCode -_id'),
+        // homeHealthData
+        //   .find({})
+        //   .lean()
+        //   .select('state city zipCode -_id'),
+        // hoSpiceData
+        //   .find({})
+        //   .lean()
+        //   .select('state city zipCode -_id'),
         inpatientRehabilitiation
           .find({})
           .lean()
@@ -4578,10 +4690,10 @@ searchCenterByName: async (req, res, next) => {
       
       const memoryCareResult = await memoryCare.find(query).select('-_id city state zipCode').lean();
       const inHomeCareResult = await inHomeCare.find(query).select('-_id city state zipCode').lean();
-      const hospitalCareResult=await hospital.find(query).select('-_id city state zipCode').lean();
-      const dialysisFacilityDataResult=await dialysisFacilityData.find(query).select('-_id city state zipCode').lean();
-      const homeHealthDataResult=await homeHealthData.find(query).select('-_id city state zipCode').lean();
-      const hoSpiceDataResult=await hoSpiceData.find(query).select('-_id city state zipCode').lean();
+      // const hospitalCareResult=await hospital.find(query).select('-_id city state zipCode').lean();
+      // const dialysisFacilityDataResult=await dialysisFacilityData.find(query).select('-_id city state zipCode').lean();
+      // const homeHealthDataResult=await homeHealthData.find(query).select('-_id city state zipCode').lean();
+      // const hoSpiceDataResult=await hoSpiceData.find(query).select('-_id city state zipCode').lean();
       // const medicalFacilitiesResult = await medicalFacilities.find(query).select('-_id city state zipCode')
       // const medicalSuppliersResult = await medicalSuppliers.find(query).select('-_id city state zipCode')
     
@@ -4590,10 +4702,10 @@ searchCenterByName: async (req, res, next) => {
         ...inpatientRehabilitiationResult,
         ...memoryCareResult,
         ...inHomeCareResult,
-        ...hospitalCareResult,
-        ...dialysisFacilityDataResult,
-        ...homeHealthDataResult,
-        ...hoSpiceDataResult,
+        // ...hospitalCareResult,
+        // ...dialysisFacilityDataResult,
+        // ...homeHealthDataResult,
+        // ...hoSpiceDataResult,
         // ...medicalFacilitiesResult,
         // ...medicalSuppliersResult
       ];
@@ -4769,10 +4881,10 @@ searchCenterByName: async (req, res, next) => {
         // { model: dialysisFacilityData },
         { model: nursingHome },
         // { model: hoSpiceData },
-        // { model: inpatientRehabilitiation },
+        { model: inpatientRehabilitiation },
         // { model: homeHealthData },
-        // { model: memoryCare },
-        // { model: inHomeCare },
+        { model: memoryCare },
+        { model: inHomeCare },
       ];
   
       
