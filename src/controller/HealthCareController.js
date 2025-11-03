@@ -873,7 +873,7 @@ const healthCareController = {
         
         // 'Independent Living',
         'Memory Care',
-        'Home Health',
+        // 'Home Health',
         'In Home Care',
         // 'Dialysis Facility',
         // 'HoSpice',
