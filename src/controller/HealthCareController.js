@@ -859,6 +859,39 @@ const healthCareController = {
       next(err);
     }
   },
+
+    getCategoryNameForApp: async (req, res, next) => {
+    try {
+      const categoryName = [
+        'Nursing Home',
+        // 'Skilled Nursing Facility',
+        
+        // 'Long Term Cares',
+        
+        'Inpatient Rehabilitiation',
+        // 'Group Practice',
+        
+        // 'Independent Living',
+        'Memory Care',
+        'Home Health',
+        'In Home Care',
+        // 'Dialysis Facility',
+        // 'HoSpice',
+        // 'Hospital',
+        // 'Assisted Living',
+        // 'Adult Day Care',
+        // 'Care Retirement Communities',
+        // 'Geriatic Care Manager',
+        // "Medical Facilities",
+        // "Medical Suppliers",
+        // "Physician"
+      ];
+
+      res.status(200).json(categoryName);
+    } catch (err) {
+      next(err);
+    }
+  },
   getHealthCareZipCodesData: async (req, res, next) => {
     try {
       const { name, zipCode } = req.params;

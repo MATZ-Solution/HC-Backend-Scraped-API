@@ -11,6 +11,8 @@ router.route('/mohinScrap').post(healthCare.mohinScrap);
 router.route('/stateData').post(healthCare.getCategoryData);
 router.route('/stateData/:name').get(healthCare.getCategoryData);
 router.route('/state/:name').post(healthCare.getHealthCareStateData);
+router.route('/getAllCategoryNamesApp').get(healthCare.getCategoryNameForApp);
+
 router.route('/getCategoryName').get(healthCare.getCategoryName);
 router
   .route('/zipCode/:name/:zipCode?')
