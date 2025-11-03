@@ -3684,6 +3684,83 @@ searchCenterByName: async (req, res, next) => {
     }
   },
 
+getTopRatedByCategory: async (req, res, next) => {
+  try {
+    const categories = [
+      "Nursing Home",
+      "Inpatient Rehabilitiation",
+      "In Home Care",
+      "Memory Care",
+    ];
+
+    const { zipCode } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+
+    // ✅ Prepare all queries first
+    const categoryPromises = categories.map(async (category) => {
+      const model = getCategoryModel(category);
+      const filter = {};
+
+      if (zipCode) filter.zipCode = zipCode;
+      if (!zipCode && category === "Nursing Home") filter.overall_rating = 5;
+
+      return model
+        .find(
+          filter,
+          "name city state zipCode images mainCategory fullAddress overall_rating"
+        )
+        .lean();
+    });
+
+    // ✅ Run all queries in parallel
+    const results = await Promise.all(categoryPromises);
+
+    // ✅ Split data
+    let nursingHomeResults = results[0] || [];
+    let otherResults = results.slice(1).flat();
+
+    // ✅ Sort Nursing Homes by rating
+    nursingHomeResults.sort(
+      (a, b) => (b.overall_rating || 0) - (a.overall_rating || 0)
+    );
+
+    // ✅ Randomize other categories
+    otherResults.sort(() => 0.5 - Math.random());
+
+    // ✅ Combine and prioritize images first
+    const combinedResults = [...nursingHomeResults, ...otherResults];
+    const withImages = combinedResults.filter(
+      (item) => Array.isArray(item.images) && item.images.length > 0
+    );
+    const withoutImages = combinedResults.filter(
+      (item) => !item.images || item.images.length === 0
+    );
+
+    const prioritizedResults = [...withImages, ...withoutImages];
+
+    // ✅ Pagination
+    const total = prioritizedResults.length;
+    const paginatedResults = prioritizedResults.slice(skip, skip + limit);
+
+    res.status(200).json({
+      success: true,
+      totalCount: total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      count: paginatedResults.length,
+      data: paginatedResults,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+,
+
+
+
+
   // addLocation:async (req,res,next)=>{
 
   //   try{
