@@ -35,12 +35,12 @@ const getCategoryModel = (categoryName) => {
     switch (categoryName) {
         case 'Nursing Home':
             return nursingHome;
-        // case 'Inpatient Rehabilitiation':
-        //     return inpatientRehabilitiation;
-        // case 'In Home Care':
-        //     return inHomeCare;
-        // case 'Memory Care':
-        //     return memoryCare;
+        case 'Inpatient Rehabilitiation':
+            return inpatientRehabilitiation;
+        case 'In Home Care':
+            return inHomeCare;
+        case 'Memory Care':
+            return memoryCare;
         // case 'HoSpice':
         //     return hoSpiceData;  
         // case 'Hospital':
