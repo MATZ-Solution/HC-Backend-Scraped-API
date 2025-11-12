@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 router.route('/').post(EmailSender);
-// router.route('/user').post(emailSend);
+// router.route('/user').post(emailSensd);
 
 
 module.exports = router;
