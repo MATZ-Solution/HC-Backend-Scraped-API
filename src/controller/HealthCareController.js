@@ -861,34 +861,32 @@ const healthCareController = {
   },
 
     getCategoryNameForApp: async (req, res, next) => {
-    try {
-      const categoryName = [
-        'Nursing Home',
-        // 'Skilled Nursing Facility',
-        
-        // 'Long Term Cares',
-        
-        'Inpatient Rehabilitiation',
-        // 'Group Practice',
-        
-        // 'Independent Living',
-        'Memory Care',
-        // 'Home Health',
-        'In Home Care',
-        // 'Dialysis Facility',
-        // 'HoSpice',
-        // 'Hospital',
-        // 'Assisted Living',
-        // 'Adult Day Care',
-        // 'Care Retirement Communities',
-        // 'Geriatic Care Manager',
-        // "Medical Facilities",
-        // "Medical Suppliers",
-        // "Physician"
+     try {
+      const s3 = req.s3; // Get the s3 instance from middleware
+
+      const categories = [
+        { name: 'Nursing Home', subTitle: "Explore Professional Nursing Services", file: 'nursing_home.png' },
+        { name: 'Inpatient Rehabilitiation', subTitle: "Recover with Expert Rehabilitation", file: 'inpatient_rehabilitiation.png' },
+        { name: 'Memory Care', subTitle: "Specialized Dementia & Alzheimer’s Support", file: 'memory_care.jpg' },
+        { name: 'In Home Care', subTitle: "Personal Care in Your Own Home", file: 'inhome_care.jpg' },
       ];
 
-      res.status(200).json(categoryName);
+      const categoryData = await Promise.all(
+        categories.map(async (cat) => {
+          const params = { Bucket: process.env.AWS_BUCKET_NAME, Key: cat.file };
+
+          const imageUrl = s3.getSignedUrl('getObject', {
+            ...params,
+            Expires: 3600,
+          });
+
+          return { name: cat.name, subTitle: cat.subTitle, image: imageUrl };
+        })
+      );
+
+      res.status(200).json(categoryData);
     } catch (err) {
+      console.error('Error fetching category names:', err);
       next(err);
     }
   },

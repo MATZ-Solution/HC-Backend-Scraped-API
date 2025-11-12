@@ -2,7 +2,7 @@ const express = require('express');
 const healthCare = require('../controller/HealthCareController');
 const { verifyTokenForFav } = require('../middleware/verifytokens');
 const router = express.Router();
-
+const s3Middleware = require('../middleware/s3');
 router.route('/').post(healthCare.addData);
 router.route('/').put(healthCare.updateData);
 router.route('/mohinScrap').post(healthCare.mohinScrap);
@@ -11,7 +11,8 @@ router.route('/mohinScrap').post(healthCare.mohinScrap);
 router.route('/stateData').post(healthCare.getCategoryData);
 router.route('/stateData/:name').get(healthCare.getCategoryData);
 router.route('/state/:name').post(healthCare.getHealthCareStateData);
-router.route('/getAllCategoryNamesApp').get(healthCare.getCategoryNameForApp);
+router.get('/getAllCategoryNamesApp', s3Middleware, healthCare.getCategoryNameForApp);
+
 
 router.route('/topRatedByZipCode').get(healthCare.getTopRatedByCategory);
 
