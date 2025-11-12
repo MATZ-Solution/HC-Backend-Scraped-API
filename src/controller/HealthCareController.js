@@ -864,6 +864,7 @@ const healthCareController = {
      try {
       const s3 = req.s3; // Get the s3 instance from middleware
 
+
       const categories = [
         { name: 'Nursing Home', subTitle: "Explore Professional Nursing Services", file: 'nursing_home.png' },
         { name: 'Inpatient Rehabilitiation', subTitle: "Recover with Expert Rehabilitation", file: 'inpatient_rehabilitiation.png' },

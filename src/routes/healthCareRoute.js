@@ -2,7 +2,7 @@ const express = require('express');
 const healthCare = require('../controller/HealthCareController');
 const { verifyTokenForFav } = require('../middleware/verifytokens');
 const router = express.Router();
-const s3Middleware = require('../middleware/s3');
+const s3Middleware=require('../middleware/s3')
 router.route('/').post(healthCare.addData);
 router.route('/').put(healthCare.updateData);
 router.route('/mohinScrap').post(healthCare.mohinScrap);
