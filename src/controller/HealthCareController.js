@@ -22,7 +22,6 @@ const allState=require('../Model/statesModel')
 const allCities=require('../Model/citiesModel')
 const Otp = require('../Model/Otp');
 const axios = require('axios');
-const turf = require("@turf/turf");
 // const Doctor = require("../Model/professional");
 const allZipCode =require('../Model/zipCodeModel')
 const NodeCache = require('node-cache');
@@ -5129,73 +5128,7 @@ getTopRatedByCategory: async (req, res, next) => {
       next(error)
     }
   },
-  // <----------------maaz work----------------------------------->
-  // : async (req, res, next) => {
-  //   try {
-  //     console.log('here')
-  //     const { points } = req.body
-  //     const capitalizeFirstLetter = (string) => {
-  //       return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-  //     };
-
-  //     if (!points || !Array.isArray(points) || points.length === 0) {
-  //       console.log('Invalid request body. Expecting an array of latitude and longitude pairs.')
-  //       return res
-  //         .status(400)
-  //         .json({
-  //           success: false,
-  //           message:
-  //             "Invalid request body. Expecting an array of latitude and longitude pairs.",
-  //         });
-  //     }
-
-
-
-  //     const allRecords = await fetchDataFromDatabase();
-  //     console.log(allRecords.length, "allRecords")
-  //     const filteredRecords = allRecords.filter((location) => {
-  //       const latitude = parseFloat(location.latitude);
-  //       const longitude = parseFloat(location.longitude);
-  //       return !isNaN(latitude) && !isNaN(longitude);
-  //     });
-
-  //     const features = filteredRecords.map((location) => {
-  //       const latitude = parseFloat(location.latitude);
-  //       const longitude = parseFloat(location.longitude);
-  //       const point = [latitude, longitude];
-  //       return point
-
-  //     });
-
-  //     let ptsWithin = turf.pointsWithinPolygon(turf.points(features), turf.polygon([points]))
-
-
-
-
-
-  //     const coords = ptsWithin.features.map((loc) => loc.geometry.coordinates);
-
-  //     const matchingRecords = allRecords.filter((record) => {
-  //       const latitude = parseFloat(record.latitude);
-  //       const longitude = parseFloat(record.longitude);
-  //       const point = [latitude, longitude];
-  //       return coords.some((coord) => coord[0] === point[0] && coord[1] === point[1]);
-  //     }).map((record) => {
-  //       return {
-  //         ...record,
-  //         city: capitalizeFirstLetter(record.city),
-  //       }
-  //     })
-
-
-  //     // console.log(matchingRecords);
-
-  //     return res.status(200).json(matchingRecords);
-  //   } catch (err) {
-  //     console.log(err)
-  //     next(err);
-  //   }
-  // },
+  
   getAllRecordsCategoryLatLong:async(req,res,next)=>{
     try {
       const { points } = req.body;
